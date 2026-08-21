@@ -1,526 +1,1567 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>VicMarket · share & earn</title>
-  <!-- Font & icons (fast CDN) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    /* reset & base – fast loading */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    }
-    body {
-      background: #f5f7fb;
-      color: #1e293b;
-      padding: 16px 12px 80px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    /* smooth loading */
-    img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      background: #e9edf2;
-      border-radius: 16px;
-      object-fit: cover;
-    }
-    .card {
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-      padding: 16px 16px 12px;
-      margin-bottom: 24px;
-      transition: box-shadow 0.2s;
-    }
-    /* header */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .logo {
-      font-weight: 700;
-      font-size: 1.6rem;
-      letter-spacing: -0.5px;
-      background: linear-gradient(145deg, #0b2b5c, #1b4a8b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .viccoins-badge {
-      background: #facc15;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 8px rgba(250,204,21,0.3);
-    }
-    .viccoins-badge i {
-      color: #92400e;
-    }
-    .add-coins-btn {
-      background: #1e293b;
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.15s;
-      margin-left: 8px;
-    }
-    .add-coins-btn:hover {
-      background: #0f172a;
-      transform: scale(0.96);
-    }
-    /* product card */
-    .product-img {
-      width: 100%;
-      aspect-ratio: 1/1;
-      border-radius: 20px;
-      background: #dce1e9;
-      margin-bottom: 12px;
-      transition: opacity 0.2s;
-    }
-    .product-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .product-shop {
-      color: #475569;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .product-shop i {
-      color: #3b82f6;
-    }
-    /* action row: share & earn + chat */
-    .action-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      margin: 12px 0 14px;
-      border-top: 1px solid #eef2f6;
-      padding-top: 14px;
-    }
-    .share-earn-btn {
-      background: #0b2b5c;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 12px rgba(11,43,92,0.25);
-      cursor: pointer;
-      transition: 0.15s;
-      flex: 1 1 auto;
-    }
-    .share-earn-btn i {
-      font-size: 1.1rem;
-    }
-    .share-earn-btn:active {
-      transform: scale(0.94);
-    }
-    .chat-btn {
-      background: #eef2f6;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 60px;
-      font-weight: 600;
-      color: #1e293b;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: 0.15s;
-      flex: 1 1 auto;
-    }
-    .chat-btn i {
-      color: #2563eb;
-    }
-    .chat-btn:active {
-      background: #dce1e9;
-    }
-    /* like & comment section */
-    .interaction-bar {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 6px 0 4px;
-      border-top: 1px solid #eef2f6;
-      margin-top: 8px;
-      padding-top: 12px;
-    }
-    .like-area {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
-    .like-area i {
-      font-size: 1.7rem;
-      cursor: pointer;
-      transition: 0.1s;
-      color: #94a3b8;
-    }
-    .like-area i.liked {
-      color: #ef4444;
-    }
-    .like-area i:active {
-      transform: scale(1.3);
-    }
-    .comment-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .comment-input-wrap {
-      display: flex;
-      align-items: center;
-      background: #f1f5f9;
-      border-radius: 60px;
-      padding: 4px 8px 4px 16px;
-      transition: 0.15s;
-    }
-    .comment-input-wrap:focus-within {
-      background: #e9edf2;
-      box-shadow: 0 0 0 2px #3b82f6;
-    }
-    .comment-input-wrap input {
-      border: none;
-      background: transparent;
-      padding: 10px 0;
-      flex: 1;
-      font-size: 0.95rem;
-      outline: none;
-      min-width: 60px;
-    }
-    .comment-input-wrap button {
-      background: #2563eb;
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: 0.12s;
-      white-space: nowrap;
-    }
-    .comment-input-wrap button:active {
-      transform: scale(0.92);
-    }
-    /* comment list */
-    .comment-list {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 180px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .comment-item {
-      background: #f8fafc;
-      border-radius: 20px;
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      display: flex;
-      flex-direction: column;
-      animation: fadeIn 0.2s ease;
-    }
-    .comment-user {
-      font-weight: 700;
-      color: #0b2b5c;
-      font-size: 0.8rem;
-      letter-spacing: 0.3px;
-      margin-bottom: 2px;
-    }
-    .comment-text {
-      word-break: break-word;
-      line-height: 1.4;
-    }
-    .comment-time {
-      font-size: 0.65rem;
-      color: #94a3b8;
-      align-self: flex-end;
-      margin-top: 2px;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0.4; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    /* chat inbox placeholder (just for demo) */
-    .inbox-banner {
-      background: #dbeafe;
-      border-radius: 60px;
-      padding: 12px 18px;
-      text-align: center;
-      font-weight: 500;
-      color: #1e3a8a;
-      margin: 12px 0 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .inbox-banner i {
-      font-size: 1.2rem;
-    }
-    /* hidden state for share button */
-    .hidden-share {
-      display: none !important;
-    }
-    /* responsive */
-    @media (max-width: 480px) {
-      .action-row { flex-direction: column; }
-      .share-earn-btn, .chat-btn { width: 100%; justify-content: center; }
-    }
-    /* scroll */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 12px; }
-    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 12px; }
-  </style>
-</head>
-<body>
-  <!-- HEADER with VICCOINS + ADD MORE -->
-  <div class="header">
-    <span class="logo"><i class="fas fa-store-alt" style="color: #1e3a8a; margin-right: 4px;"></i>VicMarket</span>
-    <div class="viccoins-badge">
-      <i class="fas fa-coins"></i> <span id="viccoinsDisplay">48</span>
-      <button class="add-coins-btn" id="addCoinsBtn"><i class="fas fa-plus-circle"></i> Add</button>
-    </div>
-  </div>
+IS THIS CORRECT    // server.js - VicPrime Market Backend
+// Deploy on Render/Railway/Cyclic with MongoDB Atlas
 
-  <!-- MAIN PRODUCT CARD -->
-  <div class="card" id="productCard">
-    <!-- product image (fast loading with inline placeholder) -->
-    <img class="product-img" src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=600&h=600&fit=crop&crop=center&q=80&auto=format" alt="sneakers" loading="lazy" />
+const express = require('express');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+require('dotenv').config();
+
+const app = express();
+
+// ==================== CONFIGURATION ====================
+const PORT = process.env.PORT || 5000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vicprime';
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_in_production';
+const JWT_EXPIRE = process.env.JWT_EXPIRE || '30d';
+
+// ==================== MIDDLEWARE ====================
+app.use(helmet());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || '*',
+    credentials: true
+}));
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+});
+app.use('/api', limiter);
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
+
+// ==================== MODELS ====================
+
+// User Model
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please provide a name'],
+        trim: true,
+        maxlength: [50, 'Name cannot exceed 50 characters']
+    },
+    email: {
+        type: String,
+        required: [true, 'Please provide an email'],
+        unique: true,
+        lowercase: true,
+        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
+    },
+    password: {
+        type: String,
+        required: [true, 'Please provide a password'],
+        minlength: 6,
+        select: false
+    },
+    role: {
+        type: String,
+        enum: ['customer', 'business'],
+        default: 'customer'
+    },
+    phone: { type: String, trim: true },
+    whatsapp: { type: String, trim: true },
+    avatar: { type: String, default: 'default-avatar.png' },
+    isVerified: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+});
+
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+userSchema.methods.comparePassword = async function(candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.methods.getSignedJwtToken = function() {
+    return jwt.sign(
+        { id: this._id, role: this.role },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRE }
+    );
+};
+
+const User = mongoose.model('User', userSchema);
+
+// Business Model
+const businessSchema = new mongoose.Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    name: {
+        type: String,
+        required: [true, 'Please provide business name'],
+        trim: true,
+        maxlength: [100, 'Business name cannot exceed 100 characters']
+    },
+    slug: { type: String, unique: true },
+    description: {
+        type: String,
+        required: [true, 'Please provide business description'],
+        maxlength: [1000, 'Description cannot exceed 1000 characters']
+    },
+    category: {
+        type: String,
+        required: [true, 'Please provide category'],
+        enum: ['Electronics', 'Fashion', 'Food & Beverage', 'Services', 'Home & Garden', 'Beauty & Health', 'Automotive', 'Education']
+    },
+    logo: { type: String, default: 'default-logo.png' },
+    coverImage: { type: String, default: 'default-cover.png' },
+    location: {
+        type: String,
+        required: [true, 'Please provide location']
+    },
+    email: {
+        type: String,
+        required: [true, 'Please provide business email']
+    },
+    phone: {
+        type: String,
+        required: [true, 'Please provide phone']
+    },
+    whatsapp: {
+        type: String,
+        required: [true, 'WhatsApp number is required for payments']
+    },
+    website: String,
+    socialLinks: {
+        facebook: String,
+        instagram: String,
+        twitter: String,
+        linkedin: String
+    },
+    theme: {
+        type: String,
+        enum: ['dark', 'metallic', 'blue', 'silver'],
+        default: 'dark'
+    },
+    verified: { type: Boolean, default: false },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    reviewCount: { type: Number, default: 0 },
+    stats: {
+        totalOrders: { type: Number, default: 0 },
+        totalRevenue: { type: Number, default: 0 },
+        views: { type: Number, default: 0 }
+    },
+    status: {
+        type: String,
+        enum: ['active', 'inactive', 'suspended'],
+        default: 'active'
+    },
+    createdAt: { type: Date, default: Date.now }
+});
+
+businessSchema.pre('save', function(next) {
+    if (this.isModified('name')) {
+        this.slug = this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
+    }
+    next();
+});
+
+const Business = mongoose.model('Business', businessSchema);
+
+// Product Model
+const productSchema = new mongoose.Schema({
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true
+    },
+    name: {
+        type: String,
+        required: [true, 'Please provide product name'],
+        trim: true,
+        maxlength: [200, 'Product name cannot exceed 200 characters']
+    },
+    description: {
+        type: String,
+        required: [true, 'Please provide product description'],
+        maxlength: [2000, 'Description cannot exceed 2000 characters']
+    },
+    price: {
+        type: Number,
+        required: [true, 'Please provide price'],
+        min: [0, 'Price cannot be negative']
+    },
+    category: {
+        type: String,
+        required: [true, 'Please provide category']
+    },
+    images: [{ type: String }],
+    stock: {
+        type: Number,
+        required: [true, 'Please provide stock'],
+        min: [0, 'Stock cannot be negative'],
+        default: 0
+    },
+    sku: { type: String, unique: true },
+    featured: { type: Boolean, default: false },
+    available: { type: Boolean, default: true },
+    createdAt: { type: Date, default: Date.now }
+});
+
+productSchema.pre('save', function(next) {
+    if (!this.sku) {
+        this.sku = 'SKU-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    }
+    next();
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+// Order Model
+const orderSchema = new mongoose.Schema({
+    orderNumber: { type: String, unique: true, required: true },
+    customer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    items: [{
+        product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+            required: true
+        },
+        business: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Business',
+            required: true
+        },
+        name: String,
+        price: Number,
+        quantity: { type: Number, required: true, min: 1 },
+        image: String
+    }],
+    totalAmount: { type: Number, required: true },
+    customerInfo: {
+        name: String,
+        email: String,
+        phone: String,
+        address: String,
+        notes: String
+    },
+    status: {
+        type: String,
+        enum: ['pending_payment', 'paid', 'processing', 'completed', 'cancelled'],
+        default: 'pending_payment'
+    },
+    paymentMethod: {
+        type: String,
+        enum: ['whatsapp', 'phone_call'],
+        default: 'whatsapp'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'completed', 'failed'],
+        default: 'pending'
+    },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+});
+
+orderSchema.pre('save', function(next) {
+    if (!this.orderNumber) {
+        this.orderNumber = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    }
+    this.updatedAt = Date.now();
+    next();
+});
+
+const Order = mongoose.model('Order', orderSchema);
+
+// Review Model
+const reviewSchema = new mongoose.Schema({
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+    },
+    customer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: {
+        type: String,
+        required: [true, 'Please provide a review comment'],
+        maxlength: [1000, 'Comment cannot exceed 1000 characters']
+    },
+    verifiedPurchase: { type: Boolean, default: false },
+    businessResponse: {
+        comment: String,
+        respondedAt: Date
+    },
+    createdAt: { type: Date, default: Date.now }
+});
+
+reviewSchema.index({ business: 1, customer: 1, product: 1 }, { unique: true });
+
+const Review = mongoose.model('Review', reviewSchema);
+
+// ==================== AUTH MIDDLEWARE ====================
+const protect = async (req, res, next) => {
+    let token;
     
-    <div class="product-title">Air Max Pulse</div>
-    <div class="product-shop">
-      <i class="fas fa-store"></i> Shop: <strong>Vic's Kicks</strong> 
-      <span style="margin-left: auto; background: #eef2f6; padding: 2px 12px; border-radius: 30px; font-size: 0.75rem;">⭐ 4.8</span>
-    </div>
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+    
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: 'Not authorized to access this route'
+        });
+    }
+    
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = await User.findById(decoded.id);
+        
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+        
+        next();
+    } catch (err) {
+        return res.status(401).json({
+            success: false,
+            message: 'Not authorized to access this route'
+        });
+    }
+};
 
-    <!-- ACTION ROW: share & earn (conditional) + chat (replaces whatsapp) -->
-    <div class="action-row">
-      <!-- share & earn button – hidden by default, shown only when viccoins > 0 -->
-      <button class="share-earn-btn" id="shareEarnBtn">
-        <i class="fas fa-share-alt"></i> Share & Earn
-      </button>
-      <!-- chat with shop owner -> leads to inbox (simulated) -->
-      <button class="chat-btn" id="chatBtn">
-        <i class="fas fa-comment-dots"></i> Chat with Shop
-      </button>
-    </div>
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                message: `User role ${req.user.role} is not authorized`
+            });
+        }
+        next();
+    };
+};
 
-    <!-- LIKE & COMMENT (increased size / pace) -->
-    <div class="interaction-bar">
-      <div class="like-area">
-        <i class="fas fa-heart" id="likeIcon"></i>
-        <span id="likeCount">142</span>
-      </div>
-      <div class="comment-area">
-        <div class="comment-input-wrap">
-          <input type="text" id="commentInput" placeholder="Write a comment…" />
-          <button id="postCommentBtn"><i class="fas fa-paper-plane"></i> Post</button>
-        </div>
-        <!-- comment list with username (no name prompt) -->
-        <div class="comment-list" id="commentList">
-          <div class="comment-item"><span class="comment-user">@alex_vic</span><span class="comment-text">🔥 clean pair!</span><span class="comment-time">2m</span></div>
-          <div class="comment-item"><span class="comment-user">@miamistyle</span><span class="comment-text">I need these in my collection</span><span class="comment-time">15m</span></div>
-          <div class="comment-item"><span class="comment-user">@sneakerhead99</span><span class="comment-text">how's the comfort?</span><span class="comment-time">1h</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+// ==================== ERROR HANDLER ====================
+const errorHandler = (err, req, res, next) => {
+    let error = { ...err };
+    error.message = err.message;
+    
+    console.error(err);
+    
+    if (err.name === 'CastError') {
+        error = { message: 'Resource not found', statusCode: 404 };
+    }
+    
+    if (err.code === 11000) {
+        error = { message: 'Duplicate field value entered', statusCode: 400 };
+    }
+    
+    if (err.name === 'ValidationError') {
+        error = { message: Object.values(err.errors).map(val => val.message).join(', '), statusCode: 400 };
+    }
+    
+    res.status(error.statusCode || 500).json({
+        success: false,
+        message: error.message || 'Server Error'
+    });
+};
 
-  <!-- CHAT INBOX preview (replaces whatsapp) -->
-  <div class="inbox-banner" id="inboxBanner">
-    <i class="fas fa-inbox"></i> Inbox · Chat with Vic's Kicks
-  </div>
+// ==================== AUTH ROUTES ====================
+app.post('/api/auth/register', async (req, res) => {
+    try {
+        const { name, email, password, role, phone, whatsapp } = req.body;
+        
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'Email already registered' });
+        }
+        
+        const user = await User.create({
+            name,
+            email,
+            password,
+            role: role || 'customer',
+            phone,
+            whatsapp
+        });
+        
+        const token = user.getSignedJwtToken();
+        
+        res.status(201).json({
+            success: true,
+            token,
+            user: { id: user._id, name: user.name, email: user.email, role: user.role }
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-  <p style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 12px;">
-    <i class="fas fa-bolt" style="color: #eab308;"></i> fast loading · share & earn
-  </p>
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: 'Please provide email and password' });
+        }
+        
+        const user = await User.findOne({ email }).select('+password');
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+        
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+        
+        const token = user.getSignedJwtToken();
+        
+        res.json({
+            success: true,
+            token,
+            user: { id: user._id, name: user.name, email: user.email, role: user.role }
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-  <script>
-    (function() {
-      "use strict";
+app.get('/api/auth/me', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        res.json({ success: true, user });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // ---------- STATE ----------
-      let viccoins = 48;                 // shop owner coins
-      let likes = 142;
-      let isLiked = false;
-      let comments = [
-        { user: '@alex_vic', text: '🔥 clean pair!', time: '2m' },
-        { user: '@miamistyle', text: 'I need these in my collection', time: '15m' },
-        { user: '@sneakerhead99', text: 'how\'s the comfort?', time: '1h' }
-      ];
+// ==================== BUSINESS ROUTES ====================
+app.post('/api/businesses', protect, authorize('business'), async (req, res) => {
+    try {
+        req.body.owner = req.user.id;
+        
+        const existingBusiness = await Business.findOne({ owner: req.user.id });
+        if (existingBusiness) {
+            return res.status(400).json({ success: false, message: 'You already have a business' });
+        }
+        
+        const business = await Business.create(req.body);
+        res.status(201).json({ success: true, business });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // DOM refs
-      const viccoinsSpan = document.getElementById('viccoinsDisplay');
-      const shareBtn = document.getElementById('shareEarnBtn');
-      const likeIcon = document.getElementById('likeIcon');
-      const likeCountSpan = document.getElementById('likeCount');
-      const commentInput = document.getElementById('commentInput');
-      const postBtn = document.getElementById('postCommentBtn');
-      const commentList = document.getElementById('commentList');
-      const addCoinsBtn = document.getElementById('addCoinsBtn');
-      const chatBtn = document.getElementById('chatBtn');
-      const inboxBanner = document.getElementById('inboxBanner');
+app.get('/api/businesses', async (req, res) => {
+    try {
+        const { category, search, sort } = req.query;
+        let query = {};
+        
+        if (category) query.category = category;
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ];
+        }
+        
+        let sortOption = {};
+        if (sort === 'rating') sortOption = { rating: -1 };
+        else if (sort === 'reviews') sortOption = { reviewCount: -1 };
+        else sortOption = { createdAt: -1 };
+        
+        const businesses = await Business.find(query).sort(sortOption);
+        res.json({ success: true, count: businesses.length, businesses });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // ---------- RENDER SHARE BUTTON (based on coins) ----------
-      function updateShareButton() {
-        if (viccoins > 0) {
-          shareBtn.classList.remove('hidden-share');
+app.get('/api/businesses/:id', async (req, res) => {
+    try {
+        const business = await Business.findById(req.params.id);
+        if (!business) {
+            return res.status(404).json({ success: false, message: 'Business not found' });
+        }
+        
+        business.stats.views += 1;
+        await business.save();
+        
+        res.json({ success: true, business });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.put('/api/businesses/:id', protect, authorize('business', 'admin'), async (req, res) => {
+    try {
+        let business = await Business.findById(req.params.id);
+        if (!business) {
+            return res.status(404).json({ success: false, message: 'Business not found' });
+        }
+        
+        if (business.owner.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        business = await Business.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        
+        res.json({ success: true, business });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.delete('/api/businesses/:id', protect, authorize('business', 'admin'), async (req, res) => {
+    try {
+        const business = await Business.findById(req.params.id);
+        if (!business) {
+            return res.status(404).json({ success: false, message: 'Business not found' });
+        }
+        
+        if (business.owner.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        await business.deleteOne();
+        res.json({ success: true, message: 'Business deleted' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ==================== PRODUCT ROUTES ====================
+app.post('/api/products', protect, authorize('business'), async (req, res) => {
+    try {
+        const business = await Business.findOne({ owner: req.user.id });
+        if (!business) {
+            return res.status(404).json({ success: false, message: 'Business not found' });
+        }
+        
+        req.body.business = business._id;
+        const product = await Product.create(req.body);
+        res.status(201).json({ success: true, product });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.get('/api/products', async (req, res) => {
+    try {
+        const { business, category, search, minPrice, maxPrice } = req.query;
+        let query = {};
+        
+        if (business) query.business = business;
+        if (category) query.category = category;
+        if (search) query.name = { $regex: search, $options: 'i' };
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+        
+        const products = await Product.find(query).populate('business', 'name whatsapp email phone');
+        res.json({ success: true, count: products.length, products });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.get('/api/products/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id).populate('business', 'name whatsapp email phone');
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        res.json({ success: true, product });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.put('/api/products/:id', protect, authorize('business'), async (req, res) => {
+    try {
+        let product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        
+        const business = await Business.findOne({ owner: req.user.id });
+        if (!business || product.business.toString() !== business._id.toString()) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        
+        res.json({ success: true, product });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.delete('/api/products/:id', protect, authorize('business'), async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        
+        const business = await Business.findOne({ owner: req.user.id });
+        if (!business || product.business.toString() !== business._id.toString()) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        await product.deleteOne();
+        res.json({ success: true, message: 'Product deleted' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ==================== ORDER ROUTES ====================
+app.post('/api/orders', protect, authorize('customer'), async (req, res) => {
+    try {
+        const { items, customerInfo } = req.body;
+        
+        if (!items || items.length === 0) {
+            return res.status(400).json({ success: false, message: 'No items in order' });
+        }
+        
+        let totalAmount = 0;
+        const orderItems = [];
+        
+        for (const item of items) {
+            const product = await Product.findById(item.product);
+            if (!product) {
+                return res.status(404).json({ success: false, message: `Product ${item.product} not found` });
+            }
+            
+            if (product.stock < item.quantity) {
+                return res.status(400).json({ success: false, message: `Insufficient stock for ${product.name}` });
+            }
+            
+            orderItems.push({
+                product: product._id,
+                business: product.business,
+                name: product.name,
+                price: product.price,
+                quantity: item.quantity,
+                image: product.images[0] || ''
+            });
+            
+            totalAmount += product.price * item.quantity;
+            
+            product.stock -= item.quantity;
+            await product.save();
+        }
+        
+        const order = await Order.create({
+            customer: req.user.id,
+            items: orderItems,
+            totalAmount,
+            customerInfo
+        });
+        
+        res.status(201).json({ success: true, order });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.get('/api/orders', protect, async (req, res) => {
+    try {
+        let orders;
+        if (req.user.role === 'business') {
+            const business = await Business.findOne({ owner: req.user.id });
+            if (!business) {
+                return res.status(404).json({ success: false, message: 'Business not found' });
+            }
+            orders = await Order.find({ 'items.business': business._id }).populate('customer', 'name email');
         } else {
-          shareBtn.classList.add('hidden-share');
+            orders = await Order.find({ customer: req.user.id }).populate('items.product');
         }
-        viccoinsSpan.textContent = viccoins;
-      }
+        
+        res.json({ success: true, count: orders.length, orders });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // ---------- RENDER COMMENTS ----------
-      function renderComments() {
-        commentList.innerHTML = '';
-        comments.forEach(c => {
-          const item = document.createElement('div');
-          item.className = 'comment-item';
-          item.innerHTML = `
-            <span class="comment-user">${c.user}</span>
-            <span class="comment-text">${c.text}</span>
-            <span class="comment-time">${c.time}</span>
-          `;
-          commentList.appendChild(item);
-        });
-        // auto scroll to latest
-        commentList.scrollTop = commentList.scrollHeight;
-      }
-
-      // ---------- ADD COMMENT (no name prompt, uses predefined user) ----------
-      function addComment(text) {
-        if (!text.trim()) return;
-        // username fixed: "vic_community" + random suffix for demo
-        const user = '@vic_community' + Math.floor(Math.random() * 100);
-        const now = new Date();
-        const timeStr = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-        comments.push({ user, text: text.trim(), time: timeStr });
-        renderComments();
-        commentInput.value = '';
-      }
-
-      // ---------- LIKE toggling (bigger size + pace) ----------
-      function toggleLike() {
-        isLiked = !isLiked;
-        likes = isLiked ? likes + 1 : likes - 1;
-        likeCountSpan.textContent = likes;
-        likeIcon.classList.toggle('liked', isLiked);
-        // haptic-like feedback
-        likeIcon.style.transform = 'scale(1.5)';
-        setTimeout(() => { likeIcon.style.transform = 'scale(1)'; }, 180);
-      }
-
-      // ---------- SHARE & EARN action (only when coins > 0) ----------
-      function shareAndEarn() {
-        if (viccoins <= 0) {
-          alert('⚠️ You need VicCoins to share & earn! Add coins first.');
-          return;
+app.get('/api/orders/:id', protect, async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id).populate('customer', 'name email').populate('items.product');
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
         }
-        // simulate share & earn: +3 coins
-        viccoins += 3;
-        viccoinsSpan.textContent = viccoins;
-        updateShareButton();
-        alert('🎉 Shared! You earned +3 VicCoins! (total: ' + viccoins + ')');
-        // bonus: like pace increase (just for demo)
-        likes += 2;
-        likeCountSpan.textContent = likes;
-      }
+        
+        if (req.user.role === 'customer' && order.customer.toString() !== req.user.id) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        res.json({ success: true, order });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // ---------- ADD COINS (purchase) ----------
-      function addCoins() {
-        // simulate purchase: +20 coins
-        viccoins += 20;
-        viccoinsSpan.textContent = viccoins;
-        updateShareButton();
-        alert('✅ +20 VicCoins added! (total: ' + viccoins + ')');
-      }
+app.put('/api/orders/:id/status', protect, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const order = await Order.findById(req.params.id);
+        
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+        
+        if (req.user.role === 'business') {
+            const business = await Business.findOne({ owner: req.user.id });
+            const isBusinessOrder = order.items.some(item => item.business.toString() === business?._id.toString());
+            if (!isBusinessOrder) {
+                return res.status(403).json({ success: false, message: 'Not authorized' });
+            }
+        }
+        
+        order.status = status;
+        if (status === 'paid') {
+            order.paymentStatus = 'completed';
+        }
+        await order.save();
+        
+        res.json({ success: true, order });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // ---------- CHAT -> opens inbox (simulated) ----------
-      function openChatInbox() {
-        inboxBanner.style.background = '#bfdbfe';
-        inboxBanner.innerHTML = `<i class="fas fa-comment-dots"></i> Inbox · chatting with Vic's Kicks (opened)`;
-        inboxBanner.style.transition = '0.2s';
-        setTimeout(() => {
-          inboxBanner.style.background = '#dbeafe';
-          inboxBanner.innerHTML = `<i class="fas fa-inbox"></i> Inbox · Chat with Vic's Kicks`;
-        }, 2000);
-        // actual navigation would be: window.location.href = '/inbox';
-        alert('📩 Redirect to Chat Inbox (simulated)');
-      }
+// ==================== REVIEW ROUTES ====================
+app.post('/api/reviews', protect, authorize('customer'), async (req, res) => {
+    try {
+        req.body.customer = req.user.id;
+        
+        const review = await Review.create(req.body);
+        
+        const business = await Business.findById(req.body.business);
+        if (business) {
+            const reviews = await Review.find({ business: business._id });
+            const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+            business.rating = Math.round(avgRating * 10) / 10;
+            business.reviewCount = reviews.length;
+            await business.save();
+        }
+        
+        res.status(201).json({ success: true, review });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // ---------- INIT ----------
-      function init() {
-        // set initial like state
-        likeIcon.classList.remove('liked');
-        likeCountSpan.textContent = likes;
-        updateShareButton();
-        renderComments();
+app.get('/api/reviews', async (req, res) => {
+    try {
+        const { business, product } = req.query;
+        let query = {};
+        if (business) query.business = business;
+        if (product) query.product = product;
+        
+        const reviews = await Review.find(query).populate('customer', 'name');
+        res.json({ success: true, count: reviews.length, reviews });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-        // event listeners
-        likeIcon.addEventListener('click', toggleLike);
+app.put('/api/reviews/:id/respond', protect, authorize('business'), async (req, res) => {
+    try {
+        const review = await Review.findById(req.params.id);
+        if (!review) {
+            return res.status(404).json({ success: false, message: 'Review not found' });
+        }
+        
+        const business = await Business.findOne({ owner: req.user.id });
+        if (!business || review.business.toString() !== business._id.toString()) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        review.businessResponse = {
+            comment: req.body.comment,
+            respondedAt: Date.now()
+        };
+        await review.save();
+        
+        res.json({ success: true, review });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-        postBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          addComment(commentInput.value);
+// ==================== HEALTH CHECK ====================
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', message: 'VicPrime API running' });
+});
+
+// Root route
+app.get('/', (req, res) => {
+    res.json({
+        message: 'VicPrime Market API',
+        version: '1.0.0',
+        endpoints: {
+            auth: '/api/auth',
+            businesses: '/api/businesses',
+            products: '/api/products',
+            orders: '/api/orders',
+            reviews: '/api/reviews',
+            health: '/api/health'
+        }
+    });
+});
+
+// ==================== ERROR HANDLER ====================
+app.use(errorHandler);
+
+// ==================== CONNECT & START ====================
+mongoose.connect(MONGODB_URI)
+    .then(() => {
+        console.log('✅ MongoDB connected');
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`📡 API: http://localhost:${PORT}/api`);
+            console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
         });
+    })
+    .catch(err => {
+        console.error('❌ MongoDB connection error:', err.message);
+        process.exit(1);
+    });
+// ============================================================
+// ADD THESE MODELS TO YOUR EXISTING server.js
+// ============================================================
 
-        commentInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            addComment(commentInput.value);
-          }
+// VicCoin Campaign Model
+const campaignSchema = new mongoose.Schema({
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true,
+        unique: true
+    },
+    balanceCoins: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    totalCoinsPurchased: {
+        type: Number,
+        default: 0
+    },
+    totalCoinsUsed: {
+        type: Number,
+        default: 0
+    },
+    qualifiedReferrals: {
+        type: Number,
+        default: 0
+    },
+    pricePerCoin: {
+        type: Number,
+        default: 5 // FCFA
+    },
+    sharerAllocation: {
+        type: Number,
+        default: 3 // FCFA
+    },
+    platformAllocation: {
+        type: Number,
+        default: 2 // FCFA
+    },
+    status: {
+        type: String,
+        enum: ['active', 'inactive', 'exhausted'],
+        default: 'inactive'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const Campaign = mongoose.model('Campaign', campaignSchema);
+
+// Referral Model
+const referralSchema = new mongoose.Schema({
+    referralToken: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    sharer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true
+    },
+    campaign: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Campaign',
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['active', 'clicked', 'registered', 'qualified', 'expired', 'invalid'],
+        default: 'active'
+    },
+    clicks: {
+        type: Number,
+        default: 0
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    expiresAt: {
+        type: Date,
+        default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+    }
+});
+
+referralSchema.index({ referralToken: 1 });
+referralSchema.index({ sharer: 1 });
+referralSchema.index({ campaign: 1 });
+
+const Referral = mongoose.model('Referral', referralSchema);
+
+// Reward Model
+const rewardSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    referral: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Referral',
+        required: true
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true
+    },
+    coinsAwarded: {
+        type: Number,
+        default: 1
+    },
+    rewardValueFCFA: {
+        type: Number,
+        default: 3 // 3 FCFA sharer allocation
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    approvedAt: Date
+});
+
+rewardSchema.index({ user: 1 });
+rewardSchema.index({ referral: 1 }, { unique: true });
+rewardSchema.index({ status: 1 });
+
+const Reward = mongoose.model('Reward', rewardSchema);
+
+// Coin Purchase Model
+const coinPurchaseSchema = new mongoose.Schema({
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true
+    },
+    quantityCoins: {
+        type: Number,
+        required: true,
+        min: 50
+    },
+    amountFCFA: {
+        type: Number,
+        required: true
+    },
+    paymentMethod: {
+        type: String,
+        enum: ['mtn_momo', 'orange_money', 'bank', 'card'],
+        required: true
+    },
+    referenceNumber: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'verified', 'rejected'],
+        default: 'pending'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    verifiedAt: Date
+});
+
+coinPurchaseSchema.index({ business: 1 });
+coinPurchaseSchema.index({ status: 1 });
+
+const CoinPurchase = mongoose.model('CoinPurchase', coinPurchaseSchema);
+
+// Chat Conversation Model
+const conversationSchema = new mongoose.Schema({
+    participants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    business: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Business',
+        required: true
+    },
+    customer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+    },
+    lastMessage: {
+        type: String,
+        default: ''
+    },
+    lastMessageAt: {
+        type: Date,
+        default: Date.now
+    },
+    unreadCountCustomer: {
+        type: Number,
+        default: 0
+    },
+    unreadCountBusiness: {
+        type: Number,
+        default: 0
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+conversationSchema.index({ business: 1, customer: 1 }, { unique: true });
+conversationSchema.index({ customer: 1 });
+conversationSchema.index({ business: 1 });
+
+const Conversation = mongoose.model('Conversation', conversationSchema);
+
+// Chat Message Model
+const messageSchema = new mongoose.Schema({
+    conversation: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Conversation',
+        required: true
+    },
+    sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    content: {
+        type: String,
+        required: true,
+        maxlength: 2000
+    },
+    read: {
+        type: Boolean,
+        default: false
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+messageSchema.index({ conversation: 1, createdAt: -1 });
+
+const Message = mongoose.model('Message', messageSchema);
+
+// ============================================================
+// VICCOIN CAMPAIGN ROUTES
+// ============================================================
+
+// Get campaign for a business
+app.get('/api/viccoin/campaigns/:businessId', async (req, res) => {
+    try {
+        const campaign = await Campaign.findOne({ business: req.params.businessId });
+        if (!campaign) {
+            return res.json({
+                success: true,
+                campaign: null,
+                hasCampaign: false
+            });
+        }
+        res.json({
+            success: true,
+            campaign,
+            hasCampaign: campaign.balanceCoins > 0 && campaign.status === 'active'
         });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-        shareBtn.addEventListener('click', shareAndEarn);
+// Get campaign for current business owner
+app.get('/api/viccoin/campaigns', protect, async (req, res) => {
+    try {
+        const business = await Business.findOne({ owner: req.user.id });
+        if (!business) {
+            return res.status(404).json({ success: false, message: 'Business not found' });
+        }
+        const campaign = await Campaign.findOne({ business: business._id });
+        if (!campaign) {
+            return res.json({ success: true, campaign: null });
+        }
+        res.json({ success: true, campaign });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-        addCoinsBtn.addEventListener('click', addCoins);
+// Purchase VicCoins (manual payment)
+app.post('/api/viccoin/campaigns/purchase', protect, authorize('business'), async (req, res) => {
+    try {
+        const { quantityCoins, paymentMethod, referenceNumber } = req.body;
+        
+        if (!quantityCoins || quantityCoins < 50) {
+            return res.status(400).json({ success: false, message: 'Minimum purchase is 50 VicCoins' });
+        }
+        
+        const business = await Business.findOne({ owner: req.user.id });
+        if (!business) {
+            return res.status(404).json({ success: false, message: 'Business not found' });
+        }
+        
+        const amountFCFA = quantityCoins * 5; // 1 coin = 5 FCFA
+        
+        const purchase = await CoinPurchase.create({
+            business: business._id,
+            quantityCoins,
+            amountFCFA,
+            paymentMethod,
+            referenceNumber,
+            status: 'pending'
+        });
+        
+        res.status(201).json({
+            success: true,
+            message: 'Purchase request submitted. Pending verification.',
+            purchase
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-        chatBtn.addEventListener('click', openChatInbox);
+// ============================================================
+// REFERRAL ROUTES
+// ============================================================
 
-        // extra: if user clicks on inbox banner (simulate)
-        inboxBanner.addEventListener('click', openChatInbox);
-      }
+// Generate referral link
+app.post('/api/viccoin/referrals', protect, async (req, res) => {
+    try {
+        const { productId } = req.body;
+        
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        
+        const campaign = await Campaign.findOne({ 
+            business: product.business,
+            balanceCoins: { $gt: 0 },
+            status: 'active'
+        });
+        
+        if (!campaign) {
+            return res.status(400).json({ success: false, message: 'Campaign not available for this product' });
+        }
+        
+        // Generate secure random referral token
+        const referralToken = crypto.randomBytes(16).toString('hex');
+        
+        const referral = await Referral.create({
+            referralToken,
+            sharer: req.user.id,
+            product: product._id,
+            business: product.business,
+            campaign: campaign._id,
+            status: 'active'
+        });
+        
+        res.status(201).json({
+            success: true,
+            referralToken,
+            referralId: referral._id,
+            productId: product._id,
+            businessId: product.business
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
-      // start
-      init();
-    })();
-  </script>
-</body>
-</html>
+// Track referral click
+app.post('/api/viccoin/referrals/:token/click', async (req, res) => {
+    try {
+        const referral = await Referral.findOne({ referralToken: req.params.token });
+        if (!referral) {
+            return res.status(404).json({ success: false, message: 'Referral not found' });
+        }
+        
+        if (referral.status === 'expired' || referral.expiresAt < new Date()) {
+            referral.status = 'expired';
+            await referral.save();
+            return res.status(400).json({ success: false, message: 'Referral expired' });
+        }
+        
+        referral.clicks += 1;
+        referral.status = 'clicked';
+        await referral.save();
+        
+        res.json({ success: true, productId: referral.product, businessId: referral.business });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Qualify referral after registration
+app.post('/api/viccoin/rewards/qualify', async (req, res) => {
+    try {
+        const { referralToken, newUserId } = req.body;
+        
+        const referral = await Referral.findOne({ referralToken });
+        if (!referral) {
+            return res.status(404).json({ success: false, message: 'Referral not found' });
+        }
+        
+        // Prevent self-referral
+        if (referral.sharer.toString() === newUserId) {
+            return res.status(400).json({ success: false, message: 'Self-referral not allowed' });
+        }
+        
+        // Check if referral already qualified
+        const existingReward = await Reward.findOne({ referral: referral._id });
+        if (existingReward) {
+            return res.status(400).json({ success: false, message: 'Referral already qualified' });
+        }
+        
+        // Check campaign has coins
+        const campaign = await Campaign.findById(referral.campaign);
+        if (!campaign || campaign.balanceCoins < 1) {
+            referral.status = 'expired';
+            await referral.save();
+            return res.status(400).json({ success: false, message: 'Campaign exhausted' });
+        }
+        
+        // Deduct coin from campaign
+        campaign.balanceCoins -= 1;
+        campaign.totalCoinsUsed += 1;
+        campaign.qualifiedReferrals += 1;
+        if (campaign.balanceCoins === 0) {
+            campaign.status = 'exhausted';
+        }
+        await campaign.save();
+        
+        // Create reward
+        const reward = await Reward.create({
+            user: referral.sharer,
+            referral: referral._id,
+            product: referral.product,
+            business: referral.business,
+            coinsAwarded: 1,
+            rewardValueFCFA: 3,
+            status: 'pending'
+        });
+        
+        referral.status = 'qualified';
+        await referral.save();
+        
+        res.status(201).json({
+            success: true,
+            message: 'Referral qualified! Reward pending.',
+            reward
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get user rewards
+app.get('/api/viccoin/rewards/my', protect, async (req, res) => {
+    try {
+        const rewards = await Reward.find({ user: req.user.id })
+            .populate('product', 'name')
+            .populate('business', 'name')
+            .sort({ createdAt: -1 });
+        
+        const availableCoins = rewards.filter(r => r.status === 'approved').length;
+        const pendingCoins = rewards.filter(r => r.status === 'pending').length;
+        const totalEarned = rewards.length;
+        
+        res.json({
+            success: true,
+            availableCoins,
+            pendingCoins,
+            totalEarned,
+            rewards
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// CHAT ROUTES
+// ============================================================
+
+// Get user conversations
+app.get('/api/chat/conversations', protect, async (req, res) => {
+    try {
+        const conversations = await Conversation.find({
+            $or: [
+                { customer: req.user.id },
+                { business: { $in: await Business.find({ owner: req.user.id }).distinct('_id') } }
+            ]
+        })
+        .populate('business', 'name logo')
+        .populate('customer', 'name avatar')
+        .populate('product', 'name price images')
+        .sort({ lastMessageAt: -1 });
+        
+        res.json({ success: true, conversations });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Create or get conversation
+app.post('/api/chat/conversations', protect, async (req, res) => {
+    try {
+        const { businessId, productId } = req.body;
+        
+        let conversation = await Conversation.findOne({
+            business: businessId,
+            customer: req.user.id,
+            product: productId || null
+        });
+        
+        if (!conversation) {
+            conversation = await Conversation.create({
+                business: businessId,
+                customer: req.user.id,
+                product: productId || null,
+                participants: [req.user.id]
+            });
+        }
+        
+        res.status(201).json({ success: true, conversation });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get messages for a conversation
+app.get('/api/chat/conversations/:id/messages', protect, async (req, res) => {
+    try {
+        const conversation = await Conversation.findById(req.params.id);
+        if (!conversation) {
+            return res.status(404).json({ success: false, message: 'Conversation not found' });
+        }
+        
+        // Check authorization
+        const isCustomer = conversation.customer.toString() === req.user.id;
+        const business = await Business.findById(conversation.business);
+        const isOwner = business && business.owner.toString() === req.user.id;
+        
+        if (!isCustomer && !isOwner) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        const messages = await Message.find({ conversation: conversation._id })
+            .populate('sender', 'name')
+            .sort({ createdAt: 1 });
+        
+        res.json({ success: true, messages });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Send message
+app.post('/api/chat/conversations/:id/messages', protect, async (req, res) => {
+    try {
+        const { content } = req.body;
+        
+        if (!content || content.trim().length === 0) {
+            return res.status(400).json({ success: false, message: 'Message cannot be empty' });
+        }
+        
+        const conversation = await Conversation.findById(req.params.id);
+        if (!conversation) {
+            return res.status(404).json({ success: false, message: 'Conversation not found' });
+        }
+        
+        // Check authorization
+        const isCustomer = conversation.customer.toString() === req.user.id;
+        const business = await Business.findById(conversation.business);
+        const isOwner = business && business.owner.toString() === req.user.id;
+        
+        if (!isCustomer && !isOwner) {
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+        }
+        
+        const message = await Message.create({
+            conversation: conversation._id,
+            sender: req.user.id,
+            content: content.trim()
+        });
+        
+        conversation.lastMessage = content.trim().substring(0, 100);
+        conversation.lastMessageAt = new Date();
+        await conversation.save();
+        
+        res.status(201).json({ success: true, message });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ============================================================
+// ADMIN ROUTES (for verifying coin purchases)
+// ============================================================
+
+// Verify coin purchase (admin only - add proper admin check)
+app.put('/api/viccoin/purchases/:id/verify', protect, async (req, res) => {
+    try {
+        // In production, check if user is admin
+        const purchase = await CoinPurchase.findById(req.params.id);
+        if (!purchase) {
+            return res.status(404).json({ success: false, message: 'Purchase not found' });
+        }
+        
+        purchase.status = 'verified';
+        purchase.verifiedAt = new Date();
+        await purchase.save();
+        
+        // Update campaign balance
+        let campaign = await Campaign.findOne({ business: purchase.business });
+        if (!campaign) {
+            campaign = await Campaign.create({
+                business: purchase.business,
+                balanceCoins: 0,
+                totalCoinsPurchased: 0,
+                status: 'active'
+            });
+        }
+        
+        campaign.balanceCoins += purchase.quantityCoins;
+        campaign.totalCoinsPurchased += purchase.quantityCoins;
+        campaign.status = 'active';
+        await campaign.save();
+        
+        res.json({ success: true, message: 'Purchase verified. Coins added to campaign.' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Approve reward (admin)
+app.put('/api/viccoin/rewards/:id/approve', protect, async (req, res) => {
+    try {
+        const reward = await Reward.findById(req.params.id);
+        if (!reward) {
+            return res.status(404).json({ success: false, message: 'Reward not found' });
+        }
+        
+        reward.status = 'approved';
+        reward.approvedAt = new Date();
+        await reward.save();
+        
+        res.json({ success: true, message: 'Reward approved' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Reject reward (admin)
+app.put('/api/viccoin/rewards/:id/reject', protect, async (req, res) => {
+    try {
+        const reward = await Reward.findById(req.params.id);
+        if (!reward) {
+            return res.status(404).json({ success: false, message: 'Reward not found' });
+        }
+        
+        reward.status = 'rejected';
+        await reward.save();
+        
+        res.json({ success: true, message: 'Reward rejected' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
