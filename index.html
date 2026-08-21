@@ -1,1567 +1,998 @@
-IS THIS CORRECT    // server.js - VicPrime Market Backend
-// Deploy on Render/Railway/Cyclic with MongoDB Atlas
-
-const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-require('dotenv').config();
-
-const app = express();
-
-// ==================== CONFIGURATION ====================
-const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vicprime';
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_in_production';
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '30d';
-
-// ==================== MIDDLEWARE ====================
-app.use(helmet());
-app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
-    credentials: true
-}));
-
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100
-});
-app.use('/api', limiter);
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-}
-
-// ==================== MODELS ====================
-
-// User Model
-const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Please provide a name'],
-        trim: true,
-        maxlength: [50, 'Name cannot exceed 50 characters']
-    },
-    email: {
-        type: String,
-        required: [true, 'Please provide an email'],
-        unique: true,
-        lowercase: true,
-        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
-    },
-    password: {
-        type: String,
-        required: [true, 'Please provide a password'],
-        minlength: 6,
-        select: false
-    },
-    role: {
-        type: String,
-        enum: ['customer', 'business'],
-        default: 'customer'
-    },
-    phone: { type: String, trim: true },
-    whatsapp: { type: String, trim: true },
-    avatar: { type: String, default: 'default-avatar.png' },
-    isVerified: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now }
-});
-
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-});
-
-userSchema.methods.comparePassword = async function(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-};
-
-userSchema.methods.getSignedJwtToken = function() {
-    return jwt.sign(
-        { id: this._id, role: this.role },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRE }
-    );
-};
-
-const User = mongoose.model('User', userSchema);
-
-// Business Model
-const businessSchema = new mongoose.Schema({
-    owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    name: {
-        type: String,
-        required: [true, 'Please provide business name'],
-        trim: true,
-        maxlength: [100, 'Business name cannot exceed 100 characters']
-    },
-    slug: { type: String, unique: true },
-    description: {
-        type: String,
-        required: [true, 'Please provide business description'],
-        maxlength: [1000, 'Description cannot exceed 1000 characters']
-    },
-    category: {
-        type: String,
-        required: [true, 'Please provide category'],
-        enum: ['Electronics', 'Fashion', 'Food & Beverage', 'Services', 'Home & Garden', 'Beauty & Health', 'Automotive', 'Education']
-    },
-    logo: { type: String, default: 'default-logo.png' },
-    coverImage: { type: String, default: 'default-cover.png' },
-    location: {
-        type: String,
-        required: [true, 'Please provide location']
-    },
-    email: {
-        type: String,
-        required: [true, 'Please provide business email']
-    },
-    phone: {
-        type: String,
-        required: [true, 'Please provide phone']
-    },
-    whatsapp: {
-        type: String,
-        required: [true, 'WhatsApp number is required for payments']
-    },
-    website: String,
-    socialLinks: {
-        facebook: String,
-        instagram: String,
-        twitter: String,
-        linkedin: String
-    },
-    theme: {
-        type: String,
-        enum: ['dark', 'metallic', 'blue', 'silver'],
-        default: 'dark'
-    },
-    verified: { type: Boolean, default: false },
-    rating: { type: Number, default: 0, min: 0, max: 5 },
-    reviewCount: { type: Number, default: 0 },
-    stats: {
-        totalOrders: { type: Number, default: 0 },
-        totalRevenue: { type: Number, default: 0 },
-        views: { type: Number, default: 0 }
-    },
-    status: {
-        type: String,
-        enum: ['active', 'inactive', 'suspended'],
-        default: 'active'
-    },
-    createdAt: { type: Date, default: Date.now }
-});
-
-businessSchema.pre('save', function(next) {
-    if (this.isModified('name')) {
-        this.slug = this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
-    }
-    next();
-});
-
-const Business = mongoose.model('Business', businessSchema);
-
-// Product Model
-const productSchema = new mongoose.Schema({
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true
-    },
-    name: {
-        type: String,
-        required: [true, 'Please provide product name'],
-        trim: true,
-        maxlength: [200, 'Product name cannot exceed 200 characters']
-    },
-    description: {
-        type: String,
-        required: [true, 'Please provide product description'],
-        maxlength: [2000, 'Description cannot exceed 2000 characters']
-    },
-    price: {
-        type: Number,
-        required: [true, 'Please provide price'],
-        min: [0, 'Price cannot be negative']
-    },
-    category: {
-        type: String,
-        required: [true, 'Please provide category']
-    },
-    images: [{ type: String }],
-    stock: {
-        type: Number,
-        required: [true, 'Please provide stock'],
-        min: [0, 'Stock cannot be negative'],
-        default: 0
-    },
-    sku: { type: String, unique: true },
-    featured: { type: Boolean, default: false },
-    available: { type: Boolean, default: true },
-    createdAt: { type: Date, default: Date.now }
-});
-
-productSchema.pre('save', function(next) {
-    if (!this.sku) {
-        this.sku = 'SKU-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-    }
-    next();
-});
-
-const Product = mongoose.model('Product', productSchema);
-
-// Order Model
-const orderSchema = new mongoose.Schema({
-    orderNumber: { type: String, unique: true, required: true },
-    customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    items: [{
-        product: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
-            required: true
-        },
-        business: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Business',
-            required: true
-        },
-        name: String,
-        price: Number,
-        quantity: { type: Number, required: true, min: 1 },
-        image: String
-    }],
-    totalAmount: { type: Number, required: true },
-    customerInfo: {
-        name: String,
-        email: String,
-        phone: String,
-        address: String,
-        notes: String
-    },
-    status: {
-        type: String,
-        enum: ['pending_payment', 'paid', 'processing', 'completed', 'cancelled'],
-        default: 'pending_payment'
-    },
-    paymentMethod: {
-        type: String,
-        enum: ['whatsapp', 'phone_call'],
-        default: 'whatsapp'
-    },
-    paymentStatus: {
-        type: String,
-        enum: ['pending', 'completed', 'failed'],
-        default: 'pending'
-    },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-});
-
-orderSchema.pre('save', function(next) {
-    if (!this.orderNumber) {
-        this.orderNumber = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-    }
-    this.updatedAt = Date.now();
-    next();
-});
-
-const Order = mongoose.model('Order', orderSchema);
-
-// Review Model
-const reviewSchema = new mongoose.Schema({
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true
-    },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
-    },
-    customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    rating: { type: Number, required: true, min: 1, max: 5 },
-    comment: {
-        type: String,
-        required: [true, 'Please provide a review comment'],
-        maxlength: [1000, 'Comment cannot exceed 1000 characters']
-    },
-    verifiedPurchase: { type: Boolean, default: false },
-    businessResponse: {
-        comment: String,
-        respondedAt: Date
-    },
-    createdAt: { type: Date, default: Date.now }
-});
-
-reviewSchema.index({ business: 1, customer: 1, product: 1 }, { unique: true });
-
-const Review = mongoose.model('Review', reviewSchema);
-
-// ==================== AUTH MIDDLEWARE ====================
-const protect = async (req, res, next) => {
-    let token;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VicPrime Market - One Marketplace. Every Business.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --vic-black: #0A0E1A;
+            --vic-navy: #0F1525;
+            --vic-navy-light: #1A1F2E;
+            --vic-blue: #1E40AF;
+            --vic-blue-light: #2563EB;
+            --vic-blue-glow: #3B82F6;
+            --vic-silver: #C0C0C0;
+            --vic-silver-light: #E8E8E8;
+            --vic-gray: #A0AEC0;
+            --vic-white: #FFFFFF;
+            --vic-green: #10B981;
+            --vic-red: #EF4444;
+            --vic-yellow: #F59E0B;
+            --vic-whatsapp: #25D366;
+            --metallic-gradient: linear-gradient(135deg, #8B8B8B 0%, #C0C0C0 25%, #E8E8E8 50%, #C0C0C0 75%, #8B8B8B 100%);
+            --premium-dark: linear-gradient(135deg, #0F1525 0%, #0A0E1A 50%, #1A1F2E 100%);
+            --blue-gradient: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+            --whatsapp-gradient: linear-gradient(135deg, #128C7E 0%, #25D366 50%, #128C7E 100%);
+            --shadow-premium: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(30,64,175,0.3);
+            --shadow-blue-glow: 0 0 30px rgba(37,99,235,0.4);
+            --shadow-metallic: 0 10px 40px rgba(192,192,192,0.2);
+            --shadow-whatsapp: 0 0 30px rgba(37,211,102,0.4);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--vic-black); color: var(--vic-white); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
+        .bg-grid { position: fixed; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px); background-size:50px 50px; pointer-events:none; z-index:0; }
+        .bg-glow { position: fixed; top:-50%; left:-50%; width:200%; height:200%; background: radial-gradient(circle at center, rgba(30,64,175,0.1) 0%, transparent 50%); pointer-events:none; z-index:0; animation:glowPulse 8s ease-in-out infinite; }
+        @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:1} }
+        .header { position:sticky; top:0; z-index:1000; background:rgba(10,14,26,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(192,192,192,0.1); }
+        .header-container { max-width:1400px; margin:0 auto; padding:0 16px; height:60px; display:flex; align-items:center; justify-content:space-between; }
+        .logo { display:flex; align-items:center; gap:8px; cursor:pointer; }
+        .logo-icon { width:40px; height:40px; background:var(--metallic-gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--vic-black); font-size:18px; position:relative; overflow:hidden; }
+        .logo-icon::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.5) 50%,transparent 70%); animation:shimmer 3s infinite; }
+        @keyframes shimmer { 0%{transform:translateX(-100%) rotate(45deg)} 100%{transform:translateX(100%) rotate(45deg)} }
+        .logo-icon span { position:relative; z-index:1; }
+        .logo-text { font-size:20px; font-weight:800; background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .logo-badge { background:var(--blue-gradient); color:white; font-size:8px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; }
+        .nav-actions { display:flex; align-items:center; gap:8px; }
+        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
+        .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }
+        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
+        .btn { display:inline-block; padding:12px 22px; border-radius:50px; font-weight:600; text-decoration:none; transition:all .3s; cursor:pointer; border:none; font-size:13px; }
+        .btn-primary { background:var(--blue-gradient); color:white; box-shadow:var(--shadow-blue-glow); }
+        .btn-primary:hover { transform:translateY(-2px); }
+        .btn-secondary { background:transparent; color:var(--vic-silver); border:2px solid rgba(192,192,192,0.3); }
+        .btn-whatsapp { background:var(--whatsapp-gradient); color:white; }
+        .btn-danger { background:var(--vic-red); color:white; }
+        .btn-sm { padding:6px 12px; font-size:11px; }
+        .btn-xs { padding:4px 8px; font-size:10px; }
+        .hero { position:relative; padding:80px 16px; text-align:center; background:var(--premium-dark); overflow:hidden; }
+        .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(30,64,175,0.3) 0%, transparent 50%); }
+        .hero-content { position:relative; z-index:1; max-width:900px; margin:0 auto; }
+        .hero-badge { display:inline-block; background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.3); color:var(--vic-blue-glow); padding:6px 16px; border-radius:50px; font-size:12px; margin-bottom:16px; }
+        .hero h1 { font-size:36px; font-weight:900; margin-bottom:16px; }
+        .metallic-text { background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .blue-text { background:var(--blue-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .hero p { font-size:16px; color:var(--vic-gray); margin-bottom:24px; }
+        .hero-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+        .section { padding:40px 16px; position:relative; z-index:1; }
+        .section-header { max-width:1400px; margin:0 auto 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+        .section-title { font-size:28px; font-weight:800; }
+        .section-subtitle { font-size:13px; color:var(--vic-gray); margin-top:4px; }
+        .grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; }
+        .grid-products { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:16px; }
+        .card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:16px; overflow:hidden; cursor:pointer; transition:all .3s; }
+        .card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }
+        .card-cover { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); position:relative; overflow:hidden; }
+        .card-cover img { width:100%; height:100%; object-fit:cover; }
+        .card-cover .icon-large { font-size:48px; color:var(--vic-silver); position:relative; z-index:1; }
+        .card-body { padding:20px; }
+        .card-title { font-size:16px; font-weight:700; }
+        .card-subtitle { font-size:12px; color:var(--vic-blue-glow); }
+        .card-desc { font-size:12px; color:var(--vic-gray); line-height:1.5; }
+        .verified-badge { position:absolute; top:10px; left:10px; background:var(--blue-gradient); color:white; padding:3px 10px; border-radius:50px; font-size:10px; z-index:2; }
+        .rating-badge { position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.8); border-radius:50px; padding:3px 10px; font-size:11px; z-index:2; }
+        .product-card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:14px; overflow:hidden; transition:all .3s; }
+        .product-card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }
+        .product-image { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); overflow:hidden; position:relative; }
+        .product-image img { width:100%; height:100%; object-fit:cover; }
+        .product-body { padding:16px; }
+        .product-name { font-size:14px; font-weight:700; margin-bottom:4px; }
+        .product-desc { font-size:11px; color:var(--vic-gray); margin-bottom:8px; }
+        .product-price { font-size:18px; font-weight:800; margin-bottom:8px; }
+        .product-actions { display:flex; gap:4px; flex-wrap:wrap; }
+        .product-actions .btn { flex:1; min-width:50px; text-align:center; padding:6px 4px; font-size:9px; }
+        .payment-disclaimer { background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:12px; padding:16px; margin:16px 0; }
+        .payment-disclaimer-title { color:var(--vic-whatsapp); font-weight:700; font-size:13px; margin-bottom:6px; }
+        .payment-disclaimer-text { color:var(--vic-gray); font-size:12px; line-height:1.4; }
+        .whatsapp-float { position:fixed; bottom:20px; right:20px; z-index:999; width:50px; height:50px; background:var(--whatsapp-gradient); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--shadow-whatsapp); text-decoration:none; }
+        .whatsapp-float i { font-size:24px; color:white; }
+        .dashboard-container { max-width:1400px; margin:0 auto; padding:30px 16px; }
+        .dashboard-layout { display:grid; grid-template-columns:200px 1fr; gap:20px; }
+        .dashboard-sidebar { background:var(--vic-navy-light); border-radius:16px; padding:20px; position:sticky; top:80px; height:fit-content; }
+        .dashboard-nav { display:flex; flex-direction:column; gap:4px; }
+        .dashboard-nav-item { padding:8px 12px; border-radius:8px; cursor:pointer; color:var(--vic-gray); font-size:12px; display:flex; align-items:center; gap:8px; }
+        .dashboard-nav-item.active { background:var(--blue-gradient); color:white; }
+        .dashboard-content { background:var(--vic-navy-light); border-radius:16px; padding:24px; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:20px; }
+        .stat-card { background:rgba(15,21,37,0.8); border-radius:12px; padding:16px; }
+        .stat-value { font-size:20px; font-weight:800; }
+        .stat-label { font-size:11px; color:var(--vic-gray); }
+        .wizard-steps { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; justify-content:center; }
+        .wizard-step { display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:50px; background:var(--vic-navy-light); border:2px solid rgba(192,192,192,0.1); color:var(--vic-gray); font-size:11px; cursor:pointer; }
+        .wizard-step.active { background:var(--blue-gradient); color:white; }
+        .wizard-step.completed { background:rgba(16,185,129,0.1); border-color:var(--vic-green); color:var(--vic-green); }
+        .wizard-step-number { width:20px; height:20px; border-radius:50%; background:rgba(192,192,192,0.1); display:flex; align-items:center; justify-content:center; font-size:10px; }
+        .form-group { margin-bottom:12px; }
+        .form-label { font-size:12px; font-weight:600; margin-bottom:4px; color:var(--vic-silver); }
+        .form-input { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:8px; padding:10px 12px; color:white; font-size:13px; }
+        .form-select { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:8px; padding:10px 12px; color:white; font-size:13px; }
+        .form-textarea { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:8px; padding:10px 12px; color:white; font-size:13px; min-height:60px; }
+        .image-upload { border:2px dashed rgba(192,192,192,0.3); border-radius:10px; padding:20px; text-align:center; cursor:pointer; }
+        .toast-container { position:fixed; top:80px; right:10px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+        .toast { background:var(--vic-navy-light); border-radius:8px; padding:12px 16px; min-width:240px; font-size:12px; }
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9998; }
+        .modal { background:var(--vic-navy-light); border-radius:16px; padding:24px; max-width:500px; width:90%; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-premium); }
+        .cta-section { padding:60px 16px; text-align:center; background:var(--premium-dark); }
+        .cta-icon { font-size:48px; margin-bottom:16px; }
+        .cta-content h2 { font-size:28px; margin-bottom:12px; }
+        .cta-content p { font-size:14px; color:var(--vic-gray); margin-bottom:20px; }
+        .footer { background:var(--vic-navy); padding:40px 16px 24px; margin-top:auto; }
+        .footer-grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:24px; margin-bottom:24px; }
+        .footer-links h4 { font-size:14px; margin-bottom:12px; }
+        .footer-links li { margin-bottom:8px; }
+        .footer-links a { color:var(--vic-gray); font-size:12px; cursor:pointer; }
+        .footer-bottom { text-align:center; padding-top:20px; border-top:1px solid rgba(192,192,192,0.1); color:var(--vic-gray); font-size:11px; }
+        .review-section { margin-top:16px; border-top:1px solid rgba(192,192,192,0.1); padding-top:12px; }
+        .review-item { background:rgba(15,21,37,0.5); border-radius:8px; padding:10px; margin-bottom:8px; }
+        .review-author { font-weight:600; font-size:11px; }
+        .review-comment { color:var(--vic-gray); font-size:11px; }
+        .review-stars { color:#FFD700; font-size:10px; }
+        .review-date { color:var(--vic-gray); font-size:10px; }
+        .comment-section { margin-top:16px; }
+        .comment-item { background:rgba(15,21,37,0.5); border-radius:8px; padding:10px; margin-bottom:8px; }
+        .comment-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+        .comment-author { font-weight:600; font-size:11px; }
+        .comment-date { font-size:10px; color:var(--vic-gray); }
+        .comment-text { font-size:11px; color:var(--vic-gray); }
+        .comment-actions { display:flex; gap:8px; margin-top:4px; }
+        .like-btn { font-size:10px; cursor:pointer; color:var(--vic-gray); }
+        .like-btn.liked { color:var(--vic-red); }
+        .loading-skeleton { background: linear-gradient(90deg, #1a1f2e 25%, #2a2f3e 50%, #1a1f2e 75%); background-size:200% 100%; animation:skeleton 1.5s infinite; border-radius:8px; }
+        @keyframes skeleton { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .empty-state { text-align:center; padding:40px 16px; color:var(--vic-gray); }
+        .empty-state i { font-size:40px; margin-bottom:12px; color:var(--vic-blue-glow); }
+        .empty-state h3 { font-size:18px; margin-bottom:8px; }
+        .empty-state p { font-size:13px; margin-bottom:16px; }
+        #accountMenu { display:none; position:absolute; right:0; top:46px; background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; min-width:200px; box-shadow:var(--shadow-premium); z-index:1001; }
+        #accountMenu a { display:block; padding:8px 14px; color:var(--vic-silver); font-size:12px; text-decoration:none; cursor:pointer; }
+        #accountMenu a:hover { background:rgba(37,99,235,0.1); color:white; }
+        @media (max-width:768px) {
+            .hero h1 { font-size:32px; }
+            .section-title { font-size:24px; }
+            .grid { grid-template-columns:1fr; }
+            .grid-products { grid-template-columns:1fr; }
+            .footer-grid { grid-template-columns:1fr; }
+            .dashboard-layout { grid-template-columns:1fr; }
+            .dashboard-sidebar { position:static; }
+            .nav-actions { gap:4px; }
+        }
+        @media (min-width:768px) {
+            .hero h1 { font-size:48px; }
+            .section-title { font-size:32px; }
+            .section { padding:50px 24px; }
+            .grid { grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); }
+            .grid-products { grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); }
+        }
+        @media (min-width:1024px) {
+            .hero h1 { font-size:64px; }
+            .section-title { font-size:36px; }
+            .grid { grid-template-columns:repeat(auto-fill, minmax(350px,1fr)); }
+            .grid-products { grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="toast-container" id="toastContainer"></div>
     
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
+    <a href="https://wa.me/237675903626" target="_blank" class="whatsapp-float" title="Talk to Customer Service">
+        <i class="fab fa-whatsapp"></i>
+    </a>
     
-    if (!token) {
-        return res.status(401).json({
-            success: false,
-            message: 'Not authorized to access this route'
-        });
-    }
+    <header class="header">
+        <div class="header-container">
+            <div class="logo" onclick="showPage('home')">
+                <div class="logo-icon"><span>VP</span></div>
+                <div><span class="logo-text">VicPrime</span><span class="logo-badge">MARKET</span></div>
+            </div>
+            <div class="nav-actions">
+                <button class="icon-btn" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
+                <div style="position:relative;">
+                    <button class="icon-btn" id="userBtn" onclick="toggleAccountMenu()"><i class="fas fa-user"></i></button>
+                    <div id="accountMenu"></div>
+                </div>
+            </div>
+        </div>
+    </header>
     
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = await User.findById(decoded.id);
-        
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
-        
-        next();
-    } catch (err) {
-        return res.status(401).json({
-            success: false,
-            message: 'Not authorized to access this route'
-        });
-    }
-};
-
-const authorize = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({
-                success: false,
-                message: `User role ${req.user.role} is not authorized`
-            });
-        }
-        next();
-    };
-};
-
-// ==================== ERROR HANDLER ====================
-const errorHandler = (err, req, res, next) => {
-    let error = { ...err };
-    error.message = err.message;
+    <main style="flex:1;">
+        <div id="page-home">
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-badge">✦ PREMIUM MARKETPLACE ✦</div>
+                    <h1><span class="metallic-text">One Marketplace.</span><br><span class="blue-text">Every Business.</span></h1>
+                    <p>Discover thousands of businesses, shop unique products, and support entrepreneurs worldwide.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Marketplace</button>
+                        <button class="btn btn-secondary" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Your Store</button>
+                    </div>
+                </div>
+            </section>
+            <section class="section">
+                <div class="section-header"><div><h2 class="section-title">Browse by Category</h2><p class="section-subtitle">Find exactly what you're looking for</p></div></div>
+                <div class="grid" id="categoriesGrid"></div>
+            </section>
+            <section class="section" style="background:rgba(15,21,37,0.3);">
+                <div class="section-header"><div><h2 class="section-title">Featured Businesses</h2><p class="section-subtitle">Top-rated sellers on VicPrime</p></div></div>
+                <div id="featuredBusinesses" class="grid">
+                    <div class="loading-skeleton" style="height:160px;"></div>
+                    <div class="loading-skeleton" style="height:160px;"></div>
+                    <div class="loading-skeleton" style="height:160px;"></div>
+                </div>
+            </section>
+        </div>
+        <div id="page-marketplace" style="display:none;">
+            <section class="section">
+                <div class="section-header"><h1 class="section-title">Marketplace</h1><p class="section-subtitle" id="marketCount"></p></div>
+                <div style="max-width:1400px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <input type="text" class="form-input" style="flex:1;min-width:150px;" placeholder="Search businesses..." id="businessSearch" onkeyup="renderMarketplace()">
+                    <select class="form-select" style="width:auto;" id="businessCategory" onchange="renderMarketplace()"><option value="">All Categories</option></select>
+                </div>
+                <div id="allBusinesses" class="grid"><div class="loading-skeleton" style="height:160px;"></div></div>
+            </section>
+        </div>
+        <div id="page-products" style="display:none;">
+            <section class="section">
+                <div class="section-header"><h1 class="section-title">Products</h1><p class="section-subtitle" id="productCount"></p></div>
+                <div style="max-width:1400px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;">
+                    <input type="text" class="form-input" style="flex:1;min-width:150px;" placeholder="Search products..." id="productSearch" onkeyup="renderProducts()">
+                    <select class="form-select" style="width:auto;" id="productCategory" onchange="renderProducts()"><option value="">All Categories</option></select>
+                </div>
+                <div id="allProducts" class="grid-products"><div class="loading-skeleton" style="height:160px;"></div></div>
+            </section>
+        </div>
+        <div id="page-businessDetail" style="display:none;"><section class="section" id="businessDetailContent"></section></div>
+        <div id="page-productDetail" style="display:none;"><section class="section" id="productDetailContent"></section></div>
+        <div id="page-cart" style="display:none;"><section class="section"><div class="section-header"><h1 class="section-title">Shopping Cart</h1></div><div id="cartContent" style="max-width:800px;margin:0 auto;"></div></section></div>
+        <div id="page-orders" style="display:none;"><section class="section"><div class="section-header"><h1 class="section-title">My Orders</h1></div><div id="ordersContent" style="max-width:800px;margin:0 auto;"></div></section></div>
+        <div id="page-storeBuilder" style="display:none;">
+            <section class="section">
+                <div class="section-header" style="justify-content:center;text-align:center;"><div><h1 class="section-title"><i class="fas fa-hammer"></i> Build Your Store</h1></div></div>
+                <div class="wizard-steps" id="wizardSteps">
+                    <div class="wizard-step active" data-step="1" onclick="goToStep(1)"><span class="wizard-step-number">1</span> Info</div>
+                    <div class="wizard-step" data-step="2" onclick="goToStep(2)"><span class="wizard-step-number">2</span> Design</div>
+                    <div class="wizard-step" data-step="3" onclick="goToStep(3)"><span class="wizard-step-number">3</span> Contact</div>
+                    <div class="wizard-step" data-step="4" onclick="goToStep(4)"><span class="wizard-step-number">4</span> Products</div>
+                    <div class="wizard-step" data-step="5" onclick="goToStep(5)"><span class="wizard-step-number">5</span> Publish</div>
+                </div>
+                <div id="wizardContent" style="max-width:700px;margin:0 auto;"></div>
+            </section>
+        </div>
+        <div id="page-becomeSeller" style="display:none;">
+            <section class="section" style="max-width:500px;margin:0 auto;padding-top:60px;">
+                <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);text-align:center;">
+                    <i class="fas fa-store" style="font-size:60px;color:var(--vic-blue-glow);margin-bottom:16px;"></i>
+                    <h2 style="margin-bottom:12px;">Become a Business Owner</h2>
+                    <p style="color:var(--vic-gray);margin-bottom:20px;">Set up your own store and start selling on VicPrime Market.</p>
+                    <button class="btn btn-primary" onclick="upgradeToBusiness()"><i class="fas fa-arrow-up"></i> Upgrade My Account</button>
+                </div>
+            </section>
+        </div>
+        <div id="page-dashboard" style="display:none;">
+            <div class="dashboard-container">
+                <div class="dashboard-layout">
+                    <div class="dashboard-sidebar">
+                        <div style="text-align:center;margin-bottom:12px;"><h3 style="font-size:14px;">Dashboard</h3><p style="color:var(--vic-gray);font-size:11px;" id="dashBizName"></p></div>
+                        <div class="dashboard-nav">
+                            <div class="dashboard-nav-item active" data-tab="overview" onclick="switchTab('overview')"><i class="fas fa-chart-pie"></i> Overview</div>
+                            <div class="dashboard-nav-item" data-tab="products" onclick="switchTab('products')"><i class="fas fa-box"></i> Products</div>
+                            <div class="dashboard-nav-item" data-tab="orders" onclick="switchTab('orders')"><i class="fas fa-receipt"></i> Orders</div>
+                            <div class="dashboard-nav-item" data-tab="settings" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Settings</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-content" id="dashContent"></div>
+                </div>
+            </div>
+        </div>
+        <div id="page-login" style="display:none;">
+            <section class="section" style="max-width:400px;margin:0 auto;padding-top:60px;">
+                <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);">
+                    <div style="text-align:center;margin-bottom:20px;"><div class="logo-icon" style="width:48px;height:48px;margin:0 auto 10px;"><span>VP</span></div><h2>Welcome Back</h2></div>
+                    <form onsubmit="doLogin(event)">
+                        <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" required></div>
+                        <div class="form-group" style="position:relative;"><input type="password" class="form-input" id="loginPass" placeholder="Password" required><button type="button" class="btn btn-secondary btn-xs" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="togglePassword('loginPass')"><i class="fas fa-eye"></i></button></div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+                    </form>
+                    <p style="text-align:center;margin-top:12px;font-size:12px;">No account? <a onclick="showPage('register')" style="color:var(--vic-blue-glow);cursor:pointer;">Register</a></p>
+                </div>
+            </section>
+        </div>
+        <div id="page-register" style="display:none;">
+            <section class="section" style="max-width:450px;margin:0 auto;padding-top:40px;">
+                <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);">
+                    <div style="text-align:center;margin-bottom:20px;"><div class="logo-icon" style="width:48px;height:48px;margin:0 auto 10px;"><span>VP</span></div><h2>Create Account</h2></div>
+                    <form onsubmit="doRegister(event)">
+                        <div class="form-group"><select class="form-select" id="regRole" onchange="toggleBizFields()"><option value="customer">Customer</option><option value="business">Business Owner</option></select></div>
+                        <div class="form-group"><input type="text" class="form-input" id="regName" placeholder="Full Name" required></div>
+                        <div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email" required></div>
+                        <div class="form-group" style="position:relative;"><input type="password" class="form-input" id="regPass" placeholder="Password" required minlength="6"><button type="button" class="btn btn-secondary btn-xs" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="togglePassword('regPass')"><i class="fas fa-eye"></i></button></div>
+                        <div id="bizFields" style="display:none;">
+                            <div class="form-group"><input type="text" class="form-input" id="regBizName" placeholder="Business Name"></div>
+                            <div class="form-group"><input type="tel" class="form-input" id="regWhatsApp" placeholder="WhatsApp Number"></div>
+                        </div>
+                        <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">VicPrime is not responsible for monetary transactions.</div></div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
     
-    console.error(err);
+    <footer class="footer">
+        <div class="footer-grid">
+            <div><div class="logo"><div class="logo-icon" style="width:32px;height:32px;font-size:14px;"><span>VP</span></div><span class="logo-text" style="font-size:16px;">VicPrime</span></div><p style="font-size:11px;margin-top:8px;color:var(--vic-gray);"><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p></div>
+            <div class="footer-links"><h4>Marketplace</h4><ul><li><a onclick="showPage('marketplace')">Browse</a></li><li><a onclick="showPage('products')">Products</a></li></ul></div>
+            <div class="footer-links"><h4>Business</h4><ul><li><a onclick="showPage('storeBuilder')">Build Store</a></li><li><a onclick="showPage('becomeSeller')">Become a Seller</a></li></ul></div>
+            <div class="footer-links"><h4>Support</h4><ul><li><a href="https://wa.me/237675903626" target="_blank"><i class="fab fa-whatsapp"></i> Talk to Customer Service</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">© <span id="currentYear"></span> VicPrime Market. All rights reserved.</div>
+    </footer>
     
-    if (err.name === 'CastError') {
-        error = { message: 'Resource not found', statusCode: 404 };
-    }
-    
-    if (err.code === 11000) {
-        error = { message: 'Duplicate field value entered', statusCode: 400 };
-    }
-    
-    if (err.name === 'ValidationError') {
-        error = { message: Object.values(err.errors).map(val => val.message).join(', '), statusCode: 400 };
-    }
-    
-    res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || 'Server Error'
-    });
-};
-
-// ==================== AUTH ROUTES ====================
-app.post('/api/auth/register', async (req, res) => {
-    try {
-        const { name, email, password, role, phone, whatsapp } = req.body;
+    <script>
+        const API_URL = 'https://backend-4-io0g.onrender.com/api';
+        const WHATSAPP_SUPPORT_NUMBER = '237675903626';
         
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: 'Email already registered' });
-        }
-        
-        const user = await User.create({
-            name,
-            email,
-            password,
-            role: role || 'customer',
-            phone,
-            whatsapp
-        });
-        
-        const token = user.getSignedJwtToken();
-        
-        res.status(201).json({
-            success: true,
-            token,
-            user: { id: user._id, name: user.name, email: user.email, role: user.role }
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.post('/api/auth/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        if (!email || !password) {
-            return res.status(400).json({ success: false, message: 'Please provide email and password' });
-        }
-        
-        const user = await User.findOne({ email }).select('+password');
-        if (!user) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
-        }
-        
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
-        }
-        
-        const token = user.getSignedJwtToken();
-        
-        res.json({
-            success: true,
-            token,
-            user: { id: user._id, name: user.name, email: user.email, role: user.role }
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/auth/me', protect, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        res.json({ success: true, user });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ==================== BUSINESS ROUTES ====================
-app.post('/api/businesses', protect, authorize('business'), async (req, res) => {
-    try {
-        req.body.owner = req.user.id;
-        
-        const existingBusiness = await Business.findOne({ owner: req.user.id });
-        if (existingBusiness) {
-            return res.status(400).json({ success: false, message: 'You already have a business' });
-        }
-        
-        const business = await Business.create(req.body);
-        res.status(201).json({ success: true, business });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/businesses', async (req, res) => {
-    try {
-        const { category, search, sort } = req.query;
-        let query = {};
-        
-        if (category) query.category = category;
-        if (search) {
-            query.$or = [
-                { name: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } }
-            ];
-        }
-        
-        let sortOption = {};
-        if (sort === 'rating') sortOption = { rating: -1 };
-        else if (sort === 'reviews') sortOption = { reviewCount: -1 };
-        else sortOption = { createdAt: -1 };
-        
-        const businesses = await Business.find(query).sort(sortOption);
-        res.json({ success: true, count: businesses.length, businesses });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/businesses/:id', async (req, res) => {
-    try {
-        const business = await Business.findById(req.params.id);
-        if (!business) {
-            return res.status(404).json({ success: false, message: 'Business not found' });
-        }
-        
-        business.stats.views += 1;
-        await business.save();
-        
-        res.json({ success: true, business });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.put('/api/businesses/:id', protect, authorize('business', 'admin'), async (req, res) => {
-    try {
-        let business = await Business.findById(req.params.id);
-        if (!business) {
-            return res.status(404).json({ success: false, message: 'Business not found' });
-        }
-        
-        if (business.owner.toString() !== req.user.id && req.user.role !== 'admin') {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        business = await Business.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
-        
-        res.json({ success: true, business });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.delete('/api/businesses/:id', protect, authorize('business', 'admin'), async (req, res) => {
-    try {
-        const business = await Business.findById(req.params.id);
-        if (!business) {
-            return res.status(404).json({ success: false, message: 'Business not found' });
-        }
-        
-        if (business.owner.toString() !== req.user.id && req.user.role !== 'admin') {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        await business.deleteOne();
-        res.json({ success: true, message: 'Business deleted' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ==================== PRODUCT ROUTES ====================
-app.post('/api/products', protect, authorize('business'), async (req, res) => {
-    try {
-        const business = await Business.findOne({ owner: req.user.id });
-        if (!business) {
-            return res.status(404).json({ success: false, message: 'Business not found' });
-        }
-        
-        req.body.business = business._id;
-        const product = await Product.create(req.body);
-        res.status(201).json({ success: true, product });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/products', async (req, res) => {
-    try {
-        const { business, category, search, minPrice, maxPrice } = req.query;
-        let query = {};
-        
-        if (business) query.business = business;
-        if (category) query.category = category;
-        if (search) query.name = { $regex: search, $options: 'i' };
-        if (minPrice || maxPrice) {
-            query.price = {};
-            if (minPrice) query.price.$gte = Number(minPrice);
-            if (maxPrice) query.price.$lte = Number(maxPrice);
-        }
-        
-        const products = await Product.find(query).populate('business', 'name whatsapp email phone');
-        res.json({ success: true, count: products.length, products });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/products/:id', async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id).populate('business', 'name whatsapp email phone');
-        if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
-        }
-        res.json({ success: true, product });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.put('/api/products/:id', protect, authorize('business'), async (req, res) => {
-    try {
-        let product = await Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
-        }
-        
-        const business = await Business.findOne({ owner: req.user.id });
-        if (!business || product.business.toString() !== business._id.toString()) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
-        
-        res.json({ success: true, product });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.delete('/api/products/:id', protect, authorize('business'), async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
-        }
-        
-        const business = await Business.findOne({ owner: req.user.id });
-        if (!business || product.business.toString() !== business._id.toString()) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        await product.deleteOne();
-        res.json({ success: true, message: 'Product deleted' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ==================== ORDER ROUTES ====================
-app.post('/api/orders', protect, authorize('customer'), async (req, res) => {
-    try {
-        const { items, customerInfo } = req.body;
-        
-        if (!items || items.length === 0) {
-            return res.status(400).json({ success: false, message: 'No items in order' });
-        }
-        
-        let totalAmount = 0;
-        const orderItems = [];
-        
-        for (const item of items) {
-            const product = await Product.findById(item.product);
-            if (!product) {
-                return res.status(404).json({ success: false, message: `Product ${item.product} not found` });
-            }
-            
-            if (product.stock < item.quantity) {
-                return res.status(400).json({ success: false, message: `Insufficient stock for ${product.name}` });
-            }
-            
-            orderItems.push({
-                product: product._id,
-                business: product.business,
-                name: product.name,
-                price: product.price,
-                quantity: item.quantity,
-                image: product.images[0] || ''
-            });
-            
-            totalAmount += product.price * item.quantity;
-            
-            product.stock -= item.quantity;
-            await product.save();
-        }
-        
-        const order = await Order.create({
-            customer: req.user.id,
-            items: orderItems,
-            totalAmount,
-            customerInfo
-        });
-        
-        res.status(201).json({ success: true, order });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/orders', protect, async (req, res) => {
-    try {
-        let orders;
-        if (req.user.role === 'business') {
-            const business = await Business.findOne({ owner: req.user.id });
-            if (!business) {
-                return res.status(404).json({ success: false, message: 'Business not found' });
-            }
-            orders = await Order.find({ 'items.business': business._id }).populate('customer', 'name email');
-        } else {
-            orders = await Order.find({ customer: req.user.id }).populate('items.product');
-        }
-        
-        res.json({ success: true, count: orders.length, orders });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/orders/:id', protect, async (req, res) => {
-    try {
-        const order = await Order.findById(req.params.id).populate('customer', 'name email').populate('items.product');
-        if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found' });
-        }
-        
-        if (req.user.role === 'customer' && order.customer.toString() !== req.user.id) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        res.json({ success: true, order });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.put('/api/orders/:id/status', protect, async (req, res) => {
-    try {
-        const { status } = req.body;
-        const order = await Order.findById(req.params.id);
-        
-        if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found' });
-        }
-        
-        if (req.user.role === 'business') {
-            const business = await Business.findOne({ owner: req.user.id });
-            const isBusinessOrder = order.items.some(item => item.business.toString() === business?._id.toString());
-            if (!isBusinessOrder) {
-                return res.status(403).json({ success: false, message: 'Not authorized' });
+        async function apiCall(endpoint, method = 'GET', body = null, token = null) {
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const options = { method, headers };
+            if (body) options.body = JSON.stringify(body);
+            try {
+                const response = await fetch(`${API_URL}${endpoint}`, options);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                return { success: false, message: 'Network error' };
             }
         }
         
-        order.status = status;
-        if (status === 'paid') {
-            order.paymentStatus = 'completed';
-        }
-        await order.save();
+        function getToken() { return localStorage.getItem('vp_token'); }
+        function getCurrentUser() { return JSON.parse(localStorage.getItem('vp_user') || 'null'); }
         
-        res.json({ success: true, order });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ==================== REVIEW ROUTES ====================
-app.post('/api/reviews', protect, authorize('customer'), async (req, res) => {
-    try {
-        req.body.customer = req.user.id;
-        
-        const review = await Review.create(req.body);
-        
-        const business = await Business.findById(req.body.business);
-        if (business) {
-            const reviews = await Review.find({ business: business._id });
-            const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-            business.rating = Math.round(avgRating * 10) / 10;
-            business.reviewCount = reviews.length;
-            await business.save();
-        }
-        
-        res.status(201).json({ success: true, review });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.get('/api/reviews', async (req, res) => {
-    try {
-        const { business, product } = req.query;
-        let query = {};
-        if (business) query.business = business;
-        if (product) query.product = product;
-        
-        const reviews = await Review.find(query).populate('customer', 'name');
-        res.json({ success: true, count: reviews.length, reviews });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-app.put('/api/reviews/:id/respond', protect, authorize('business'), async (req, res) => {
-    try {
-        const review = await Review.findById(req.params.id);
-        if (!review) {
-            return res.status(404).json({ success: false, message: 'Review not found' });
-        }
-        
-        const business = await Business.findOne({ owner: req.user.id });
-        if (!business || review.business.toString() !== business._id.toString()) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        review.businessResponse = {
-            comment: req.body.comment,
-            respondedAt: Date.now()
+        let DB = {
+            orders: JSON.parse(localStorage.getItem('vp_orders') || '[]'),
+            cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
+            reviews: JSON.parse(localStorage.getItem('vp_reviews') || '[]'),
+            comments: JSON.parse(localStorage.getItem('vp_comments') || '[]'),
+            likes: JSON.parse(localStorage.getItem('vp_likes') || '[]'),
+            save() {
+                localStorage.setItem('vp_orders', JSON.stringify(this.orders));
+                localStorage.setItem('vp_cart', JSON.stringify(this.cart));
+                localStorage.setItem('vp_reviews', JSON.stringify(this.reviews));
+                localStorage.setItem('vp_comments', JSON.stringify(this.comments));
+                localStorage.setItem('vp_likes', JSON.stringify(this.likes));
+            }
         };
-        await review.save();
         
-        res.json({ success: true, review });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ==================== HEALTH CHECK ====================
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'VicPrime API running' });
-});
-
-// Root route
-app.get('/', (req, res) => {
-    res.json({
-        message: 'VicPrime Market API',
-        version: '1.0.0',
-        endpoints: {
-            auth: '/api/auth',
-            businesses: '/api/businesses',
-            products: '/api/products',
-            orders: '/api/orders',
-            reviews: '/api/reviews',
-            health: '/api/health'
-        }
-    });
-});
-
-// ==================== ERROR HANDLER ====================
-app.use(errorHandler);
-
-// ==================== CONNECT & START ====================
-mongoose.connect(MONGODB_URI)
-    .then(() => {
-        console.log('✅ MongoDB connected');
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-            console.log(`📡 API: http://localhost:${PORT}/api`);
-            console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
-        });
-    })
-    .catch(err => {
-        console.error('❌ MongoDB connection error:', err.message);
-        process.exit(1);
-    });
-// ============================================================
-// ADD THESE MODELS TO YOUR EXISTING server.js
-// ============================================================
-
-// VicCoin Campaign Model
-const campaignSchema = new mongoose.Schema({
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true,
-        unique: true
-    },
-    balanceCoins: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
-    totalCoinsPurchased: {
-        type: Number,
-        default: 0
-    },
-    totalCoinsUsed: {
-        type: Number,
-        default: 0
-    },
-    qualifiedReferrals: {
-        type: Number,
-        default: 0
-    },
-    pricePerCoin: {
-        type: Number,
-        default: 5 // FCFA
-    },
-    sharerAllocation: {
-        type: Number,
-        default: 3 // FCFA
-    },
-    platformAllocation: {
-        type: Number,
-        default: 2 // FCFA
-    },
-    status: {
-        type: String,
-        enum: ['active', 'inactive', 'exhausted'],
-        default: 'inactive'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-const Campaign = mongoose.model('Campaign', campaignSchema);
-
-// Referral Model
-const referralSchema = new mongoose.Schema({
-    referralToken: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    sharer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-    },
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true
-    },
-    campaign: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Campaign',
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['active', 'clicked', 'registered', 'qualified', 'expired', 'invalid'],
-        default: 'active'
-    },
-    clicks: {
-        type: Number,
-        default: 0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    expiresAt: {
-        type: Date,
-        default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-    }
-});
-
-referralSchema.index({ referralToken: 1 });
-referralSchema.index({ sharer: 1 });
-referralSchema.index({ campaign: 1 });
-
-const Referral = mongoose.model('Referral', referralSchema);
-
-// Reward Model
-const rewardSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    referral: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Referral',
-        required: true
-    },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-    },
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true
-    },
-    coinsAwarded: {
-        type: Number,
-        default: 1
-    },
-    rewardValueFCFA: {
-        type: Number,
-        default: 3 // 3 FCFA sharer allocation
-    },
-    status: {
-        type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    approvedAt: Date
-});
-
-rewardSchema.index({ user: 1 });
-rewardSchema.index({ referral: 1 }, { unique: true });
-rewardSchema.index({ status: 1 });
-
-const Reward = mongoose.model('Reward', rewardSchema);
-
-// Coin Purchase Model
-const coinPurchaseSchema = new mongoose.Schema({
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true
-    },
-    quantityCoins: {
-        type: Number,
-        required: true,
-        min: 50
-    },
-    amountFCFA: {
-        type: Number,
-        required: true
-    },
-    paymentMethod: {
-        type: String,
-        enum: ['mtn_momo', 'orange_money', 'bank', 'card'],
-        required: true
-    },
-    referenceNumber: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['pending', 'verified', 'rejected'],
-        default: 'pending'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    verifiedAt: Date
-});
-
-coinPurchaseSchema.index({ business: 1 });
-coinPurchaseSchema.index({ status: 1 });
-
-const CoinPurchase = mongoose.model('CoinPurchase', coinPurchaseSchema);
-
-// Chat Conversation Model
-const conversationSchema = new mongoose.Schema({
-    participants: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    business: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Business',
-        required: true
-    },
-    customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
-    },
-    lastMessage: {
-        type: String,
-        default: ''
-    },
-    lastMessageAt: {
-        type: Date,
-        default: Date.now
-    },
-    unreadCountCustomer: {
-        type: Number,
-        default: 0
-    },
-    unreadCountBusiness: {
-        type: Number,
-        default: 0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-conversationSchema.index({ business: 1, customer: 1 }, { unique: true });
-conversationSchema.index({ customer: 1 });
-conversationSchema.index({ business: 1 });
-
-const Conversation = mongoose.model('Conversation', conversationSchema);
-
-// Chat Message Model
-const messageSchema = new mongoose.Schema({
-    conversation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Conversation',
-        required: true
-    },
-    sender: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    content: {
-        type: String,
-        required: true,
-        maxlength: 2000
-    },
-    read: {
-        type: Boolean,
-        default: false
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-messageSchema.index({ conversation: 1, createdAt: -1 });
-
-const Message = mongoose.model('Message', messageSchema);
-
-// ============================================================
-// VICCOIN CAMPAIGN ROUTES
-// ============================================================
-
-// Get campaign for a business
-app.get('/api/viccoin/campaigns/:businessId', async (req, res) => {
-    try {
-        const campaign = await Campaign.findOne({ business: req.params.businessId });
-        if (!campaign) {
-            return res.json({
-                success: true,
-                campaign: null,
-                hasCampaign: false
-            });
-        }
-        res.json({
-            success: true,
-            campaign,
-            hasCampaign: campaign.balanceCoins > 0 && campaign.status === 'active'
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get campaign for current business owner
-app.get('/api/viccoin/campaigns', protect, async (req, res) => {
-    try {
-        const business = await Business.findOne({ owner: req.user.id });
-        if (!business) {
-            return res.status(404).json({ success: false, message: 'Business not found' });
-        }
-        const campaign = await Campaign.findOne({ business: business._id });
-        if (!campaign) {
-            return res.json({ success: true, campaign: null });
-        }
-        res.json({ success: true, campaign });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Purchase VicCoins (manual payment)
-app.post('/api/viccoin/campaigns/purchase', protect, authorize('business'), async (req, res) => {
-    try {
-        const { quantityCoins, paymentMethod, referenceNumber } = req.body;
+        const categories = ['Electronics','Fashion','Food & Beverage','Services','Home & Garden','Beauty & Health','Automotive','Education'];
+        const catIcons = {
+            'Electronics':'fa-mobile-alt',
+            'Fashion':'fa-tshirt',
+            'Food & Beverage':'fa-utensils',
+            'Services':'fa-briefcase',
+            'Home & Garden':'fa-home',
+            'Beauty & Health':'fa-spa',
+            'Automotive':'fa-car',
+            'Education':'fa-graduation-cap'
+        };
+        const catImages = {
+            'Electronics':'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',
+            'Fashion':'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop',
+            'Food & Beverage':'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+            'Services':'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
+            'Home & Garden':'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+            'Beauty & Health':'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',
+            'Automotive':'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop',
+            'Education':'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=300&fit=crop'
+        };
         
-        if (!quantityCoins || quantityCoins < 50) {
-            return res.status(400).json({ success: false, message: 'Minimum purchase is 50 VicCoins' });
+        function toast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerHTML = `<span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 3000);
         }
         
-        const business = await Business.findOne({ owner: req.user.id });
-        if (!business) {
-            return res.status(404).json({ success: false, message: 'Business not found' });
+        const pageIds = ['home','marketplace','products','businessDetail','productDetail','cart','orders','storeBuilder','becomeSeller','dashboard','login','register'];
+        function showPage(page) {
+            pageIds.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.style.display = 'none'; });
+            const el = document.getElementById('page-' + page);
+            if (el) el.style.display = 'block';
+            window.scrollTo({ top: 0 });
+            if (page === 'home') renderHome();
+            if (page === 'marketplace') renderMarketplace();
+            if (page === 'products') renderProducts();
+            if (page === 'cart') renderCart();
+            if (page === 'orders') renderOrders();
+            if (page === 'dashboard') switchTab('overview');
+            if (page === 'storeBuilder') goToStep(1);
+            closeAccountMenu();
         }
         
-        const amountFCFA = quantityCoins * 5; // 1 coin = 5 FCFA
-        
-        const purchase = await CoinPurchase.create({
-            business: business._id,
-            quantityCoins,
-            amountFCFA,
-            paymentMethod,
-            referenceNumber,
-            status: 'pending'
-        });
-        
-        res.status(201).json({
-            success: true,
-            message: 'Purchase request submitted. Pending verification.',
-            purchase
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ============================================================
-// REFERRAL ROUTES
-// ============================================================
-
-// Generate referral link
-app.post('/api/viccoin/referrals', protect, async (req, res) => {
-    try {
-        const { productId } = req.body;
-        
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).json({ success: false, message: 'Product not found' });
+        function toggleAccountMenu() {
+            const menu = document.getElementById('accountMenu');
+            const user = getCurrentUser();
+            if (menu.style.display === 'block') { menu.style.display = 'none'; return; }
+            let html = '';
+            if (user) {
+                html += `<div style="padding:12px;border-bottom:1px solid rgba(192,192,192,0.1);"><p style="font-weight:600;font-size:13px;">${user.name}</p><p style="font-size:11px;color:var(--vic-gray);">${user.email}</p></div>`;
+                html += `<a onclick="showPage('home')"><i class="fas fa-home"></i> Home</a>`;
+                html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Businesses</a>`;
+                html += `<a onclick="showPage('products')"><i class="fas fa-box"></i> Browse Products</a>`;
+                html += `<a onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> My Cart</a>`;
+                html += `<a onclick="showPage('orders')"><i class="fas fa-receipt"></i> My Orders</a>`;
+                if (user.role === 'business') {
+                    html += `<a onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>`;
+                    html += `<a onclick="viewMyStore()"><i class="fas fa-eye"></i> View My Store</a>`;
+                    html += `<a onclick="copyStoreLink()"><i class="fas fa-link"></i> Copy Store Link</a>`;
+                } else {
+                    html += `<a onclick="showPage('becomeSeller')"><i class="fas fa-arrow-up"></i> Become a Business Owner</a>`;
+                }
+                html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;
+                html += `<a onclick="logout()" style="color:var(--vic-red);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>`;
+            } else {
+                html += `<a onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Sign In</a>`;
+                html += `<a onclick="showPage('register')"><i class="fas fa-user-plus"></i> Register</a>`;
+                html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse</a>`;
+                html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;
+            }
+            menu.innerHTML = html;
+            menu.style.display = 'block';
         }
         
-        const campaign = await Campaign.findOne({ 
-            business: product.business,
-            balanceCoins: { $gt: 0 },
-            status: 'active'
-        });
+        function closeAccountMenu() { document.getElementById('accountMenu').style.display = 'none'; }
         
-        if (!campaign) {
-            return res.status(400).json({ success: false, message: 'Campaign not available for this product' });
-        }
-        
-        // Generate secure random referral token
-        const referralToken = crypto.randomBytes(16).toString('hex');
-        
-        const referral = await Referral.create({
-            referralToken,
-            sharer: req.user.id,
-            product: product._id,
-            business: product.business,
-            campaign: campaign._id,
-            status: 'active'
-        });
-        
-        res.status(201).json({
-            success: true,
-            referralToken,
-            referralId: referral._id,
-            productId: product._id,
-            businessId: product.business
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Track referral click
-app.post('/api/viccoin/referrals/:token/click', async (req, res) => {
-    try {
-        const referral = await Referral.findOne({ referralToken: req.params.token });
-        if (!referral) {
-            return res.status(404).json({ success: false, message: 'Referral not found' });
-        }
-        
-        if (referral.status === 'expired' || referral.expiresAt < new Date()) {
-            referral.status = 'expired';
-            await referral.save();
-            return res.status(400).json({ success: false, message: 'Referral expired' });
-        }
-        
-        referral.clicks += 1;
-        referral.status = 'clicked';
-        await referral.save();
-        
-        res.json({ success: true, productId: referral.product, businessId: referral.business });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Qualify referral after registration
-app.post('/api/viccoin/rewards/qualify', async (req, res) => {
-    try {
-        const { referralToken, newUserId } = req.body;
-        
-        const referral = await Referral.findOne({ referralToken });
-        if (!referral) {
-            return res.status(404).json({ success: false, message: 'Referral not found' });
-        }
-        
-        // Prevent self-referral
-        if (referral.sharer.toString() === newUserId) {
-            return res.status(400).json({ success: false, message: 'Self-referral not allowed' });
-        }
-        
-        // Check if referral already qualified
-        const existingReward = await Reward.findOne({ referral: referral._id });
-        if (existingReward) {
-            return res.status(400).json({ success: false, message: 'Referral already qualified' });
-        }
-        
-        // Check campaign has coins
-        const campaign = await Campaign.findById(referral.campaign);
-        if (!campaign || campaign.balanceCoins < 1) {
-            referral.status = 'expired';
-            await referral.save();
-            return res.status(400).json({ success: false, message: 'Campaign exhausted' });
-        }
-        
-        // Deduct coin from campaign
-        campaign.balanceCoins -= 1;
-        campaign.totalCoinsUsed += 1;
-        campaign.qualifiedReferrals += 1;
-        if (campaign.balanceCoins === 0) {
-            campaign.status = 'exhausted';
-        }
-        await campaign.save();
-        
-        // Create reward
-        const reward = await Reward.create({
-            user: referral.sharer,
-            referral: referral._id,
-            product: referral.product,
-            business: referral.business,
-            coinsAwarded: 1,
-            rewardValueFCFA: 3,
-            status: 'pending'
-        });
-        
-        referral.status = 'qualified';
-        await referral.save();
-        
-        res.status(201).json({
-            success: true,
-            message: 'Referral qualified! Reward pending.',
-            reward
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get user rewards
-app.get('/api/viccoin/rewards/my', protect, async (req, res) => {
-    try {
-        const rewards = await Reward.find({ user: req.user.id })
-            .populate('product', 'name')
-            .populate('business', 'name')
-            .sort({ createdAt: -1 });
-        
-        const availableCoins = rewards.filter(r => r.status === 'approved').length;
-        const pendingCoins = rewards.filter(r => r.status === 'pending').length;
-        const totalEarned = rewards.length;
-        
-        res.json({
-            success: true,
-            availableCoins,
-            pendingCoins,
-            totalEarned,
-            rewards
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ============================================================
-// CHAT ROUTES
-// ============================================================
-
-// Get user conversations
-app.get('/api/chat/conversations', protect, async (req, res) => {
-    try {
-        const conversations = await Conversation.find({
-            $or: [
-                { customer: req.user.id },
-                { business: { $in: await Business.find({ owner: req.user.id }).distinct('_id') } }
-            ]
-        })
-        .populate('business', 'name logo')
-        .populate('customer', 'name avatar')
-        .populate('product', 'name price images')
-        .sort({ lastMessageAt: -1 });
-        
-        res.json({ success: true, conversations });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Create or get conversation
-app.post('/api/chat/conversations', protect, async (req, res) => {
-    try {
-        const { businessId, productId } = req.body;
-        
-        let conversation = await Conversation.findOne({
-            business: businessId,
-            customer: req.user.id,
-            product: productId || null
-        });
-        
-        if (!conversation) {
-            conversation = await Conversation.create({
-                business: businessId,
-                customer: req.user.id,
-                product: productId || null,
-                participants: [req.user.id]
+        function viewMyStore() {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            apiCall('/businesses').then(result => {
+                if (result.success && result.businesses) {
+                    const myBiz = result.businesses.find(b => b.owner === user.id);
+                    if (myBiz) showBusinessDetail(myBiz._id || myBiz.id);
+                    else toast('No store found. Build your store first.', 'info');
+                }
             });
         }
         
-        res.status(201).json({ success: true, conversation });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get messages for a conversation
-app.get('/api/chat/conversations/:id/messages', protect, async (req, res) => {
-    try {
-        const conversation = await Conversation.findById(req.params.id);
-        if (!conversation) {
-            return res.status(404).json({ success: false, message: 'Conversation not found' });
-        }
-        
-        // Check authorization
-        const isCustomer = conversation.customer.toString() === req.user.id;
-        const business = await Business.findById(conversation.business);
-        const isOwner = business && business.owner.toString() === req.user.id;
-        
-        if (!isCustomer && !isOwner) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        const messages = await Message.find({ conversation: conversation._id })
-            .populate('sender', 'name')
-            .sort({ createdAt: 1 });
-        
-        res.json({ success: true, messages });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Send message
-app.post('/api/chat/conversations/:id/messages', protect, async (req, res) => {
-    try {
-        const { content } = req.body;
-        
-        if (!content || content.trim().length === 0) {
-            return res.status(400).json({ success: false, message: 'Message cannot be empty' });
-        }
-        
-        const conversation = await Conversation.findById(req.params.id);
-        if (!conversation) {
-            return res.status(404).json({ success: false, message: 'Conversation not found' });
-        }
-        
-        // Check authorization
-        const isCustomer = conversation.customer.toString() === req.user.id;
-        const business = await Business.findById(conversation.business);
-        const isOwner = business && business.owner.toString() === req.user.id;
-        
-        if (!isCustomer && !isOwner) {
-            return res.status(403).json({ success: false, message: 'Not authorized' });
-        }
-        
-        const message = await Message.create({
-            conversation: conversation._id,
-            sender: req.user.id,
-            content: content.trim()
-        });
-        
-        conversation.lastMessage = content.trim().substring(0, 100);
-        conversation.lastMessageAt = new Date();
-        await conversation.save();
-        
-        res.status(201).json({ success: true, message });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// ============================================================
-// ADMIN ROUTES (for verifying coin purchases)
-// ============================================================
-
-// Verify coin purchase (admin only - add proper admin check)
-app.put('/api/viccoin/purchases/:id/verify', protect, async (req, res) => {
-    try {
-        // In production, check if user is admin
-        const purchase = await CoinPurchase.findById(req.params.id);
-        if (!purchase) {
-            return res.status(404).json({ success: false, message: 'Purchase not found' });
-        }
-        
-        purchase.status = 'verified';
-        purchase.verifiedAt = new Date();
-        await purchase.save();
-        
-        // Update campaign balance
-        let campaign = await Campaign.findOne({ business: purchase.business });
-        if (!campaign) {
-            campaign = await Campaign.create({
-                business: purchase.business,
-                balanceCoins: 0,
-                totalCoinsPurchased: 0,
-                status: 'active'
+        function copyStoreLink() {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            apiCall('/businesses').then(result => {
+                if (result.success && result.businesses) {
+                    const myBiz = result.businesses.find(b => b.owner === user.id);
+                    if (myBiz) {
+                        const link = `${window.location.origin}/#/business/${myBiz._id || myBiz.id}`;
+                        navigator.clipboard.writeText(link).then(() => toast('Store link copied!', 'success'));
+                    } else {
+                        toast('No store found', 'error');
+                    }
+                }
             });
         }
         
-        campaign.balanceCoins += purchase.quantityCoins;
-        campaign.totalCoinsPurchased += purchase.quantityCoins;
-        campaign.status = 'active';
-        await campaign.save();
-        
-        res.json({ success: true, message: 'Purchase verified. Coins added to campaign.' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Approve reward (admin)
-app.put('/api/viccoin/rewards/:id/approve', protect, async (req, res) => {
-    try {
-        const reward = await Reward.findById(req.params.id);
-        if (!reward) {
-            return res.status(404).json({ success: false, message: 'Reward not found' });
+        function upgradeToBusiness() {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            user.role = 'business';
+            localStorage.setItem('vp_user', JSON.stringify(user));
+            toast('You are now a Business Owner! Build your store.', 'success');
+            showPage('storeBuilder');
         }
         
-        reward.status = 'approved';
-        reward.approvedAt = new Date();
-        await reward.save();
-        
-        res.json({ success: true, message: 'Reward approved' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Reject reward (admin)
-app.put('/api/viccoin/rewards/:id/reject', protect, async (req, res) => {
-    try {
-        const reward = await Reward.findById(req.params.id);
-        if (!reward) {
-            return res.status(404).json({ success: false, message: 'Reward not found' });
+        function logout() {
+            localStorage.removeItem('vp_token');
+            localStorage.removeItem('vp_user');
+            updateUserUI();
+            closeAccountMenu();
+            toast('Signed out', 'success');
+            showPage('home');
         }
         
-        reward.status = 'rejected';
-        await reward.save();
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
         
-        res.json({ success: true, message: 'Reward rejected' });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
+        async function renderHome() {
+            renderCategories();
+            loadFeaturedBusinesses();
+        }
+        
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = categories.map(c => `
+                <div class="card" onclick="filterByCategory('${c}')">
+                    <div class="card-cover"><img src="${catImages[c] || ''}" alt="${c}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><i class="fas ${catIcons[c]} icon-large" style="display:none;position:absolute;"></i></div>
+                    <div class="card-body"><div class="card-title">${c}</div><div class="card-subtitle">Explore</div></div>
+                </div>`).join('');
+        }
+        
+        async function loadFeaturedBusinesses() {
+            const container = document.getElementById('featuredBusinesses');
+            try {
+                const result = await apiCall('/businesses');
+                if (result.success && result.businesses && result.businesses.length > 0) {
+                    container.innerHTML = result.businesses.slice(0, 3).map(businessCardHTML).join('');
+                } else {
+                    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-store"></i><h3>No businesses yet</h3><button class="btn btn-primary" onclick="showPage('storeBuilder')">Build Store</button></div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><button class="btn btn-primary" onclick="loadFeaturedBusinesses()">Retry</button></div>`;
+            }
+        }
+        
+        function businessCardHTML(b) {
+            const img = b.logo && b.logo !== 'default-logo.png' ? b.logo : (catImages[b.category] || '');
+            const slug = b.slug || (b.name ? b.name.toLowerCase().replace(/[^a-z0-9]/g, '-') : '');
+            return `<div class="card" onclick="showBusinessDetail('${b._id || b.id}')">
+                <div class="card-cover">${img ? `<img src="${img}" alt="${b.name}">` : `<i class="fas ${catIcons[b.category]} icon-large"></i>`}
+                    ${b.verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+                    <span class="rating-badge">★ ${b.rating || 0}</span>
+                </div>
+                <div class="card-body"><div class="card-title">${b.name}</div><div class="card-subtitle">${b.category}</div><p class="card-desc">${b.description}</p>${slug ? `<p style="font-size:11px;color:var(--vic-blue-glow);margin-top:8px;">🔗 vicprime.com/${slug}</p>` : ''}</div>
+            </div>`;
+        }
+        
+        function filterByCategory(category) {
+            localStorage.setItem('vp_category_filter', category);
+            showPage('products');
+        }
+        
+        async function renderMarketplace() {
+            const container = document.getElementById('allBusinesses');
+            const search = document.getElementById('businessSearch')?.value || '';
+            const category = document.getElementById('businessCategory')?.value || '';
+            let url = '/businesses';
+            const params = [];
+            if (search) params.push(`search=${encodeURIComponent(search)}`);
+            if (category) params.push(`category=${encodeURIComponent(category)}`);
+            if (params.length) url += '?' + params.join('&');
+            try {
+                const result = await apiCall(url);
+                document.getElementById('marketCount').textContent = result.success ? `${result.count} businesses found` : '';
+                container.innerHTML = result.success && result.businesses ? result.businesses.map(businessCardHTML).join('') : `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-store"></i><h3>No businesses found</h3></div>`;
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Network error</h3><button class="btn btn-primary" onclick="renderMarketplace()">Retry</button></div>`;
+            }
+        }
+        
+        async function renderProducts() {
+            const container = document.getElementById('allProducts');
+            const search = document.getElementById('productSearch')?.value || '';
+            const category = localStorage.getItem('vp_category_filter') || document.getElementById('productCategory')?.value || '';
+            let url = '/products';
+            const params = [];
+            if (search) params.push(`search=${encodeURIComponent(search)}`);
+            if (category) params.push(`category=${encodeURIComponent(category)}`);
+            if (params.length) url += '?' + params.join('&');
+            try {
+                const result = await apiCall(url);
+                document.getElementById('productCount').textContent = result.success ? `${result.count} products found` : '';
+                container.innerHTML = result.success && result.products ? result.products.map(p => productCardHTML(p)).join('') : `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-box-open"></i><h3>No products found</h3></div>`;
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Network error</h3><button class="btn btn-primary" onclick="renderProducts()">Retry</button></div>`;
+            }
+        }
+        
+        function productCardHTML(p) {
+            const business = p.business || {};
+            const sellerName = business.name || p.businessName || 'Unknown';
+            const sellerWhatsApp = business.whatsapp || p.whatsapp || '';
+            const mainImg = p.images && p.images[0] ? p.images[0] : '';
+            const comments = DB.comments.filter(c => c.productId === p._id || c.productId === p.id);
+            const likes = DB.likes.filter(l => l.productId === p._id || l.productId === p.id);
+            return `<div class="product-card">
+                <div class="product-image" onclick="showProductDetail('${p._id || p.id}')">${mainImg ? `<img src="${mainImg}" alt="${p.name}">` : `<i class="fas fa-box-open icon-large"></i>`}</div>
+                <div class="product-body">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-desc">${p.description}</div>
+                    <div class="product-price metallic-text">$${p.price}</div>
+                    <p style="font-size:11px;color:var(--vic-gray);">Seller: ${sellerName}</p>
+                    ${p.rating ? `<p style="font-size:11px;color:#FFD700;">★ ${p.rating}</p>` : ''}
+                    <p style="font-size:11px;color:var(--vic-gray);"><i class="far fa-comment"></i> ${comments.length} | <i class="far fa-heart"></i> ${likes.length}</p>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id || p.id}','${p.name}',${p.price},'${sellerName}','${sellerWhatsApp}')">Add</button>
+                        <button class="btn btn-secondary btn-xs" onclick="showProductDetail('${p._id || p.id}')">View</button>
+                        ${sellerWhatsApp ? `<a href="https://wa.me/${sellerWhatsApp}?text=Hello, I'm interested in ${encodeURIComponent(p.name)}" target="_blank" class="btn btn-whatsapp btn-xs">Chat</a>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }
+        
+        async function showBusinessDetail(id) {
+            const result = await apiCall(`/businesses/${id}`);
+            if (!result.success) { toast('Business not found', 'error'); return; }
+            const b = result.business;
+            const productsResult = await apiCall(`/products?business=${id}`);
+            const products = productsResult.success ? productsResult.products : [];
+            const reviews = DB.reviews.filter(r => r.businessId === id);
+            const slug = b.slug || (b.name ? b.name.toLowerCase().replace(/[^a-z0-9]/g, '-') : '');
+            document.getElementById('businessDetailContent').innerHTML = `
+                <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')">← Back</button>
+                <div class="card" style="padding:24px;margin:16px 0;cursor:default;">
+                    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+                        <div style="width:70px;height:70px;background:var(--metallic-gradient);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;">${b.logo && b.logo !== 'default-logo.png' ? `<img src="${b.logo}" style="width:100%;height:100%;object-fit:cover;">` : `<i class="fas ${catIcons[b.category]}"></i>`}</div>
+                        <div style="flex:1;"><h2 style="font-size:24px;">${b.name} ${b.verified ? '✓' : ''}</h2><p style="color:var(--vic-blue-glow);">${b.category}</p><p style="color:var(--vic-gray);font-size:12px;">★ ${b.rating} | 📍 ${b.location}</p>${slug ? `<p style="font-size:12px;color:var(--vic-blue-glow);margin-top:4px;">🔗 <span id="storeUrlText">${window.location.origin}/#/business/${b._id || b.id}</span> <button class="btn btn-xs btn-secondary" onclick="copyStoreUrl()"><i class="fas fa-copy"></i> Copy</button></p>` : ''}</div>
+                        <a href="https://wa.me/${b.whatsapp}" target="_blank" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    </div>
+                    <p style="color:var(--vic-gray);margin-top:12px;font-size:13px;">${b.description}</p>
+                    <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">All payments direct with ${b.name}. VicPrime not responsible.</div></div>
+                </div>
+                <h3 style="font-size:20px;margin-bottom:12px;">Products (${products.length})</h3>
+                <div class="grid-products">${products.map(p => productCardHTML(p)).join('') || '<p style="color:var(--vic-gray);">No products yet.</p>'}</div>
+                <h3 style="font-size:18px;margin:24px 0 12px;">Reviews (${reviews.length})</h3>
+                <div>${reviews.length ? reviews.map(r => `<div class="review-item"><div class="review-author">${r.author}</div><div class="review-stars">${'★'.repeat(r.rating)}</div><div class="review-comment">${r.comment}</div><div class="review-date">${new Date(r.date).toLocaleDateString()}</div></div>`).join('') : '<p style="color:var(--vic-gray);">No reviews yet.</p>'}</div>
+            `;
+            showPage('businessDetail');
+        }
+        
+        function copyStoreUrl() {
+            const url = document.getElementById('storeUrlText')?.textContent;
+            if (url) {
+                navigator.clipboard.writeText(url).then(() => toast('Store link copied!', 'success'));
+            }
+        }
+        
+        async function showProductDetail(id) {
+            const result = await apiCall(`/products/${id}`);
+            if (!result.success) { toast('Product not found', 'error'); return; }
+            const p = result.product;
+            const business = p.business || {};
+            const productReviews = DB.reviews.filter(r => r.productId === id);
+            const productComments = DB.comments.filter(c => c.productId === id);
+            const productLikes = DB.likes.filter(l => l.productId === id);
+            const images = p.images && p.images.length ? p.images : [];
+            document.getElementById('productDetailContent').innerHTML = `
+                <button class="btn btn-secondary btn-sm" onclick="showPage('products')">← Back</button>
+                <div class="card" style="padding:20px;margin:16px 0;cursor:default;">
+                    <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+                        <div>
+                            <div style="background:var(--premium-dark);border-radius:12px;overflow:hidden;min-height:250px;display:flex;align-items:center;justify-content:center;">
+                                ${images.length ? `<img src="${images[0]}" style="max-width:100%;max-height:300px;object-fit:cover;" id="mainProductImage">` : '<i class="fas fa-box-open" style="font-size:60px;color:var(--vic-silver);"></i>'}
+                            </div>
+                            ${images.length > 1 ? `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">${images.map((img, i) => `<img src="${img}" onclick="document.getElementById('mainProductImage').src='${img}'" style="width:60px;height:60px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid ${i === 0 ? 'var(--vic-blue-light)' : 'transparent'};">`).join('')}</div>` : ''}
+                        </div>
+                        <div>
+                            <h2 style="font-size:24px;margin-bottom:8px;">${p.name}</h2>
+                            <p class="metallic-text" style="font-size:28px;font-weight:800;margin-bottom:8px;">$${p.price}</p>
+                            ${p.rating ? `<p style="color:#FFD700;margin-bottom:8px;">★ ${p.rating} (${p.reviewCount || 0} reviews)</p>` : ''}
+                            <p style="color:var(--vic-gray);font-size:13px;margin-bottom:12px;">${p.description}</p>
+                            <p style="font-size:13px;color:var(--vic-gray);margin-bottom:12px;">Seller: ${business.name || 'Unknown'}</p>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                                <button class="btn btn-primary btn-sm" onclick="addToCart('${p._id}','${p.name}',${p.price},'${business.name || ''}','${business.whatsapp || ''}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                                ${business.whatsapp ? `<a href="https://wa.me/${business.whatsapp}?text=Hello, I'm interested in ${encodeURIComponent(p.name)}" target="_blank" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> Chat</a>` : ''}
+                            </div>
+                            <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+                                <button class="btn btn-secondary btn-xs" onclick="toggleLike('${p._id}')"><i class="far fa-heart"></i> <span id="likeCount">${productLikes.length}</span> Likes</button>
+                                <span style="font-size:12px;color:var(--vic-gray);"><i class="far fa-comment"></i> ${productComments.length} Comments</span>
+                            </div>
+                            <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">All payments direct with seller. VicPrime not responsible.</div></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="font-size:18px;margin:20px 0 10px;">Comments (${productComments.length})</h3>
+                <div id="commentsList">
+                    ${productComments.length ? productComments.map(c => `
+                        <div class="comment-item">
+                            <div class="comment-header"><span class="comment-author"><i class="fas fa-user"></i> ${c.author}</span><span class="comment-date">${new Date(c.date).toLocaleDateString()}</span></div>
+                            <div class="comment-text">${c.text}</div>
+                        </div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No comments yet. Be the first to comment!</p>'}
+                </div>
+                
+                <div style="margin-top:12px;background:var(--vic-navy-light);border-radius:12px;padding:16px;">
+                    <h4 style="margin-bottom:8px;font-size:13px;">Leave a Comment</h4>
+                    <div class="form-group"><input class="form-input" id="commentAuthor" placeholder="Your name"></div>
+                    <div class="form-group"><textarea class="form-textarea" id="commentText" placeholder="Write a comment..."></textarea></div>
+                    <button class="btn btn-primary btn-sm" onclick="addComment('${p._id}')"><i class="fas fa-paper-plane"></i> Post Comment</button>
+                </div>
+                
+                <h3 style="font-size:18px;margin:20px 0 10px;">Reviews (${productReviews.length})</h3>
+                <div>${productReviews.length ? productReviews.map(r => `<div class="review-item"><div class="review-author">${r.author}</div><div class="review-stars">${'★'.repeat(r.rating)}</div><div class="review-comment">${r.comment}</div><div class="review-date">${new Date(r.date).toLocaleDateString()}</div></div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No reviews yet.</p>'}</div>
+            `;
+            showPage('productDetail');
+        }
+        
+        function toggleLike(productId) {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            const existing = DB.likes.find(l => l.productId === productId && l.userId === user.id);
+            if (existing) {
+                DB.likes = DB.likes.filter(l => !(l.productId === productId && l.userId === user.id));
+            } else {
+                DB.likes.push({ productId, userId: user.id, date: new Date().toISOString() });
+            }
+            DB.save();
+            const count = DB.likes.filter(l => l.productId === productId).length;
+            document.getElementById('likeCount').textContent = count;
+            toast(existing ? 'Unliked' : 'Liked!', 'success');
+        }
+        
+        function addComment(productId) {
+            const author = document.getElementById('commentAuthor').value || 'Anonymous';
+            const text = document.getElementById('commentText').value.trim();
+            if (!text) { toast('Write a comment', 'error'); return; }
+            DB.comments.push({ productId, author, text, date: new Date().toISOString() });
+            DB.save();
+            toast('Comment added!', 'success');
+            showProductDetail(productId);
+        }
+        
+        function addToCart(productId, name, price, businessName, whatsapp) {
+            const existing = DB.cart.find(c => c.productId === productId);
+            if (existing) existing.quantity++;
+            else DB.cart.push({ productId, name, price, businessName, whatsapp, quantity: 1 });
+            DB.save();
+            updateCartBadge();
+            toast(`${name} added!`, 'success');
+        }
+        
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            const count = DB.cart.reduce((s, i) => s + i.quantity, 0);
+            badge.style.display = count > 0 ? 'flex' : 'none';
+            badge.textContent = count;
+        }
+        
+        function renderCart() {
+            const c = document.getElementById('cartContent');
+            if (DB.cart.length === 0) {
+                c.innerHTML = `<div class="empty-state"><i class="fas fa-shopping-cart"></i><h3>Your cart is empty</h3><button class="btn btn-primary" onclick="showPage('products')">Shop Now</button></div>`;
+                return;
+            }
+            const subtotal = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            c.innerHTML = DB.cart.map((item, i) => `
+                <div class="card" style="padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;cursor:default;">
+                    <div><strong style="font-size:13px;">${item.name}</strong><br><span style="color:var(--vic-gray);font-size:11px;">${item.businessName}</span><br><span class="metallic-text" style="font-size:18px;font-weight:800;">$${(item.price * item.quantity).toFixed(2)}</span></div>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-xs" onclick="updateQty('${item.productId}', ${item.quantity - 1})">−</button>
+                        <span style="font-size:13px;">${item.quantity}</span>
+                        <button class="btn btn-secondary btn-xs" onclick="updateQty('${item.productId}', ${item.quantity + 1})">+</button>
+                        <a href="https://wa.me/${item.whatsapp}?text=Hello, I want to order ${encodeURIComponent(item.name)}" target="_blank" class="btn btn-whatsapp btn-xs">Pay</a>
+                        <button class="btn btn-danger btn-xs" onclick="removeItem('${item.productId}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`).join('') + `
+                <div class="payment-disclaimer"><div class="payment-disclaimer-text">All payments direct with sellers. VicPrime not responsible.</div></div>
+                <div class="card" style="padding:20px;display:flex;justify-content:space-between;align-items:center;cursor:default;">
+                    <div><p style="font-size:12px;">Subtotal: <span class="metallic-text">$${subtotal.toFixed(2)}</span></p><p style="font-size:12px;">Total: <span class="metallic-text" style="font-size:20px;font-weight:800;">$${subtotal.toFixed(2)}</span></p></div>
+                    <button class="btn btn-primary btn-sm" onclick="checkout()">Checkout</button>
+                </div>`;
+        }
+        
+        function updateQty(pid, qty) {
+            const item = DB.cart.find(c => c.productId === pid);
+            if (item) { if (qty <= 0) DB.cart = DB.cart.filter(c => c.productId !== pid); else item.quantity = qty; DB.save(); updateCartBadge(); renderCart(); }
+        }
+        function removeItem(pid) { DB.cart = DB.cart.filter(c => c.productId !== pid); DB.save(); updateCartBadge(); renderCart(); }
+        
+        function checkout() {
+            const user = getCurrentUser();
+            const name = user ? user.name : prompt('Your full name:');
+            const phone = prompt('Your phone number:');
+            if (!name || !phone) { toast('Please provide name and phone', 'error'); return; }
+            DB.orders.push({ id: 'ORD-' + Date.now(), items: [...DB.cart], total: DB.cart.reduce((s,i) => s + i.price*i.quantity, 0), customer: { name, phone }, status: 'pending_payment', date: new Date().toISOString() });
+            DB.cart = []; DB.save(); updateCartBadge(); toast('Order placed! Contact seller via WhatsApp.', 'success'); showPage('orders');
+        }
+        
+        async function renderOrders() {
+            const c = document.getElementById('ordersContent');
+            const user = getCurrentUser();
+            if (!user) { c.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Please login to view orders</h3><button class="btn btn-primary" onclick="showPage('login')">Login</button></div>`; return; }
+            const result = await apiCall('/orders', 'GET', null, getToken());
+            const orders = result.success && result.orders ? result.orders : DB.orders;
+            if (!orders.length) { c.innerHTML = `<div class="empty-state"><i class="fas fa-receipt"></i><h3>No orders yet</h3></div>`; return; }
+            c.innerHTML = orders.map(o => `<div class="card" style="padding:16px;margin-bottom:10px;cursor:default;"><div style="display:flex;justify-content:space-between;"><strong>${o.orderNumber || o.id}</strong><span style="color:var(--vic-yellow);font-size:12px;">${o.status}</span></div><p style="color:var(--vic-gray);font-size:11px;">${new Date(o.createdAt || o.date).toLocaleString()}</p>${o.items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}<div style="display:flex;justify-content:space-between;margin-top:8px;"><strong>Total</strong><span class="metallic-text">$${o.totalAmount || o.total}</span></div></div>`).join('');
+        }
+        
+        // Store Builder
+        const storeData = { info: {}, design: {}, contact: {}, products: [] };
+        
+        function goToStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(el => { const s = parseInt(el.dataset.step); el.classList.toggle('active', s === step); el.classList.toggle('completed', s < step); });
+            const c = document.getElementById('wizardContent');
+            if (step === 1) {
+                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Business Information</h2>
+                    <div class="form-group"><label class="form-label">Business Name *</label><input class="form-input" id="sbName" value="${storeData.info.name || ''}" onkeyup="generateSlug()"></div>
+                    <div class="form-group"><label class="form-label">Category *</label><select class="form-select" id="sbCat">${categories.map(x => `<option value="${x}" ${storeData.info.category === x ? 'selected' : ''}>${x}</option>`).join('')}</select></div>
+                    <div class="form-group"><label class="form-label">Description *</label><textarea class="form-textarea" id="sbDesc">${storeData.info.description || ''}</textarea></div>
+                    <div class="form-group"><label class="form-label">Location *</label><input class="form-input" id="sbLoc" value="${storeData.info.location || ''}"></div>
+                    <div class="form-group"><label class="form-label">Your Store URL</label><input class="form-input" id="sbSlug" value="${storeData.design.slug || ''}" readonly style="background:rgba(15,21,37,0.5);"></div>
+                    <button class="btn btn-primary" onclick="saveStep1()">Next →</button></div>`;
+            } else if (step === 2) {
+                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Store Design</h2>
+                    <div class="form-group"><label class="form-label">Store Logo</label><div class="image-upload" onclick="document.getElementById('logoUpload').click()"><i class="fas fa-camera"></i><p style="font-size:11px;margin-top:6px;">Click to upload logo</p><input type="file" id="logoUpload" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)"><div id="logoPreview"></div></div></div>
+                    <div class="form-group"><label class="form-label">Cover Image</label><div class="image-upload" onclick="document.getElementById('coverUpload').click()"><i class="fas fa-image"></i><p style="font-size:11px;margin-top:6px;">Click to upload cover</p><input type="file" id="coverUpload" accept="image/*" style="display:none;" onchange="handleCoverUpload(event)"><div id="coverPreview"></div></div></div>
+                    <button class="btn btn-primary" onclick="goToStep(3)">Next →</button></div>`;
+            } else if (step === 3) {
+                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Contact & Payment</h2>
+                    <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="sbEmail" value="${storeData.contact.email || ''}" type="email"></div>
+                    <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="sbPhone" value="${storeData.contact.phone || ''}"></div>
+                    <div class="form-group"><label class="form-label">WhatsApp *</label><input class="form-input" id="sbWhatsApp" value="${storeData.contact.whatsapp || ''}"></div>
+                    <button class="btn btn-primary" onclick="saveStep3()">Next →</button></div>`;
+            } else if (step === 4) {
+                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2>Products</h2><button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Add</button></div><div id="sbProducts">${storeData.products.length ? storeData.products.map((p, i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(15,21,37,0.5);border-radius:8px;margin-bottom:6px;"><div><strong style="font-size:13px;">${p.name}</strong><br><span style="font-size:11px;color:var(--vic-gray);">$${p.price} | ${p.images ? p.images.length + ' photos' : '0 photos'}</span></div><button class="btn btn-danger btn-xs" onclick="removeSBProduct(${i})">Remove</button></div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No products yet.</p>'}</div><button class="btn btn-primary" onclick="goToStep(5)">Next →</button></div>`;
+            } else if (step === 5) {
+                const storeUrl = `${window.location.origin}/#/business/${storeData.design.slug}`;
+                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Preview & Publish</h2><div style="background:rgba(15,21,37,0.5);border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;">${storeData.design.logo ? `<img src="${storeData.design.logo}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;margin-bottom:8px;">` : ''}<h3>${storeData.info.name || 'Your Store'}</h3><p style="color:var(--vic-blue-glow);font-size:13px;">${storeData.info.category}</p><p style="font-size:12px;color:var(--vic-gray);">📍 ${storeData.info.location}</p><p style="font-size:12px;color:var(--vic-gray);">${storeData.info.description}</p><p style="font-size:12px;">WhatsApp: ${storeData.contact.whatsapp}</p><p style="font-size:12px;">Products: ${storeData.products.length}</p><p style="font-size:12px;color:var(--vic-blue-glow);margin-top:8px;">🔗 Your Store URL: ${storeUrl}</p><button class="btn btn-xs btn-secondary" onclick="copyStoreUrlFromPreview('${storeUrl}')"><i class="fas fa-copy"></i> Copy Link</button></div><button class="btn btn-primary" onclick="publishStore()">🚀 Publish Store</button></div>`;
+            }
+        }
+        
+        function generateSlug() {
+            const name = document.getElementById('sbName').value;
+            const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            document.getElementById('sbSlug').value = slug;
+            storeData.design.slug = slug;
+        }
+        
+        function copyStoreUrlFromPreview(url) {
+            navigator.clipboard.writeText(url).then(() => toast('Store link copied!', 'success'));
+        }
+        
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) { const reader = new FileReader(); reader.onload = (e) => { storeData.design.logo = e.target.result; document.getElementById('logoPreview').innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100px;border-radius:8px;margin-top:8px;">`; }; reader.readAsDataURL(file); }
+        }
+        function handleCoverUpload(event) {
+            const file = event.target.files[0];
+            if (file) { const reader = new FileReader(); reader.onload = (e) => { storeData.design.cover = e.target.result; document.getElementById('coverPreview').innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100px;border-radius:8px;margin-top:8px;">`; }; reader.readAsDataURL(file); }
+        }
+        function saveStep1() {
+            storeData.info = { name: document.getElementById('sbName').value.trim(), category: document.getElementById('sbCat').value, description: document.getElementById('sbDesc').value.trim(), location: document.getElementById('sbLoc').value.trim() };
+            if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) { toast('Please fill all required fields', 'error'); return; }
+            storeData.design.slug = document.getElementById('sbSlug').value;
+            goToStep(2);
+        }
+        function saveStep3() {
+            storeData.contact = { email: document.getElementById('sbEmail').value.trim(), phone: document.getElementById('sbPhone').value.trim(), whatsapp: document.getElementById('sbWhatsApp').value.trim() };
+            if (!storeData.contact.email || !storeData.contact.whatsapp) { toast('Email and WhatsApp required', 'error'); return; }
+            goToStep(4);
+        }
+        function showAddProduct() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `<div class="modal"><h3>Add Product</h3>
+                <div class="form-group"><label class="form-label">Product Images (up to 4)</label><div class="image-upload" onclick="document.getElementById('apImages').click()"><i class="fas fa-camera"></i><p style="font-size:11px;margin-top:6px;">Click to add images</p><input type="file" id="apImages" accept="image/*" multiple style="display:none;" onchange="handleProductImages(event)"><div id="apImagesPreview"></div></div></div>
+                <div class="form-group"><input class="form-input" id="apName" placeholder="Product Name"></div>
+                <div class="form-group"><input class="form-input" id="apPrice" placeholder="Price ($)" type="number" min="0"></div>
+                <div class="form-group"><input class="form-input" id="apStock" placeholder="Stock" type="number" min="0"></div>
+                <div class="form-group"><textarea class="form-textarea" id="apDesc" placeholder="Description"></textarea></div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button><button class="btn btn-primary" onclick="confirmAddSBProduct()">Add</button></div></div>`;
+            document.body.appendChild(modal);
+        }
+        function handleProductImages(event) {
+            const files = event.target.files;
+            if (files.length > 4) { toast('Maximum 4 images', 'error'); return; }
+            window._productImages = [];
+            document.getElementById('apImagesPreview').innerHTML = '';
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => { window._productImages.push(e.target.result); document.getElementById('apImagesPreview').innerHTML += `<img src="${e.target.result}" style="width:60px;height:60px;border-radius:6px;object-fit:cover;margin:4px;">`; };
+                reader.readAsDataURL(file);
+            });
+        }
+        function confirmAddSBProduct() {
+            const p = { name: document.getElementById('apName').value.trim(), price: parseFloat(document.getElementById('apPrice').value), stock: parseInt(document.getElementById('apStock').value), description: document.getElementById('apDesc').value.trim(), images: window._productImages || [] };
+            if (!p.name || isNaN(p.price) || isNaN(p.stock)) { toast('Name, price and stock required', 'error'); return; }
+            storeData.products.push(p);
+            window._productImages = null;
+            document.querySelector('.modal-overlay').remove();
+            goToStep(4);
+            toast('Product added!', 'success');
+        }
+        function removeSBProduct(i) { storeData.products.splice(i, 1); goToStep(4); }
+        
+        async function publishStore() {
+            const user = getCurrentUser();
+            if (!user) { toast('Please login first', 'error'); showPage('login'); return; }
+            if (user.role !== 'business') { toast('You need to be a Business Owner', 'error'); return; }
+            if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) { toast('Store info incomplete', 'error'); return; }
+            if (!storeData.contact.email || !storeData.contact.whatsapp) { toast('Contact info incomplete', 'error'); return; }
+            if (storeData.products.length === 0) { toast('Add at least one product', 'error'); return; }
+            const businessData = { name: storeData.info.name, category: storeData.info.category, description: storeData.info.description, location: storeData.info.location, email: storeData.contact.email, phone: storeData.contact.phone, whatsapp: storeData.contact.whatsapp, logo: storeData.design.logo || '', coverImage: storeData.design.cover || '', slug: storeData.design.slug };
+            const result = await apiCall('/businesses', 'POST', businessData, getToken());
+            if (result.success) {
+                for (const p of storeData.products) { await apiCall('/products', 'POST', { name: p.name, price: p.price, stock: p.stock, description: p.description, category: storeData.info.category, images: p.images || [] }, getToken()); }
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `<div class="modal" style="text-align:center;"><i class="fas fa-check-circle" style="font-size:60px;color:var(--vic-green);margin-bottom:16px;"></i><h2 style="margin-bottom:12px;">🎉 Congratulations!</h2><p style="color:var(--vic-gray);margin-bottom:20px;">Your store has been published successfully!</p><p style="font-size:12px;color:var(--vic-blue-glow);margin-bottom:16px;">🔗 ${window.location.origin}/#/business/${storeData.design.slug}</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove();viewMyStore()"><i class="fas fa-eye"></i> View My Store</button><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove();showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button></div></div>`;
+                document.body.appendChild(modal);
+                showPage('dashboard');
+            } else { toast(result.message || 'Failed to publish', 'error'); }
+        }
+        
+        // Dashboard
+        async function switchTab(tab) {
+            document.querySelectorAll('.dashboard-nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+            const c = document.getElementById('dashContent');
+            const user = getCurrentUser();
+            if (!user || user.role !== 'business') { c.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Business login required</h3><button class="btn btn-primary" onclick="showPage('becomeSeller')">Become a Seller</button></div>`; return; }
+            c.innerHTML = '<div class="loading-skeleton" style="height:150px;margin-bottom:16px;"></div>';
+            const bizResult = await apiCall('/businesses');
+            const myBiz = bizResult.success ? bizResult.businesses.find(b => b.owner === user.id) : null;
+            if (!myBiz) { c.innerHTML = `<div class="empty-state"><i class="fas fa-store"></i><h3>No business found</h3><button class="btn btn-primary" onclick="showPage('storeBuilder')">Build Store</button></div>`; return; }
+            document.getElementById('dashBizName').textContent = myBiz.name;
+            if (tab === 'overview') {
+                const productsResult = await apiCall(`/products?business=${myBiz._id}`);
+                const ordersResult = await apiCall('/orders', 'GET', null, getToken());
+                const storeUrl = `${window.location.origin}/#/business/${myBiz.slug || myBiz._id}`;
+                c.innerHTML = `<h2 style="margin-bottom:16px;">Overview</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div><div class="stat-card"><div class="stat-value">${ordersResult.success ? ordersResult.count : 0}</div><div class="stat-label">Orders</div></div><div class="stat-card"><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div></div><div style="margin-bottom:16px;"><p style="font-size:12px;color:var(--vic-gray);margin-bottom:4px;">Your Store URL:</p><div style="display:flex;gap:8px;align-items:center;"><input class="form-input" value="${storeUrl}" readonly style="font-size:11px;"><button class="btn btn-sm btn-secondary" onclick="copyStoreUrlFromDashboard('${storeUrl}')"><i class="fas fa-copy"></i> Copy</button></div></div><button class="btn btn-primary btn-sm" onclick="showPage('storeBuilder')">Edit Store</button><button class="btn btn-secondary btn-sm" onclick="viewMyStore()">View Store</button>`;
+            } else if (tab === 'products') {
+                const result = await apiCall(`/products?business=${myBiz._id}`);
+                c.innerHTML = `<h2>Products</h2>${result.success && result.products.length ? `<div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${result.products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table></div>` : '<p style="color:var(--vic-gray);font-size:12px;">No products yet.</p>'}`;
+            } else if (tab === 'orders') {
+                const result = await apiCall('/orders', 'GET', null, getToken());
+                c.innerHTML = `<h2>Orders</h2>${result.success && result.orders.length ? result.orders.map(o => `<div class="card" style="padding:12px;margin-bottom:8px;"><strong>${o.orderNumber}</strong> - ${o.status}</div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No orders yet.</p>'}`;
+            } else if (tab === 'settings') {
+                c.innerHTML = `<h2>Settings</h2><div class="form-group"><label class="form-label">Business Name</label><input class="form-input" id="setName" value="${myBiz.name}"></div><div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="setDesc">${myBiz.description}</textarea></div><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="setWa" value="${myBiz.whatsapp}"></div><button class="btn btn-primary btn-sm" onclick="saveSettings('${myBiz._id}')">Save</button>`;
+            }
+        }
+        
+        function copyStoreUrlFromDashboard(url) {
+            navigator.clipboard.writeText(url).then(() => toast('Store link copied!', 'success'));
+        }
+        
+        async function saveSettings(id) {
+            const result = await apiCall(`/businesses/${id}`, 'PUT', { name: document.getElementById('setName').value, description: document.getElementById('setDesc').value, whatsapp: document.getElementById('setWa').value }, getToken());
+            if (result.success) toast('Saved!', 'success'); else toast('Failed to save', 'error');
+        }
+        
+        function toggleBizFields() { document.getElementById('bizFields').style.display = document.getElementById('regRole').value === 'business' ? 'block' : 'none'; }
+        
+        async function doLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPass').value;
+            if (!email || !password) { toast('Please fill all fields', 'error'); return; }
+            const result = await apiCall('/auth/login', 'POST', { email, password });
+            if (result.success) { localStorage.setItem('vp_token', result.token); localStorage.setItem('vp_user', JSON.stringify(result.user)); updateUserUI(); toast('Logged in!', 'success'); showPage('home'); }
+            else { toast(result.message || 'Invalid credentials', 'error'); }
+        }
+        
+        async function doRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPass').value;
+            const role = document.getElementById('regRole').value;
+            const bizName = document.getElementById('regBizName')?.value.trim() || '';
+            const whatsapp = document.getElementById('regWhatsApp')?.value.trim() || '';
+            if (!name || !email || !password) { toast('Please fill all fields', 'error'); return; }
+            if (!/^\S+@\S+\.\S+$/.test(email)) { toast('Invalid email', 'error'); return; }
+            if (password.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+            if (role === 'business' && (!bizName || !whatsapp)) { toast('Business name and WhatsApp required', 'error'); return; }
+            const result = await apiCall('/auth/register', 'POST', { name, email, password, role, whatsapp });
+            if (result.success) { localStorage.setItem('vp_token', result.token); localStorage.setItem('vp_user', JSON.stringify(result.user)); updateUserUI(); toast('Account created!', 'success'); showPage(role === 'business' ? 'storeBuilder' : 'home'); }
+            else { toast(result.message || 'Registration failed', 'error'); }
+        }
+        
+        function updateUserUI() {
+            const user = getCurrentUser();
+            const btn = document.getElementById('userBtn');
+            btn.innerHTML = '<i class="fas fa-user"></i>';
+        }
+        
+        window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50));
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        updateCartBadge();
+        updateUserUI();
+        renderHome();
+    </script>
+</body>
+</html>
