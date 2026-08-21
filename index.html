@@ -1,1166 +1,418 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>VicPrime Market - One Marketplace. Every Business.</title>  
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">  
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">  
-    <style>  
-        /* ==================== EXISTING STYLES ==================== */  
-        :root {  
-            --vic-black: #0A0E1A;  
-            --vic-navy: #0F1525;  
-            --vic-navy-light: #1A1F2E;  
-            --vic-blue: #1E40AF;  
-            --vic-blue-light: #2563EB;  
-            --vic-blue-glow: #3B82F6;  
-            --vic-silver: #C0C0C0;  
-            --vic-silver-light: #E8E8E8;  
-            --vic-gray: #A0AEC0;  
-            --vic-white: #FFFFFF;  
-            --vic-green: #10B981;  
-            --vic-red: #EF4444;  
-            --vic-yellow: #F59E0B;  
-            --vic-whatsapp: #25D366;  
-            --metallic-gradient: linear-gradient(135deg, #8B8B8B 0%, #C0C0C0 25%, #E8E8E8 50%, #C0C0C0 75%, #8B8B8B 100%);  
-            --premium-dark: linear-gradient(135deg, #0F1525 0%, #0A0E1A 50%, #1A1F2E 100%);  
-            --blue-gradient: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);  
-            --whatsapp-gradient: linear-gradient(135deg, #128C7E 0%, #25D366 50%, #128C7E 100%);  
-            --shadow-premium: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(30,64,175,0.3);  
-            --shadow-blue-glow: 0 0 30px rgba(37,99,235,0.4);  
-            --shadow-metallic: 0 10px 40px rgba(192,192,192,0.2);  
-            --shadow-whatsapp: 0 0 30px rgba(37,211,102,0.4);  
-        }  
-        * { margin: 0; padding: 0; box-sizing: border-box; }  
-        body { font-family: 'Inter', sans-serif; background: var(--vic-black); color: var(--vic-white); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }  
-        h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }  
-        .bg-grid { position: fixed; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px); background-size:50px 50px; pointer-events:none; z-index:0; }  
-        .bg-glow { position: fixed; top:-50%; left:-50%; width:200%; height:200%; background: radial-gradient(circle at center, rgba(30,64,175,0.1) 0%, transparent 50%); pointer-events:none; z-index:0; animation:glowPulse 8s ease-in-out infinite; }  
-        @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:1} }  
-        .header { position:sticky; top:0; z-index:1000; background:rgba(10,14,26,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(192,192,192,0.1); transition:all .3s; }  
-        .header.scrolled { box-shadow:0 10px 40px rgba(0,0,0,0.5); }  
-        .header-container { max-width:1400px; margin:0 auto; padding:0 16px; height:60px; display:flex; align-items:center; justify-content:space-between; }  
-        .logo { display:flex; align-items:center; gap:8px; cursor:pointer; }  
-        .logo-icon { width:40px; height:40px; background:var(--metallic-gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--vic-black); font-size:18px; position:relative; overflow:hidden; }  
-        .logo-icon::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.5) 50%,transparent 70%); animation:shimmer 3s infinite; }  
-        @keyframes shimmer { 0%{transform:translateX(-100%) rotate(45deg)} 100%{transform:translateX(100%) rotate(45deg)} }  
-        .logo-icon span { position:relative; z-index:1; }  
-        .logo-text { font-size:20px; font-weight:800; background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }  
-        .logo-badge { background:var(--blue-gradient); color:white; font-size:8px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; }  
-        .nav-actions { display:flex; align-items:center; gap:8px; }  
-        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }  
-        .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }  
-        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }  
-        .btn { display:inline-block; padding:12px 22px; border-radius:50px; font-weight:600; text-decoration:none; transition:all .3s; cursor:pointer; border:none; font-size:13px; }  
-        .btn-primary { background:var(--blue-gradient); color:white; box-shadow:var(--shadow-blue-glow); }  
-        .btn-primary:hover { transform:translateY(-2px); }  
-        .btn-secondary { background:transparent; color:var(--vic-silver); border:2px solid rgba(192,192,192,0.3); }  
-        .btn-secondary:hover { border-color:var(--vic-silver); color:white; }  
-        .btn-whatsapp { background:var(--whatsapp-gradient); color:white; box-shadow:var(--shadow-whatsapp); }  
-        .btn-danger { background:var(--vic-red); color:white; }  
-        .btn-sm { padding:6px 12px; font-size:11px; }  
-        .btn-xs { padding:4px 8px; font-size:10px; }  
-        .hero { position:relative; padding:80px 16px; text-align:center; background:var(--premium-dark); overflow:hidden; }  
-        .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(30,64,175,0.3) 0%, transparent 50%); }  
-        .hero-content { position:relative; z-index:1; max-width:900px; margin:0 auto; }  
-        .hero-badge { display:inline-block; background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.3); color:var(--vic-blue-glow); padding:6px 16px; border-radius:50px; font-size:12px; margin-bottom:16px; }  
-        .hero h1 { font-size:36px; font-weight:900; margin-bottom:16px; }  
-        .metallic-text { background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }  
-        .blue-text { background:var(--blue-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }  
-        .hero p { font-size:16px; color:var(--vic-gray); margin-bottom:24px; }  
-        .hero-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }  
-        .section { padding:40px 16px; position:relative; z-index:1; }  
-        .section-header { max-width:1400px; margin:0 auto 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }  
-        .section-title { font-size:28px; font-weight:800; }  
-        .section-subtitle { font-size:13px; color:var(--vic-gray); margin-top:4px; }  
-        .section-description { font-size:16px; color:var(--vic-gray); margin-bottom:24px; }  
-        .grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; }  
-        .grid-products { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:16px; }  
-        .card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:16px; overflow:hidden; cursor:pointer; transition:all .3s; }  
-        .card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }  
-        .card-cover { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); position:relative; overflow:hidden; }  
-        .card-cover img { width:100%; height:100%; object-fit:cover; }  
-        .card-cover .icon-large { font-size:48px; color:var(--vic-silver); position:relative; z-index:1; }  
-        .card-body { padding:20px; }  
-        .card-title { font-size:16px; font-weight:700; }  
-        .card-subtitle { font-size:12px; color:var(--vic-blue-glow); }  
-        .card-desc { font-size:12px; color:var(--vic-gray); line-height:1.5; }  
-        .verified-badge { position:absolute; top:10px; left:10px; background:var(--blue-gradient); color:white; padding:3px 10px; border-radius:50px; font-size:10px; z-index:2; }  
-        .rating-badge { position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.8); border-radius:50px; padding:3px 10px; font-size:11px; z-index:2; }  
-        .product-card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:14px; overflow:hidden; transition:all .3s; }  
-        .product-card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }  
-        .product-image { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); overflow:hidden; position:relative; }  
-        .product-image img { width:100%; height:100%; object-fit:cover; }  
-        .product-body { padding:16px; }  
-        .product-name { font-size:14px; font-weight:700; margin-bottom:4px; }  
-        .product-desc { font-size:11px; color:var(--vic-gray); margin-bottom:8px; }  
-        .product-price { font-size:18px; font-weight:800; margin-bottom:8px; }  
-        .product-actions { display:flex; gap:4px; flex-wrap:wrap; }  
-        .product-actions .btn { flex:1; min-width:50px; text-align:center; padding:6px 4px; font-size:9px; }  
-        .payment-disclaimer { background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:12px; padding:16px; margin:16px 0; }  
-        .payment-disclaimer-title { color:var(--vic-whatsapp); font-weight:700; font-size:13px; margin-bottom:6px; }  
-        .payment-disclaimer-text { color:var(--vic-gray); font-size:12px; line-height:1.4; }  
-        .whatsapp-float { position:fixed; bottom:20px; right:20px; z-index:999; width:50px; height:50px; background:var(--whatsapp-gradient); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--shadow-whatsapp); text-decoration:none; }  
-        .whatsapp-float i { font-size:24px; color:white; }  
-        .dashboard-container { max-width:1400px; margin:0 auto; padding:30px 16px; }  
-        .dashboard-layout { display:grid; grid-template-columns:200px 1fr; gap:20px; }  
-        .dashboard-sidebar { background:var(--vic-navy-light); border-radius:16px; padding:20px; position:sticky; top:80px; height:fit-content; }  
-        .dashboard-nav { display:flex; flex-direction:column; gap:4px; }  
-        .dashboard-nav-item { padding:8px 12px; border-radius:8px; cursor:pointer; color:var(--vic-gray); font-size:12px; display:flex; align-items:center; gap:8px; }  
-        .dashboard-nav-item.active { background:var(--blue-gradient); color:white; }  
-        .dashboard-content { background:var(--vic-navy-light); border-radius:16px; padding:24px; }  
-        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:20px; }  
-        .stat-card { background:rgba(15,21,37,0.8); border-radius:12px; padding:16px; }  
-        .stat-value { font-size:20px; font-weight:800; }  
-        .stat-label { font-size:11px; color:var(--vic-gray); }  
-        .wizard-steps { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; justify-content:center; }  
-        .wizard-step { display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:50px; background:var(--vic-navy-light); border:2px solid rgba(192,192,192,0.1); color:var(--vic-gray); font-size:11px; cursor:pointer; }  
-        .wizard-step.active { background:var(--blue-gradient); color:white; }  
-        .wizard-step.completed { background:rgba(16,185,129,0.1); border-color:var(--vic-green); color:var(--vic-green); }  
-        .wizard-step-number { width:20px; height:20px; border-radius:50%; background:rgba(192,192,192,0.1); display:flex; align-items:center; justify-content:center; font-size:10px; }  
-        .form-group { margin-bottom:12px; }  
-        .form-label { font-size:12px; font-weight:600; margin-bottom:4px; color:var(--vic-silver); }  
-        .form-input { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:8px; padding:10px 12px; color:white; font-size:13px; }  
-        .form-input:focus { outline:none; border-color:var(--vic-blue-light); }  
-        .form-select { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:8px; padding:10px 12px; color:white; font-size:13px; }  
-        .form-textarea { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:8px; padding:10px 12px; color:white; font-size:13px; min-height:60px; resize:vertical; }  
-        .image-upload { border:2px dashed rgba(192,192,192,0.3); border-radius:10px; padding:20px; text-align:center; cursor:pointer; }  
-        .toast-container { position:fixed; top:80px; right:10px; z-index:9999; display:flex; flex-direction:column; gap:8px; }  
-        .toast { background:var(--vic-navy-light); border-radius:8px; padding:12px 16px; min-width:240px; font-size:12px; display:flex; align-items:center; gap:8px; }  
-        .toast.success { border-left:4px solid var(--vic-green); }  
-        .toast.error { border-left:4px solid var(--vic-red); }  
-        .toast.info { border-left:4px solid var(--vic-blue-light); }  
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9998; }  
-        .modal { background:var(--vic-navy-light); border-radius:16px; padding:24px; max-width:500px; width:90%; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-premium); }  
-        .cta-section { padding:60px 16px; text-align:center; background:var(--premium-dark); }  
-        .cta-icon { font-size:48px; margin-bottom:16px; color:var(--vic-blue-glow); }  
-        .cta-content h2 { font-size:28px; margin-bottom:12px; }  
-        .cta-content p { font-size:14px; color:var(--vic-gray); margin-bottom:20px; }  
-        .footer { background:var(--vic-navy); padding:40px 16px 24px; margin-top:auto; }  
-        .footer-grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:24px; margin-bottom:24px; }  
-        .footer-links h4 { font-size:14px; margin-bottom:12px; }  
-        .footer-links ul { list-style:none; }  
-        .footer-links li { margin-bottom:8px; }  
-        .footer-links a { color:var(--vic-gray); font-size:12px; cursor:pointer; }  
-        .footer-links a:hover { color:white; }  
-        .footer-bottom { text-align:center; padding-top:20px; border-top:1px solid rgba(192,192,192,0.1); color:var(--vic-gray); font-size:11px; }  
-        .review-section { margin-top:16px; border-top:1px solid rgba(192,192,192,0.1); padding-top:12px; }  
-        .review-item { background:rgba(15,21,37,0.5); border-radius:8px; padding:10px; margin-bottom:8px; }  
-        .review-author { font-weight:600; font-size:11px; }  
-        .review-comment { color:var(--vic-gray); font-size:11px; }  
-        .review-stars { color:#FFD700; font-size:10px; }  
-        .review-date { color:var(--vic-gray); font-size:10px; }  
-        .comment-section { margin-top:16px; }  
-        .comment-item { background:rgba(15,21,37,0.5); border-radius:8px; padding:10px; margin-bottom:8px; }  
-        .comment-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }  
-        .comment-author { font-weight:600; font-size:11px; }  
-        .comment-date { font-size:10px; color:var(--vic-gray); }  
-        .comment-text { font-size:11px; color:var(--vic-gray); }  
-        .comment-actions { display:flex; gap:8px; margin-top:4px; }  
-        .like-btn { font-size:10px; cursor:pointer; color:var(--vic-gray); }  
-        .like-btn.liked { color:var(--vic-red); }  
-        .loading-skeleton { background: linear-gradient(90deg, #1a1f2e 25%, #2a2f3e 50%, #1a1f2e 75%); background-size:200% 100%; animation:skeleton 1.5s infinite; border-radius:8px; }  
-        @keyframes skeleton { 0%{background-position:200% 0} 100%{background-position:-200% 0} }  
-        .empty-state { text-align:center; padding:40px 16px; color:var(--vic-gray); }  
-        .empty-state i { font-size:40px; margin-bottom:12px; color:var(--vic-blue-glow); }  
-        .empty-state h3 { font-size:18px; margin-bottom:8px; }  
-        .empty-state p { font-size:13px; margin-bottom:16px; }  
-        .how-it-works { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px; margin-bottom:40px; }  
-        .how-step { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; padding:24px; text-align:center; }  
-        .how-step i { font-size:40px; color:var(--vic-blue-glow); margin-bottom:16px; }  
-        .how-step h3 { margin-bottom:8px; }  
-        #accountMenu { display:none; position:absolute; right:0; top:46px; background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; min-width:200px; box-shadow:var(--shadow-premium); z-index:1001; }  
-        #accountMenu a { display:block; padding:8px 14px; color:var(--vic-silver); font-size:12px; text-decoration:none; cursor:pointer; }  
-        #accountMenu a:hover { background:rgba(37,99,235,0.1); color:white; }  /* ==================== NEW VICCOIN & SHARE & EARN STYLES ==================== */  
-    .share-earn-btn {  
-        background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);  
-        color: white;  
-        box-shadow: 0 0 20px rgba(245,158,11,0.4);  
-    }  
-    .share-earn-btn:hover {  
-        transform: translateY(-2px);  
-        box-shadow: 0 0 30px rgba(245,158,11,0.6);  
-    }  
-    .share-panel {  
-        display: flex;  
-        flex-direction: column;  
-        gap: 12px;  
-    }  
-    .share-option {  
-        display: flex;  
-        align-items: center;  
-        gap: 10px;  
-        padding: 10px 16px;  
-        background: rgba(15,21,37,0.5);  
-        border-radius: 10px;  
-        cursor: pointer;  
-        transition: background 0.3s;  
-    }  
-    .share-option:hover { background: rgba(37,99,235,0.1); }  
-    .share-option i { font-size: 22px; width: 30px; text-align: center; }  
-    .chat-panel {  
-        display: flex;  
-        flex-direction: column;  
-        height: 60vh;  
-    }  
-    .chat-messages {  
-        flex: 1;  
-        overflow-y: auto;  
-        padding: 16px;  
-        background: rgba(15,21,37,0.3);  
-        border-radius: 12px;  
-        margin-bottom: 12px;  
-    }  
-    .chat-message {  
-        max-width: 80%;  
-        margin-bottom: 10px;  
-        padding: 10px 14px;  
-        border-radius: 12px;  
-        font-size: 13px;  
-        line-height: 1.4;  
-    }  
-    .chat-message.sent {  
-        background: var(--blue-gradient);  
-        color: white;  
-        margin-left: auto;  
-        border-bottom-right-radius: 4px;  
-    }  
-    .chat-message.received {  
-        background: var(--vic-navy-light);  
-        border: 1px solid rgba(192,192,192,0.1);  
-        border-bottom-left-radius: 4px;  
-    }  
-    .chat-input-area {  
-        display: flex;  
-        gap: 8px;  
-    }  
-    .chat-input-area input {  
-        flex: 1;  
-        background: rgba(10,14,26,0.8);  
-        border: 2px solid rgba(192,192,192,0.2);  
-        border-radius: 8px;  
-        padding: 10px 14px;  
-        color: white;  
-        font-size: 13px;  
-    }  
-    .reward-dashboard {  
-        background: rgba(15,21,37,0.5);  
-        border-radius: 12px;  
-        padding: 20px;  
-    }  
-    .reward-item {  
-        display: flex;  
-        justify-content: space-between;  
-        align-items: center;  
-        padding: 10px 0;  
-        border-bottom: 1px solid rgba(192,192,192,0.1);  
-    }  
-    .reward-item:last-child { border-bottom: none; }  
-    .campaign-info {  
-        background: rgba(245,158,11,0.1);  
-        border: 1px solid rgba(245,158,11,0.3);  
-        border-radius: 12px;  
-        padding: 16px;  
-        margin-bottom: 16px;  
-    }  
-    .coin-balance {  
-        font-size: 24px;  
-        font-weight: 800;  
-        color: #F59E0B;  
-    }  
-    .coin-label {  
-        font-size: 12px;  
-        color: var(--vic-gray);  
-    }  
-    @media (max-width: 412px) {  
-        .hero h1 { font-size:28px; }  
-        .section-title { font-size:22px; }  
-        .grid, .grid-products { grid-template-columns:1fr; }  
-        .card-cover, .product-image { height:140px; }  
-        .product-body, .card-body { padding:16px; }  
-        .product-name { font-size:13px; }  
-        .product-price { font-size:16px; }  
-        .btn { padding:10px 16px; font-size:12px; }  
-        .nav-actions .icon-btn { width:36px; height:36px; font-size:14px; }  
-        .share-option { padding: 8px 12px; font-size: 12px; }  
-        .share-option i { font-size: 18px; }  
-    }  
-</style>
-
-</head>  
-<body>  
-    <div class="bg-grid"></div>  
-    <div class="bg-glow"></div>  
-    <div class="toast-container" id="toastContainer"></div>  <!-- Floating WhatsApp Customer Service -->  
-<a href="https://wa.me/237675903626" target="_blank" class="whatsapp-float" title="Talk to Customer Service">  
-    <i class="fab fa-whatsapp"></i>  
-</a>  
-
-<!-- Header -->  
-<header class="header" id="header">  
-    <div class="header-container">  
-        <div class="logo" onclick="showPage('home')">  
-            <div class="logo-icon"><span>VP</span></div>  
-            <div><span class="logo-text">VicPrime</span><span class="logo-badge">MARKET</span></div>  
-        </div>  
-        <div class="nav-actions">  
-            <button class="icon-btn" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>  
-            <div style="position:relative;">  
-                <button class="icon-btn" id="userBtn" onclick="toggleAccountMenu()"><i class="fas fa-user"></i></button>  
-                <div id="accountMenu"></div>  
-            </div>  
-        </div>  
-    </div>  
-</header>  
-
-<!-- Main Content -->  
-<main style="flex:1;">  
-    <!-- HOME -->  
-    <div id="page-home">  
-        <section class="hero">  
-            <div class="hero-content">  
-                <div class="hero-badge">✦ PREMIUM MARKETPLACE ✦</div>  
-                <h1><span class="metallic-text">One Marketplace.</span><br><span class="blue-text">Every Business.</span></h1>  
-                <p>Discover thousands of businesses, shop unique products, and support entrepreneurs worldwide.</p>  
-                <div class="hero-buttons">  
-                    <button class="btn btn-primary" onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Marketplace</button>  
-                    <button class="btn btn-secondary" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Your Store</button>  
-                </div>  
-            </div>  
-        </section>  
-
-        <!-- How VicPrime Works -->  
-        <section class="section">  
-            <div class="section-header">  
-                <div><h2 class="section-title">How VicPrime Works</h2><p class="section-subtitle">Your marketplace journey</p></div>  
-            </div>  
-            <div class="how-it-works">  
-                <div class="how-step">  
-                    <i class="fas fa-search"></i>  
-                    <h3>Discover</h3>  
-                    <p>Find businesses and products on VicPrime.</p>  
-                </div>  
-                <div class="how-step">  
-                    <i class="fas fa-check-circle"></i>  
-                    <h3>Choose</h3>  
-                    <p>Browse products and select what you want.</p>  
-                </div>  
-                <div class="how-step">  
-                    <i class="fas fa-comments"></i>  
-                    <h3>Connect or Order</h3>  
-                    <p>Contact the business or complete the available ordering process.</p>  
-                </div>  
-            </div>  
-        </section>  
-
-        <!-- Categories -->  
-        <section class="section">  
-            <div class="section-header">  
-                <div><h2 class="section-title">Browse by Category</h2><p class="section-subtitle">Find exactly what you're looking for</p></div>  
-            </div>  
-            <div class="grid" id="categoriesGrid"></div>  
-        </section>  
-
-        <!-- Featured Businesses -->  
-        <section class="section" style="background:rgba(15,21,37,0.3);">  
-            <div class="section-header">  
-                <div><h2 class="section-title">Featured Businesses</h2><p class="section-subtitle">Top-rated sellers on VicPrime</p></div>  
-            </div>  
-            <div id="featuredBusinesses" class="grid">  
-                <div class="loading-skeleton" style="height:160px;"></div>  
-                <div class="loading-skeleton" style="height:160px;"></div>  
-                <div class="loading-skeleton" style="height:160px;"></div>  
-            </div>  
-        </section>  
-    </div>  
-
-    <!-- MARKETPLACE -->  
-    <div id="page-marketplace" style="display:none;">  
-        <section class="section">  
-            <div class="section-header">  
-                <div>  
-                    <h1 class="section-title">Discover Businesses</h1>  
-                    <p class="section-subtitle">Explore stores, services and businesses on VicPrime.</p>  
-                </div>  
-            </div>  
-            <div style="max-width:1400px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;">  
-                <input type="text" class="form-input" style="flex:1;min-width:150px;" placeholder="Search businesses..." id="businessSearch" onkeyup="debouncedSearchBusinesses()">  
-                <select class="form-select" style="width:auto;" id="businessCategory" onchange="renderMarketplace()">  
-                    <option value="">All Categories</option>  
-                </select>  
-            </div>  
-            <div id="allBusinesses" class="grid"></div>  
-            <div id="marketplacePagination" style="text-align:center;margin-top:20px;"></div>  
-        </section>  
-    </div>  
-
-    <!-- PRODUCTS -->  
-    <div id="page-products" style="display:none;">  
-        <section class="section">  
-            <div class="section-header">  
-                <div>  
-                    <h1 class="section-title">Browse Products</h1>  
-                    <p class="section-subtitle">Find products from businesses across VicPrime.</p>  
-                </div>  
-            </div>  
-            <div style="max-width:1400px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;">  
-                <input type="text" class="form-input" style="flex:1;min-width:150px;" placeholder="Search products..." id="productSearch" onkeyup="debouncedSearchProducts()">  
-                <select class="form-select" style="width:auto;" id="productCategory" onchange="renderProducts()">  
-                    <option value="">All Categories</option>  
-                </select>  
-            </div>  
-            <div id="allProducts" class="grid-products"></div>  
-            <div id="productsPagination" style="text-align:center;margin-top:20px;"></div>  
-        </section>  
-    </div>  
-
-    <!-- BUSINESS DETAIL -->  
-    <div id="page-businessDetail" style="display:none;">  
-        <section class="section" id="businessDetailContent"></section>  
-    </div>  
-
-    <!-- PRODUCT DETAIL -->  
-    <div id="page-productDetail" style="display:none;">  
-        <section class="section" id="productDetailContent"></section>  
-    </div>  
-
-    <!-- CART -->  
-    <div id="page-cart" style="display:none;">  
-        <section class="section">  
-            <div class="section-header"><h1 class="section-title">Shopping Cart</h1></div>  
-            <div id="cartContent" style="max-width:800px;margin:0 auto;"></div>  
-        </section>  
-    </div>  
-
-    <!-- ORDERS -->  
-    <div id="page-orders" style="display:none;">  
-        <section class="section">  
-            <div class="section-header"><h1 class="section-title">My Orders</h1></div>  
-            <div id="ordersContent" style="max-width:800px;margin:0 auto;"></div>  
-        </section>  
-    </div>  
-
-    <!-- CHAT -->  
-    <div id="page-chat" style="display:none;">  
-        <section class="section">  
-            <div class="section-header">  
-                <div>  
-                    <h1 class="section-title">VicPrime Chat</h1>  
-                    <p class="section-subtitle">Communicate with businesses directly</p>  
-                </div>  
-            </div>  
-            <div id="chatContent" style="max-width:800px;margin:0 auto;"></div>  
-        </section>  
-    </div>  
-
-    <!-- REWARDS DASHBOARD -->  
-    <div id="page-rewards" style="display:none;">  
-        <section class="section">  
-            <div class="section-header">  
-                <div>  
-                    <h1 class="section-title">My VicCoins</h1>  
-                    <p class="section-subtitle">Your referral rewards</p>  
-                </div>  
-            </div>  
-            <div id="rewardsContent" style="max-width:600px;margin:0 auto;"></div>  
-        </section>  
-    </div>  
-
-    <!-- STORE BUILDER -->  
-    <div id="page-storeBuilder" style="display:none;">  
-        <section class="section">  
-            <div class="section-header" style="justify-content:center;text-align:center;">  
-                <div>  
-                    <h1 class="section-title"><i class="fas fa-hammer"></i> Build Your Store</h1>  
-                    <p class="section-subtitle">Create Your Online Store — Set up your business, customize your store, add products and publish.</p>  
-                </div>  
-            </div>  
-            <div class="wizard-steps" id="wizardSteps">  
-                <div class="wizard-step active" data-step="1" onclick="goToStep(1)"><span class="wizard-step-number">1</span> Info</div>  
-                <div class="wizard-step" data-step="2" onclick="goToStep(2)"><span class="wizard-step-number">2</span> Design</div>  
-                <div class="wizard-step" data-step="3" onclick="goToStep(3)"><span class="wizard-step-number">3</span> Contact</div>  
-                <div class="wizard-step" data-step="4" onclick="goToStep(4)"><span class="wizard-step-number">4</span> Products</div>  
-                <div class="wizard-step" data-step="5" onclick="goToStep(5)"><span class="wizard-step-number">5</span> Publish</div>  
-            </div>  
-            <div id="wizardContent" style="max-width:700px;margin:0 auto;"></div>  
-        </section>  
-    </div>  
-
-    <!-- BECOME SELLER -->  
-    <div id="page-becomeSeller" style="display:none;">  
-        <section class="section" style="max-width:500px;margin:0 auto;padding-top:60px;">  
-            <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);text-align:center;">  
-                <i class="fas fa-store" style="font-size:60px;color:var(--vic-blue-glow);margin-bottom:16px;"></i>  
-                <h2 style="margin-bottom:12px;">Become a Seller</h2>  
-                <p style="color:var(--vic-gray);margin-bottom:20px;">Create your online store, add your products and start selling on VicPrime.</p>  
-                <button class="btn btn-primary" onclick="upgradeToBusiness()"><i class="fas fa-arrow-up"></i> Create Your Store</button>  
-            </div>  
-        </section>  
-    </div>  
-
-    <!-- DASHBOARD -->  
-    <div id="page-dashboard" style="display:none;">  
-        <div class="dashboard-container">  
-            <div class="dashboard-layout">  
-                <div class="dashboard-sidebar">  
-                    <div style="text-align:center;margin-bottom:12px;"><h3 style="font-size:14px;">Dashboard</h3><p style="color:var(--vic-gray);font-size:11px;" id="dashBizName"></p></div>  
-                    <div class="dashboard-nav">  
-                        <div class="dashboard-nav-item active" data-tab="overview" onclick="switchTab('overview')"><i class="fas fa-chart-pie"></i> Overview</div>  
-                        <div class="dashboard-nav-item" data-tab="products" onclick="switchTab('products')"><i class="fas fa-box"></i> Products</div>  
-                        <div class="dashboard-nav-item" data-tab="orders" onclick="switchTab('orders')"><i class="fas fa-receipt"></i> Orders</div>  
-                        <div class="dashboard-nav-item" data-tab="campaign" onclick="switchTab('campaign')"><i class="fas fa-bullhorn"></i> Campaign</div>  
-                        <div class="dashboard-nav-item" data-tab="settings" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Settings</div>  
-                    </div>  
-                </div>  
-                <div class="dashboard-content" id="dashContent"></div>  
-            </div>  
-        </div>  
-    </div>  
-
-    <!-- LOGIN -->  
-    <div id="page-login" style="display:none;">  
-        <section class="section" style="max-width:400px;margin:0 auto;padding-top:60px;">  
-            <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);">  
-                <div style="text-align:center;margin-bottom:20px;"><div class="logo-icon" style="width:48px;height:48px;margin:0 auto 10px;"><span>VP</span></div><h2>Welcome Back</h2></div>  
-                <form onsubmit="doLogin(event)">  
-                    <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" required></div>  
-                    <div class="form-group" style="position:relative;"><input type="password" class="form-input" id="loginPass" placeholder="Password" required><button type="button" class="btn btn-secondary btn-xs" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="togglePassword('loginPass')"><i class="fas fa-eye"></i></button></div>  
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>  
-                </form>  
-                <p style="text-align:center;margin-top:12px;font-size:12px;">No account? <a onclick="showPage('register')" style="color:var(--vic-blue-glow);cursor:pointer;">Register</a></p>  
-            </div>  
-        </section>  
-    </div>  
-
-    <!-- REGISTER -->  
-    <div id="page-register" style="display:none;">  
-        <section class="section" style="max-width:450px;margin:0 auto;padding-top:40px;">  
-            <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);">  
-                <div style="text-align:center;margin-bottom:20px;"><div class="logo-icon" style="width:48px;height:48px;margin:0 auto 10px;"><span>VP</span></div><h2>Create Account</h2></div>  
-                <form onsubmit="doRegister(event)">  
-                    <div class="form-group"><input type="text" class="form-input" id="regName" placeholder="Full Name" required></div>  
-                    <div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email" required></div>  
-                    <div class="form-group" style="position:relative;"><input type="password" class="form-input" id="regPass" placeholder="Password" required minlength="6"><button type="button" class="btn btn-secondary btn-xs" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="togglePassword('regPass')"><i class="fas fa-eye"></i></button></div>  
-                    <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">VicPrime is not responsible for monetary transactions.</div></div>  
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button>  
-                </form>  
-            </div>  
-        </section>  
-    </div>  
-</main>  
-
-<!-- Footer -->  
-<footer class="footer">  
-    <div class="footer-grid">  
-        <div>  
-            <div class="logo"><div class="logo-icon" style="width:32px;height:32px;font-size:14px;"><span>VP</span></div><span class="logo-text" style="font-size:16px;">VicPrime</span></div>  
-            <p style="font-size:11px;margin-top:8px;color:var(--vic-gray);"><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p>  
-        </div>  
-        <div class="footer-links">  
-            <h4>Marketplace</h4>  
-            <ul>  
-                <li><a onclick="showPage('marketplace')">Browse Marketplace</a></li>  
-                <li><a onclick="showPage('products')">Products</a></li>  
-                <li><a onclick="showPage('home')">Categories</a></li>  
-            </ul>  
-        </div>  
-        <div class="footer-links">  
-            <h4>For Businesses</h4>  
-            <ul>  
-                <li><a onclick="showPage('becomeSeller')">Become a Seller</a></li>  
-                <li><a onclick="showPage('storeBuilder')">Build Your Store</a></li>  
-                <li><a onclick="showPage('login')">Seller Login</a></li>  
-            </ul>  
-        </div>  
-        <div class="footer-links">  
-            <h4>Support</h4>  
-            <ul>  
-                <li><a href="https://wa.me/237675903626" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a></li>  
-            </ul>  
-        </div>  
-        <div class="footer-links">  
-            <h4>Company</h4>  
-            <ul>  
-                <li><a onclick="showPage('home')">How It Works</a></li>  
-                <li><a onclick="showPage('home')">About VicPrime</a></li>  
-                <li><a onclick="showPage('home')">Payment Policy</a></li>  
-            </ul>  
-        </div>  
-    </div>  
-    <div class="footer-bottom">© <span id="currentYear"></span> VicPrime Market. All rights reserved.</div>  
-</footer>  
-
-<script>  
-    // ==================== API CONFIGURATION ====================  
-    const API_URL = 'https://backend-4-io0g.onrender.com/api';  
-    const WHATSAPP_SUPPORT_NUMBER = '237675903626';  
-
-    // Cache and performance  
-    const apiCache = new Map();  
-    const CACHE_TTL = 5 * 60 * 1000;  
-    let cachedBusinesses = null;  
-    let cachedProducts = null;  
-    let lastBusinessesFetch = 0;  
-    let lastProductsFetch = 0;  
-    let businessPage = 1;  
-    let productPage = 1;  
-    let hasMoreBusinesses = false;  
-    let hasMoreProducts = false;  
-
-    async function apiCall(endpoint, method = 'GET', body = null, token = null, useCache = true) {  
-        const cacheKey = endpoint;  
-        if (method === 'GET' && useCache && apiCache.has(cacheKey)) {  
-            const cached = apiCache.get(cacheKey);  
-            if (Date.now() - cached.timestamp < CACHE_TTL) {  
-                return cached.data;  
-            } else {  
-                apiCache.delete(cacheKey);  
-            }  
-        }  
-        const headers = { 'Content-Type': 'application/json' };  
-        if (token) headers['Authorization'] = `Bearer ${token}`;  
-        const options = { method, headers };  
-        if (body) options.body = JSON.stringify(body);  
-        try {  
-            const response = await fetch(`${API_URL}${endpoint}`, options);  
-            const data = await response.json();  
-            if (method === 'GET' && useCache) {  
-                apiCache.set(cacheKey, { data, timestamp: Date.now() });  
-            }  
-            return data;  
-        } catch (error) {  
-            console.error('API Error:', error);  
-            return { success: false, message: 'Network error' };  
-        }  
-    }  
-
-    function getToken() { return localStorage.getItem('vp_token'); }  
-    function getCurrentUser() { return JSON.parse(localStorage.getItem('vp_user') || 'null'); }  
-
-    let DB = {  
-        orders: JSON.parse(localStorage.getItem('vp_orders') || '[]'),  
-        cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),  
-        reviews: JSON.parse(localStorage.getItem('vp_reviews') || '[]'),  
-        comments: JSON.parse(localStorage.getItem('vp_comments') || '[]'),  
-        likes: JSON.parse(localStorage.getItem('vp_likes') || '[]'),  
-        save() {  
-            localStorage.setItem('vp_orders', JSON.stringify(this.orders));  
-            localStorage.setItem('vp_cart', JSON.stringify(this.cart));  
-            localStorage.setItem('vp_reviews', JSON.stringify(this.reviews));  
-            localStorage.setItem('vp_comments', JSON.stringify(this.comments));  
-            localStorage.setItem('vp_likes', JSON.stringify(this.likes));  
-        }  
-    };  
-
-    const categories = ['Electronics','Fashion','Food & Beverage','Services','Home & Garden','Beauty & Health','Automotive','Education'];  
-    const catIcons = {  
-        'Electronics':'fa-mobile-alt',  
-        'Fashion':'fa-tshirt',  
-        'Food & Beverage':'fa-utensils',  
-        'Services':'fa-briefcase',  
-        'Home & Garden':'fa-home',  
-        'Beauty & Health':'fa-spa',  
-        'Automotive':'fa-car',  
-        'Education':'fa-graduation-cap'  
-    };  
-    const catImages = {  
-        'Electronics':'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',  
-        'Fashion':'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop',  
-        'Food & Beverage':'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',  
-        'Services':'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',  
-        'Home & Garden':'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',  
-        'Beauty & Health':'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop',  
-        'Automotive':'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop',  
-        'Education':'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=300&fit=crop'  
-    };  
-
-    function toast(msg, type = 'info') {  
-        const c = document.getElementById('toastContainer');  
-        const t = document.createElement('div');  
-        t.className = `toast ${type}`;  
-        t.innerHTML = `<span>${msg}</span>`;  
-        c.appendChild(t);  
-        setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 3000);  
-    }  
-
-    function debounce(func, delay = 400) {  
-        let timeout;  
-        return (...args) => {  
-            clearTimeout(timeout);  
-            timeout = setTimeout(() => func(...args), delay);  
-        };  
-    }  
-
-    const debouncedSearchBusinesses = debounce(() => renderMarketplace(), 400);  
-    const debouncedSearchProducts = debounce(() => renderProducts(), 400);  
-
-    const pageIds = ['home','marketplace','products','businessDetail','productDetail','cart','orders','chat','rewards','storeBuilder','becomeSeller','dashboard','login','register'];  
-    function showPage(page) {  
-        pageIds.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.style.display = 'none'; });  
-        const el = document.getElementById('page-' + page);  
-        if (el) el.style.display = 'block';  
-        window.scrollTo({ top: 0 });  
-        if (page === 'home') renderHome();  
-        if (page === 'marketplace') renderMarketplace();  
-        if (page === 'products') renderProducts();  
-        if (page === 'cart') renderCart();  
-        if (page === 'orders') renderOrders();  
-        if (page === 'chat') renderChat();  
-        if (page === 'rewards') renderRewards();  
-        if (page === 'dashboard') switchTab('overview');  
-        if (page === 'storeBuilder') goToStep(1);  
-        closeAccountMenu();  
-    }  
-
-    function toggleAccountMenu() {  
-        const menu = document.getElementById('accountMenu');  
-        const user = getCurrentUser();  
-        if (menu.style.display === 'block') { menu.style.display = 'none'; return; }  
-        let html = '';  
-        if (user) {  
-            html += `<div style="padding:12px;border-bottom:1px solid rgba(192,192,192,0.1);"><p style="font-weight:600;font-size:13px;">${user.name}</p><p style="font-size:11px;color:var(--vic-gray);">${user.email}</p></div>`;  
-            html += `<a onclick="showPage('home')"><i class="fas fa-home"></i> Home</a>`;  
-            html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Businesses</a>`;  
-            html += `<a onclick="showPage('products')"><i class="fas fa-box"></i> Browse Products</a>`;  
-            html += `<a onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> My Cart</a>`;  
-            html += `<a onclick="showPage('orders')"><i class="fas fa-receipt"></i> My Orders</a>`;  
-            html += `<a onclick="showPage('chat')"><i class="fas fa-comments"></i> My Chats</a>`;  
-            html += `<a onclick="showPage('rewards')"><i class="fas fa-coins"></i> My VicCoins</a>`;  
-            if (user.role === 'business') {  
-                html += `<a onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>`;  
-                html += `<a onclick="viewMyStore()"><i class="fas fa-eye"></i> View My Store</a>`;  
-                html += `<a onclick="copyStoreLink()"><i class="fas fa-link"></i> Copy Store Link</a>`;  
-            } else {  
-                html += `<a onclick="showPage('becomeSeller')"><i class="fas fa-arrow-up"></i> Become a Seller</a>`;  
-            }  
-            html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;  
-            html += `<a onclick="logout()" style="color:var(--vic-red);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>`;  
-        } else {  
-            html += `<a onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Sign In</a>`;  
-            html += `<a onclick="showPage('register')"><i class="fas fa-user-plus"></i> Register</a>`;  
-            html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse</a>`;  
-            html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;  
-        }  
-        menu.innerHTML = html;  
-        menu.style.display = 'block';  
-    }  
-
-    function closeAccountMenu() { document.getElementById('accountMenu').style.display = 'none'; }  
-
-    function viewMyStore() {  
-        const user = getCurrentUser();  
-        if (!user) { showPage('login'); return; }  
-        apiCall('/businesses').then(result => {  
-            if (result.success && result.businesses) {  
-                const myBiz = result.businesses.find(b => b.owner === user.id);  
-                if (myBiz) showBusinessDetail(myBiz._id || myBiz.id);  
-                else toast('No store found. Build your store first.', 'info');  
-            }  
-        });  
-    }  
-
-    function copyStoreLink() {  
-        const user = getCurrentUser();  
-        if (!user) { showPage('login'); return; }  
-        apiCall('/businesses').then(result => {  
-            if (result.success && result.businesses) {  
-                const myBiz = result.businesses.find(b => b.owner === user.id);  
-                if (myBiz) {  
-                    const link = `${window.location.origin}/#/business/${myBiz._id || myBiz.id}`;  
-                    navigator.clipboard.writeText(link).then(() => toast('Store link copied!', 'success'));  
-                }  
-            }  
-        });  
-    }  
-
-    function upgradeToBusiness() {  
-        const user = getCurrentUser();  
-        if (!user) { showPage('login'); return; }  
-        user.role = 'business';  
-        localStorage.setItem('vp_user', JSON.stringify(user));  
-        toast('You are now a Seller! Build your store.', 'success');  
-        showPage('storeBuilder');  
-    }  
-
-    function logout() {  
-        localStorage.removeItem('vp_token');  
-        localStorage.removeItem('vp_user');  
-        updateUserUI();  
-        closeAccountMenu();  
-        toast('Signed out', 'success');  
-        showPage('home');  
-    }  
-
-    function togglePassword(inputId) {  
-        const input = document.getElementById(inputId);  
-        input.type = input.type === 'password' ? 'text' : 'password';  
-    }  
-
-    async function renderHome() {  
-        renderCategories();  
-        loadFeaturedBusinesses();  
-    }  
-
-    function renderCategories() {  
-        const grid = document.getElementById('categoriesGrid');  
-        grid.innerHTML = categories.map(c => `  
-            <div class="card" onclick="filterByCategory('${c}')">  
-                <div class="card-cover"><img src="${catImages[c] || ''}" alt="${c}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><i class="fas ${catIcons[c]} icon-large" style="display:none;position:absolute;"></i></div>  
-                <div class="card-body"><div class="card-title">${c}</div><div class="card-subtitle">Explore</div></div>  
-            </div>`).join('');  
-    }  
-
-    async function loadFeaturedBusinesses() {  
-        const container = document.getElementById('featuredBusinesses');  
-        container.innerHTML = `<div class="loading-skeleton" style="height:160px;"></div><div class="loading-skeleton" style="height:160px;"></div><div class="loading-skeleton" style="height:160px;"></div>`;  
-        try {  
-            const result = await apiCall('/businesses?limit=3');  
-            if (result.success && result.businesses && result.businesses.length > 0) {  
-                container.innerHTML = result.businesses.map(businessCardHTML).join('');  
-            } else {  
-                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-store"></i><h3>Businesses are joining VicPrime</h3><p>New stores will appear here as they launch.</p><button class="btn btn-primary" onclick="showPage('products')">Explore Products</button></div>`;  
-            }  
-        } catch (e) {  
-            container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><button class="btn btn-primary" onclick="loadFeaturedBusinesses()">Retry</button></div>`;  
-        }  
-    }  
-
-    function businessCardHTML(b) {  
-        const img = b.logo && b.logo !== 'default-logo.png' ? b.logo : (catImages[b.category] || '');  
-        const productCount = b.productCount !== undefined ? b.productCount : 0;  
-        return `<div class="card" onclick="showBusinessDetail('${b._id || b.id}')">  
-            <div class="card-cover">${img ? `<img src="${img}" alt="${b.name}" loading="lazy">` : `<i class="fas ${catIcons[b.category]} icon-large"></i>`}  
-                ${b.verified ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}  
-                <span class="rating-badge"><i class="fas fa-star"></i> ${b.rating || 0}</span>  
-            </div>  
-            <div class="card-body">  
-                <div class="card-title">${b.name}</div>  
-                <div class="card-subtitle">${b.category}</div>  
-                <p class="card-desc">${b.description}</p>  
-                <p style="font-size:11px;color:var(--vic-gray);margin-top:8px;"><i class="fas fa-map-marker-alt"></i> ${b.location || ''}${productCount ? ` | <i class="fas fa-box"></i> ${productCount} products` : ''}</p>  
-                <div style="display:flex;gap:8px;margin-top:12px;">  
-                    <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showBusinessDetail('${b._id || b.id}')"><i class="fas fa-store"></i> View Store</button>  
-                    ${b.whatsapp ? `<a href="https://wa.me/${b.whatsapp}" target="_blank" class="btn btn-whatsapp btn-sm" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i> Contact</a>` : ''}  
-                </div>  
-            </div>  
-        </div>`;  
-    }  
-
-    function filterByCategory(category) {  
-        localStorage.setItem('vp_category_filter', category);  
-        showPage('products');  
-    }  
-
-    async function renderMarketplace(reset = true) {  
-        if (reset) {  
-            businessPage = 1;  
-            document.getElementById('allBusinesses').innerHTML = '<div class="loading-skeleton" style="height:160px;"></div>';  
-        }  
-        const search = document.getElementById('businessSearch')?.value || '';  
-        const category = document.getElementById('businessCategory')?.value || '';  
-        let url = `/businesses?page=${businessPage}&limit=12`;  
-        if (search) url += `&search=${encodeURIComponent(search)}`;  
-        if (category) url += `&category=${encodeURIComponent(category)}`;  
-        try {  
-            const result = await apiCall(url);  
-            if (result.success && result.businesses) {  
-                const container = document.getElementById('allBusinesses');  
-                if (reset) container.innerHTML = '';  
-                if (result.businesses.length === 0 && reset) {  
-                    container.innerHTML = `<div class="empty-state"><i class="fas fa-store"></i><h3>No businesses found</h3><p>Try another search or category.</p><button class="btn btn-secondary" onclick="clearBusinessSearch()">Clear Search</button></div>`;  
-                } else {  
-                    result.businesses.forEach(b => container.insertAdjacentHTML('beforeend', businessCardHTML(b)));  
-                    hasMoreBusinesses = result.page < result.pages;  
-                    renderPagination('marketplacePagination', businessPage, result.pages, () => { businessPage++; renderMarketplace(false); }, () => { businessPage--; renderMarketplace(false); });  
-                }  
-            }  
-        } catch (e) {  
-            document.getElementById('allBusinesses').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><button class="btn btn-primary" onclick="renderMarketplace()">Retry</button></div>`;  
-        }  
-    }  
-
-    function clearBusinessSearch() {  
-        document.getElementById('businessSearch').value = '';  
-        renderMarketplace();  
-    }  
-
-    async function renderProducts(reset = true) {  
-        if (reset) {  
-            productPage = 1;  
-            document.getElementById('allProducts').innerHTML = '<div class="loading-skeleton" style="height:160px;"></div>';  
-        }  
-        const search = document.getElementById('productSearch')?.value || '';  
-        const category = localStorage.getItem('vp_category_filter') || document.getElementById('productCategory')?.value || '';  
-        let url = `/products?page=${productPage}&limit=12`;  
-        if (search) url += `&search=${encodeURIComponent(search)}`;  
-        if (category) url += `&category=${encodeURIComponent(category)}`;  
-        try {  
-            const result = await apiCall(url);  
-            if (result.success && result.products) {  
-                const container = document.getElementById('allProducts');  
-                if (reset) container.innerHTML = '';  
-                if (result.products.length === 0 && reset) {  
-                    container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>No products found</h3><p>Try another search or category.</p><button class="btn btn-secondary" onclick="clearProductSearch()">Clear Search</button></div>`;  
-                } else {  
-                    result.products.forEach(p => container.insertAdjacentHTML('beforeend', productCardHTML(p)));  
-                    hasMoreProducts = result.page < result.pages;  
-                    renderPagination('productsPagination', productPage, result.pages, () => { productPage++; renderProducts(false); }, () => { productPage--; renderProducts(false); });  
-                }  
-            }  
-        } catch (e) {  
-            document.getElementById('allProducts').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><button class="btn btn-primary" onclick="renderProducts()">Retry</button></div>`;  
-        }  
-    }  
-
-    function clearProductSearch() {  
-        document.getElementById('productSearch').value = '';  
-        localStorage.removeItem('vp_category_filter');  
-        renderProducts();  
-    }  
-
-    function renderPagination(containerId, currentPage, totalPages, nextFn, prevFn) {  
-        const container = document.getElementById(containerId);  
-        let html = '';  
-        if (currentPage > 1) html += `<button class="btn btn-secondary btn-sm" onclick="${prevFn.name}()">Previous</button>`;  
-        html += `<span style="margin:0 12px;font-size:12px;color:var(--vic-gray);">Page ${currentPage} of ${totalPages}</span>`;  
-        if (currentPage < totalPages) html += `<button class="btn btn-secondary btn-sm" onclick="${nextFn.name}()">Next</button>`;  
-        container.innerHTML = html;  
-    }  
-
-    function productCardHTML(p) {  
-        const business = p.business || {};  
-        const sellerName = business.name || p.businessName || 'Unknown';  
-        const sellerWhatsApp = business.whatsapp || p.whatsapp || '';  
-        const mainImg = p.images && p.images[0] ? p.images[0] : '';  
-        const comments = DB.comments.filter(c => c.productId === p._id || c.productId === p.id);  
-        const likes = DB.likes.filter(l => l.productId === p._id || l.productId === p.id);  
-        // Check if campaign is active (would come from backend)  
-        const hasCampaign = p.hasCampaign === true; // default false  
-        return `<div class="product-card">  
-            <div class="product-image" onclick="showProductDetail('${p._id || p.id}')">${mainImg ? `<img src="${mainImg}" alt="${p.name}" loading="lazy">` : `<i class="fas fa-box-open icon-large"></i>`}</div>  
-            <div class="product-body">  
-                <div class="product-name">${p.name}</div>  
-                <div class="product-desc">${p.description}</div>  
-                <div class="product-price metallic-text">$${p.price}</div>  
-                <p style="font-size:11px;color:var(--vic-gray);">Seller: ${sellerName}</p>  
-                ${p.rating ? `<p style="font-size:11px;color:#FFD700;"><i class="fas fa-star"></i> ${p.rating}</p>` : ''}  
-                ${p.stock !== undefined ? `<p style="font-size:11px;color:${p.stock > 0 ? 'var(--vic-green)' : 'var(--vic-red)'};">${p.stock > 0 ? 'In Stock' : 'Out of Stock'}</p>` : ''}  
-                <p style="font-size:11px;color:var(--vic-gray);"><i class="far fa-comment"></i> ${comments.length} | <i class="far fa-heart"></i> ${likes.length}</p>  
-                <div class="product-actions">  
-                    <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id || p.id}','${p.name}',${p.price},'${sellerName}','${sellerWhatsApp}')"><i class="fas fa-cart-plus"></i> Add</button>  
-                    <button class="btn btn-secondary btn-xs" onclick="showProductDetail('${p._id || p.id}')"><i class="fas fa-eye"></i> View</button>  
-                    ${hasCampaign ? `<button class="btn share-earn-btn btn-xs" onclick="showSharePanel('${p._id || p.id}','${sellerName}')"><i class="fas fa-share-alt"></i> Share & Earn</button>` : `<button class="btn btn-secondary btn-xs" onclick="shareProduct('${p._id || p.id}')"><i class="fas fa-share"></i> Share</button>`}  
-                    ${sellerWhatsApp ? `<a href="https://wa.me/${sellerWhatsApp}?text=Hello, I'm interested in ${encodeURIComponent(p.name)}" target="_blank" class="btn btn-whatsapp btn-xs"><i class="fab fa-whatsapp"></i> Chat</a>` : ''}  
-                </div>  
-            </div>  
-        </div>`;  
-    }  
-
-    function shareProduct(productId) {  
-        // Normal share, no VicCoin  
-        const url = `${window.location.origin}/#/product/${productId}`;  
-        if (navigator.share) {  
-            navigator.share({ title: 'VicPrime Product', text: 'Check this out!', url })  
-                .catch(() => {});  
-        } else {  
-            prompt('Copy link to share:', url);  
-        }  
-    }  
-
-    function showSharePanel(productId, sellerName) {  
-        // Generate referral link - should be obtained from backend, but for now generate a random token for UI  
-        const referralToken = generateReferralToken();  
-        const referralLink = `${window.location.origin}/#/product/${productId}?ref=${referralToken}`;  
-        const modal = document.createElement('div');  
-        modal.className = 'modal-overlay';  
-        modal.innerHTML = `  
-            <div class="modal">  
-                <h3 style="margin-bottom:16px;"><i class="fas fa-share-alt" style="color:#F59E0B;"></i> Share & Earn</h3>  
-                <div style="margin-bottom:16px;padding:12px;background:rgba(245,158,11,0.1);border-radius:8px;">  
-                    <p style="font-size:12px;color:var(--vic-gray);">Share this product and help someone discover VicPrime. If a new person joins VicPrime through your referral, you can earn 1 VicCoin.</p>  
-                    <p style="font-size:11px;color:var(--vic-yellow);margin-top:8px;">Rewards are only available for genuine new VicPrime members. Duplicate, fraudulent or self-referrals are not eligible.</p>  
-                </div>  
-                <div class="form-group">  
-                    <label class="form-label">Caption</label>  
-                    <textarea class="form-textarea" id="shareCaption">I found this amazing product on VicPrime! 🛍️ Check it out here: ${referralLink}</textarea>  
-                </div>  
-                <div class="share-panel">  
-                    <div class="share-option" onclick="shareVia('whatsapp', '${referralLink}')"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</div>  
-                    <div class="share-option" onclick="shareVia('facebook', '${referralLink}')"><i class="fab fa-facebook" style="color:#1877F2;"></i> Facebook</div>  
-                    <div class="share-option" onclick="shareVia('messenger', '${referralLink}')"><i class="fab fa-facebook-messenger" style="color:#0084FF;"></i> Messenger</div>  
-                    <div class="share-option" onclick="shareVia('telegram', '${referralLink}')"><i class="fab fa-telegram" style="color:#0088cc;"></i> Telegram</div>  
-                    <div class="share-option" onclick="shareVia('tiktok', '${referralLink}')"><i class="fab fa-tiktok" style="color:#000;"></i> TikTok</div>  
-                    <div class="share-option" onclick="shareVia('sms', '${referralLink}')"><i class="fas fa-sms" style="color:#34B7F1;"></i> SMS</div>  
-                    <div class="share-option" onclick="copyReferralLink('${referralLink}')"><i class="fas fa-copy" style="color:var(--vic-silver);"></i> Copy Link</div>  
-                    ${navigator.share ? `<div class="share-option" onclick="nativeShare('${referralLink}')"><i class="fas fa-share-alt" style="color:var(--vic-silver);"></i> More</div>` : ''}  
-                </div>  
-                <button class="btn btn-secondary" style="margin-top:16px;width:100%;" onclick="this.closest('.modal-overlay').remove()">Cancel</button>  
-            </div>`;  
-        document.body.appendChild(modal);  
-    }  
-
-    function generateReferralToken() {  
-        // In production, this should be obtained from backend API. For now, generate a random string.  
-        return Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);  
-    }  
-
-    function shareVia(platform, link) {  
-        const caption = document.getElementById('shareCaption').value;  
-        let url = '';  
-        switch(platform) {  
-            case 'whatsapp':  
-                url = `https://wa.me/?text=${encodeURIComponent(caption)}`;  
-                break;  
-            case 'facebook':  
-                url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(caption)}`;  
-                break;  
-            case 'messenger':  
-                url = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(link)}&app_id=123456789&redirect_uri=${encodeURIComponent(link)}`;  
-                break;  
-            case 'telegram':  
-                url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(caption)}`;  
-                break;  
-            case 'tiktok':  
-                // TikTok doesn't have a direct share URL; use native or copy  
-                copyReferralLink(link);  
-                return;  
-            case 'sms':  
-                url = `sms:?body=${encodeURIComponent(caption)}`;  
-                break;  
-        }  
-        if (url) window.open(url, '_blank');  
-    }  
-
-    function copyReferralLink(link) {  
-        navigator.clipboard.writeText(link).then(() => toast('Referral link copied!', 'success'));  
-    }  
-
-    function nativeShare(link) {  
-        if (navigator.share) {  
-            navigator.share({  
-                title: 'VicPrime Share & Earn',  
-                text: document.getElementById('shareCaption').value,  
-                url: link  
-            }).catch(() => {});  
-        }  
-    }  
-
-    // Chat system  
-    function openChat(businessId, productId = null) {  
-        const user = getCurrentUser();  
-        if (!user) {  
-            // Store pending action and show login/register prompt  
-            sessionStorage.setItem('pendingAction', JSON.stringify({ type: 'chat', businessId, productId }));  
-            showPage('register');  
-            toast('Join VicPrime to continue', 'info');  
-            return;  
-        }  
-        showPage('chat');  
-        // In production, fetch or create conversation via API  
-        // For now, show a placeholder chat UI  
-        renderChat(businessId, productId);  
-    }  
-
-    function renderChat(businessId = null, productId = null) {  
-        const chatContent = document.getElementById('chatContent');  
-        if (!businessId) {  
-            // Show conversation list - would come from backend  
-            chatContent.innerHTML = `<div class="empty-state"><i class="fas fa-comments"></i><h3>No chats yet</h3><p>Start a conversation with a business from a product page.</p></div>`;  
-            return;  
-        }  
-        // Simple chat UI  
-        const business = getBusinessFromCache(businessId) || { name: 'Business' };  
-        const product = productId ? getProductFromCache(productId) : null;  
-        chatContent.innerHTML = `  
-            <div style="background:var(--vic-navy-light);border-radius:12px;padding:16px;margin-bottom:16px;">  
-                ${product ? `<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">  
-                    <img src="${product.images && product.images[0] ? product.images[0] : ''}" style="width:50px;height:50px;border-radius:8px;object-fit:cover;" alt="${product.name}">  
-                    <div>  
-                        <p style="font-weight:600;">${product.name}</p>  
-                        <p style="font-size:12px;color:var(--vic-gray);">From: ${business.name}</p>  
-                        <p style="font-size:12px;color:var(--vic-gray);">$${product.price}</p>  
-                    </div>  
-                </div>` : `<p style="font-weight:600;margin-bottom:8px;">Chat with ${business.name}</p>`}  
-                <div class="chat-panel">  
-                    <div class="chat-messages" id="chatMessages">  
-                        <div class="chat-message received">Hello! How can I help you?</div>  
-                    </div>  
-                    <div class="chat-input-area">  
-                        <input type="text" id="chatInput" placeholder="Type a message...">  
-                        <button class="btn btn-primary btn-sm" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>  
-                    </div>  
-                </div>  
-            </div>`;  
-    }  
-
-    function sendMessage() {  
-        const input = document.getElementById('chatInput');  
-        const text = input.value.trim();  
-        if (!text) return;  
-        const messagesDiv = document.getElementById('chatMessages');  
-        const msgDiv = document.createElement('div');  
-        msgDiv.className = 'chat-message sent';  
-        msgDiv.textContent = text;  
-        messagesDiv.appendChild(msgDiv);  
-        input.value = '';  
-        // In production, send message via API  
-    }  
-
-    function getBusinessFromCache(id) {  
-        return null; // placeholder  
-    }  
-    function getProductFromCache(id) {  
-        return null; // placeholder  
-    }  
-
-    // Rewards dashboard  
-    function renderRewards() {  
-        const rewardsContent = document.getElementById('rewardsContent');  
-        const user = getCurrentUser();  
-        if (!user) {  
-            rewardsContent.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Please login to view rewards</h3><button class="btn btn-primary" onclick="showPage('login')">Login</button></div>`;  
-            return;  
-        }  
-        // In production, fetch from backend  
-        // For now, show placeholder  
-        rewardsContent.innerHTML = `  
-            <div class="reward-dashboard">  
-                <h3 style="margin-bottom:16px;"><i class="fas fa-coins" style="color:#F59E0B;"></i> My VicCoins</h3>  
-                <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">  
-                    <div class="stat-card"><div class="stat-value coin-balance">0</div><div class="stat-label coin-label">Available VicCoins</div></div>  
-                    <div class="stat-card"><div class="stat-value coin-balance">0</div><div class="stat-label coin-label">Pending VicCoins</div></div>  
-                    <div class="stat-card"><div class="stat-value coin-balance">0</div><div class="stat-label coin-label">Total Earned</div></div>  
-                </div>  
-                <p style="font-size:12px;color:var(--vic-gray);margin-bottom:16px;">1 earned VicCoin = 3 FCFA reward value</p>  
-                <h4 style="margin-bottom:12px;">Reward History</h4>  
-                <p style="font-size:12px;color:var(--vic-gray);">No rewards yet. Share products to earn!</p>  
-            </div>`;  
-    }  
-
-    // Store Builder and other existing functions remain unchanged...  
-    // (Paste the remaining code from the previous full frontend here)  
-
-    // ==================== REMAINDER OF PREVIOUS CODE (store builder, dashboard, auth, etc.) ====================  
-    // ... (Due to length, keep the remaining functions identical to the previous version)  
-    // The full code is already available in the previous answer; for brevity, we include the essential parts.  
-
-    // ==================== INIT ====================  
-    window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50));  
-    document.getElementById('currentYear').textContent = new Date().getFullYear();  
-    updateCartBadge();  
-    updateUserUI();  
-    renderHome();  
-
-    // Check for referral parameter on load  
-    function checkReferral() {  
-        const params = new URLSearchParams(window.location.hash.split('?')[1] || '');  
-        const ref = params.get('ref');  
-        if (ref) {  
-            sessionStorage.setItem('referral_id', ref);  
-        }  
-    }  
-    checkReferral();  
-</script>
-
-</body>  
-</html>    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VicPrime – Shop & Earn</title>
+    <style>
+        /* White clean theme */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f9f9f9; color: #333; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        /* Header */
+        header { background: #fff; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; color: #007bff; } /* change to your logo */
+        .search-bar { flex: 1; margin: 0 20px; }
+        .search-bar input { width: 100%; padding: 8px; }
+        /* Buttons */
+        .btn { padding: 10px 15px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+        .btn-secondary { background: #6c757d; }
+        /* Product grid */
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
+        .product-card { background: #fff; padding: 15px; border: 1px solid #ddd; }
+        .product-card img { width: 100%; height: 150px; object-fit: cover; }
+        /* Chat */
+        .chat-window { border: 1px solid #ddd; background: #fff; height: 300px; overflow-y: auto; padding: 10px; }
+        /* Live */
+        .live-box { background: #000; color: #fff; padding: 20px; text-align: center; }
+        /* Gifts */
+        .gift-options { display: flex; gap: 10px; margin-top: 10px; }
+        .gift-btn { padding: 5px 10px; border: 1px solid #ccc; cursor: pointer; }
+        /* Cart disclaimer */
+        .disclaimer { background: #fff3cd; border: 1px solid #ffeeba; padding: 10px; margin: 20px 0; font-size: 14px; }
+        /* Modal */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
+        .modal-content { background: #fff; padding: 20px; width: 400px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">VicPrime</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search products..." id="searchInput">
+        </div>
+        <div>
+            <button class="btn" onclick="showLogin()">Login</button>
+            <button class="btn btn-secondary" onclick="showRegister()">Register</button>
+            <button class="btn" onclick="showCart()">Cart (<span id="cartCount">0</span>)</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Home / Product listing -->
+        <div id="homePage">
+            <h2>All Products</h2>
+            <div class="products" id="productList"></div>
+        </div>
+
+        <!-- Product Detail -->
+        <div id="productDetail" style="display:none;">
+            <button class="btn btn-secondary" onclick="goHome()">Back</button>
+            <div id="detailContent"></div>
+        </div>
+
+        <!-- Cart -->
+        <div id="cartPage" style="display:none;">
+            <h2>Your Cart</h2>
+            <div class="disclaimer">
+                <strong>Notice:</strong> VicPrime is not involved in monetary transactions between buyers and sellers.
+                All payments are handled directly between the buyer and seller. VicPrime only facilitates communication.
+            </div>
+            <div id="cartItems"></div>
+            <button class="btn" onclick="checkout()">Proceed to Contact Seller</button>
+        </div>
+
+        <!-- Chat -->
+        <div id="chatPage" style="display:none;">
+            <h2>Chat with Seller</h2>
+            <div class="chat-window" id="chatWindow"></div>
+            <input type="text" id="chatInput" placeholder="Type message..." />
+            <button class="btn" onclick="sendChat()">Send</button>
+        </div>
+
+        <!-- Live Streaming -->
+        <div id="livePage" style="display:none;">
+            <h2>Live Streams</h2>
+            <div class="live-box">
+                <h3>Live Shop: <span id="liveStoreName">Seller's Name</span></h3>
+                <p>Streaming video placeholder</p>
+                <div class="gift-options">
+                    <button class="gift-btn" onclick="sendGift('coin')">Coin (5F)</button>
+                    <button class="gift-btn" onclick="sendGift('star')">Star (50F)</button>
+                    <button class="gift-btn" onclick="sendGift('crown')">Crown (500F)</button>
+                </div>
+                <div id="giftMessage"></div>
+            </div>
+        </div>
+
+        <!-- Store Setup -->
+        <div id="storePage" style="display:none;">
+            <h2>My Store Settings</h2>
+            <input type="text" id="storeName" placeholder="Store Name" />
+            <textarea id="storeDesc" placeholder="Store Description"></textarea>
+            <button class="btn" onclick="saveStore()">Save Store</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h3>Login</h3>
+            <input type="email" id="loginEmail" placeholder="Email" />
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <button class="btn" onclick="doLogin()">Login</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <h3>Register</h3>
+            <p>Same registration for customers and sellers – you can create a store later.</p>
+            <input type="text" id="regName" placeholder="Full Name" />
+            <input type="email" id="regEmail" placeholder="Email" />
+            <input type="password" id="regPassword" placeholder="Password" />
+            <button class="btn" onclick="doRegister()">Register</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Coin Purchase Modal -->
+    <div class="modal" id="coinModal">
+        <div class="modal-content">
+            <h3>Buy Vic‑Coins</h3>
+            <p>1 Coin = 5 FCFA – Minimum 50 coins (250 FCFA)</p>
+            <input type="number" id="coinAmount" placeholder="Number of coins" min="50" />
+            <p>Payment methods:</p>
+            <ul>
+                <li>MTN MoMo: +237675903626</li>
+                <li>Orange MoMo: +237657754321</li>
+                <li>Bank (UBA Cameroon): 16059001065 – Fon Vicnuel Fondom</li>
+            </ul>
+            <button class="btn" onclick="purchaseCoins()">Submit Payment Request</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // ======== STATE ========
+        let state = {
+            token: localStorage.getItem('vp_token') || null,
+            user: JSON.parse(localStorage.getItem('vp_user') || 'null'),
+            cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
+            products: [],
+            currentProduct: null,
+            currentSeller: null
+        };
+
+        // ======== API CONFIG ========
+        const API_BASE = 'https://backend-4-io0g.onrender.com/api';
+
+        // ======== UTILITIES ========
+        async function api(endpoint, options = {}) {
+            const headers = { 'Content-Type': 'application/json' };
+            if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+            const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+            const data = await res.json();
+            return data;
+        }
+
+        // ======== NAVIGATION ========
+        function showPage(pageId) {
+            document.querySelectorAll('.container > div').forEach(el => el.style.display = 'none');
+            document.getElementById(pageId).style.display = 'block';
+        }
+
+        function goHome() {
+            showPage('homePage');
+            loadProducts();
+        }
+
+        // ======== PRODUCTS ========
+        async function loadProducts() {
+            const data = await api('/products'); // adjust endpoint as per your API
+            state.products = data;
+            const list = document.getElementById('productList');
+            list.innerHTML = '';
+            state.products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>Price: ${product.price} FCFA</p>
+                    <button class="btn" onclick="viewProduct('${product.id}')">View</button>
+                    <button class="btn btn-secondary" onclick="addToCart('${product.id}')">Add to Cart</button>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function viewProduct(id) {
+            const product = state.products.find(p => p.id === id);
+            state.currentProduct = product;
+            const detail = document.getElementById('detailContent');
+            detail.innerHTML = `
+                <img src="${product.image}" style="width:100%; max-height:400px; object-fit:contain;">
+                <h1>${product.name}</h1>
+                <p>${product.description}</p>
+                <p><strong>Price:</strong> ${product.price} FCFA</p>
+                <button class="btn" onclick="addToCart('${product.id}')">Add to Cart</button>
+                <button class="btn btn-secondary" onclick="shareProduct('${product.id}')">Share & Earn</button>
+                <button class="btn btn-secondary" onclick="chatWithSeller('${product.sellerId}')">Chat with Seller</button>
+            `;
+            showPage('productDetail');
+        }
+
+        function addToCart(id) {
+            state.cart.push(id);
+            localStorage.setItem('vp_cart', JSON.stringify(state.cart));
+            document.getElementById('cartCount').innerText = state.cart.length;
+            alert('Added to cart!');
+        }
+
+        // ======== CART ========
+        function showCart() {
+            const items = document.getElementById('cartItems');
+            items.innerHTML = '';
+            if (state.cart.length === 0) {
+                items.innerHTML = '<p>Cart is empty</p>';
+            } else {
+                state.cart.forEach(pid => {
+                    const product = state.products.find(p => p.id === pid);
+                    if (product) {
+                        items.innerHTML += `<p>${product.name} – ${product.price} FCFA</p>`;
+                    }
+                });
+                items.innerHTML += '<button class="btn" onclick="clearCart()">Clear Cart</button>';
+            }
+            showPage('cartPage');
+        }
+
+        function checkout() {
+            alert('This is a demo: In real app, you would be redirected to chat with the seller to arrange payment.');
+            // Optionally open chat with the first seller
+            if (state.cart.length > 0) {
+                const product = state.products.find(p => p.id === state.cart[0]);
+                chatWithSeller(product.sellerId);
+            }
+        }
+
+        function clearCart() {
+            state.cart = [];
+            localStorage.setItem('vp_cart', JSON.stringify(state.cart));
+            showCart();
+        }
+
+        // ======== CHAT ========
+        function chatWithSeller(sellerId) {
+            state.currentSeller = sellerId;
+            showPage('chatPage');
+            // Load chat messages from API (if you have endpoint)
+            // For now, clear the chat window
+            document.getElementById('chatWindow').innerHTML = '';
+            if (!state.user) {
+                alert('Please register or login to chat.');
+                showLogin();
+            }
+        }
+
+        function sendChat() {
+            const msg = document.getElementById('chatInput').value;
+            if (!msg) return;
+            // Send message via API (endpoint needed)
+            const chat = document.getElementById('chatWindow');
+            chat.innerHTML += `<p><strong>You:</strong> ${msg}</p>`;
+            document.getElementById('chatInput').value = '';
+        }
+
+        // ======== SHARE & EARN ========
+        function shareProduct(productId) {
+            if (!state.user) {
+                alert('Please login to share products.');
+                showLogin();
+                return;
+            }
+            const product = state.products.find(p => p.id === productId);
+            if (!product) return;
+            // Check if seller has coins (should be handled by backend)
+            // For demo, assume seller has coins
+            const shareLink = `${window.location.origin}?ref=${state.user.id}&product=${productId}`;
+            const caption = 'I found this amazing product on VicPrime!';
+            const shareText = encodeURIComponent(`${caption}\n${shareLink}`);
+            const url = `https://wa.me/?text=${shareText}`; // WhatsApp, but you can add other socials
+            window.open(url, '_blank');
+        }
+
+        // ======== LIVE STREAM & GIFTS ========
+        function openLive(storeId) {
+            showPage('livePage');
+            // Fetch live stream info from API
+            document.getElementById('liveStoreName').innerText = 'Seller Name'; // demo
+        }
+
+        function sendGift(type) {
+            if (!state.user) {
+                alert('Login to send gifts.');
+                return;
+            }
+            // Values (FCFA)
+            let value = 0;
+            if (type === 'coin') value = 5;
+            if (type === 'star') value = 50;
+            if (type === 'crown') value = 500;
+            alert(`You sent a ${type} (worth ${value} FCFA). VicPrime keeps 3% commission.`);
+            // Call API to record gift
+        }
+
+        // ======== COIN PURCHASE ========
+        function purchaseCoins() {
+            const amount = document.getElementById('coinAmount').value;
+            if (!amount || amount < 50) {
+                alert('Minimum 50 coins');
+                return;
+            }
+            alert('Payment request sent. Please complete payment via MoMo/Bank and you will be credited.');
+            closeModal();
+        }
+
+        // ======== STORE SETUP ========
+        function saveStore() {
+            const name = document.getElementById('storeName').value;
+            const desc = document.getElementById('storeDesc').value;
+            // Call API to save store
+            alert('Store saved!');
+        }
+
+        // ======== AUTH ========
+        function showLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+        function showRegister() { document.getElementById('registerModal').style.display = 'flex'; }
+        function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+
+        async function doLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+            if (data.token) {
+                state.token = data.token;
+                state.user = data.user;
+                localStorage.setItem('vp_token', state.token);
+                localStorage.setItem('vp_user', JSON.stringify(state.user));
+                alert('Login successful!');
+                closeModal();
+                // Update UI (hide login buttons, show user name)
+                loadProducts(); // refresh if needed
+            } else {
+                alert('Login failed: ' + data.message);
+            }
+        }
+
+        async function doRegister() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            // Get referral code from URL if present
+            const params = new URLSearchParams(window.location.search);
+            const ref = params.get('ref');
+            const data = await api('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password, referral: ref }) });
+            if (data.token) {
+                state.token = data.token;
+                state.user = data.user;
+                localStorage.setItem('vp_token', state.token);
+                localStorage.setItem('vp_user', JSON.stringify(state.user));
+                alert('Registration successful!');
+                // If referral, redirect to chat with seller (as per spec)
+                if (ref) {
+                    // After registration, auto-open chat with store owner (need to determine which seller)
+                    // For demo, just alert
+                    alert('You have been redirected to the seller chat!');
+                    chatWithSeller(null); // you can implement logic to get the original product seller
+                }
+                closeModal();
+                loadProducts();
+            } else {
+                alert('Registration failed: ' + data.message);
+            }
+        }
+
+        // ======== CURRENCY ========
+        // Simple: always FCFA for now
+        // Could use IP API for location detection later
+
+        // ======== INIT ========
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user logged in from localStorage
+            if (state.token) {
+                // Optionally validate token with API
+                document.querySelector('header').innerHTML = `
+                    <div class="logo">VicPrime</div>
+                    <div class="search-bar"><input type="text" placeholder="Search products..."></div>
+                    <div>
+                        <span>Hello, ${state.user.name}</span>
+                        <button class="btn" onclick="showCart()">Cart (<span id="cartCount">0</span>)</button>
+                        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                    </div>
+                `;
+            }
+            loadProducts();
+        });
+
+        function logout() {
+            localStorage.removeItem('vp_token');
+            localStorage.removeItem('vp_user');
+            location.reload();
+        }
+    </script>
+</body>
+</html>
