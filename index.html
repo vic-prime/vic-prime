@@ -37,8 +37,7 @@
         .bg-grid { position: fixed; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px); background-size:50px 50px; pointer-events:none; z-index:0; }
         .bg-glow { position: fixed; top:-50%; left:-50%; width:200%; height:200%; background: radial-gradient(circle at center, rgba(30,64,175,0.1) 0%, transparent 50%); pointer-events:none; z-index:0; animation:glowPulse 8s ease-in-out infinite; }
         @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:1} }
-        .header { position:sticky; top:0; z-index:1000; background:rgba(10,14,26,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(192,192,192,0.1); transition:all .3s; }
-        .header.scrolled { box-shadow:0 10px 40px rgba(0,0,0,0.5); }
+        .header { position:sticky; top:0; z-index:1000; background:rgba(10,14,26,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(192,192,192,0.1); }
         .header-container { max-width:1400px; margin:0 auto; padding:0 16px; height:60px; display:flex; align-items:center; justify-content:space-between; }
         .logo { display:flex; align-items:center; gap:8px; cursor:pointer; }
         .logo-icon { width:40px; height:40px; background:var(--metallic-gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--vic-black); font-size:18px; position:relative; overflow:hidden; }
@@ -47,12 +46,7 @@
         .logo-icon span { position:relative; z-index:1; }
         .logo-text { font-size:20px; font-weight:800; background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .logo-badge { background:var(--blue-gradient); color:white; font-size:8px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; }
-        .nav-actions { display:flex; align-items:center; gap:6px; }
-        .nav-link { color:var(--vic-silver); text-decoration:none; font-size:12px; padding:6px 10px; border-radius:50px; cursor:pointer; transition:all .3s; white-space:nowrap; }
-        .nav-link:hover { color:white; background:rgba(192,192,192,0.1); }
-        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
-        .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }
-        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
+        .nav-actions { display:flex; align-items:center; gap:8px; }
         .btn { display:inline-block; padding:12px 22px; border-radius:50px; font-weight:600; text-decoration:none; transition:all .3s; cursor:pointer; border:none; font-size:13px; }
         .btn-primary { background:var(--blue-gradient); color:white; box-shadow:var(--shadow-blue-glow); }
         .btn-primary:hover { transform:translateY(-2px); }
@@ -61,6 +55,9 @@
         .btn-danger { background:var(--vic-red); color:white; }
         .btn-sm { padding:6px 12px; font-size:11px; }
         .btn-xs { padding:4px 8px; font-size:10px; }
+        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
+        .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }
+        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
         .hero { position:relative; padding:80px 16px; text-align:center; background:var(--premium-dark); overflow:hidden; }
         .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(30,64,175,0.3) 0%, transparent 50%); }
         .hero-content { position:relative; z-index:1; max-width:900px; margin:0 auto; }
@@ -80,7 +77,7 @@
         .card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }
         .card-cover { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); position:relative; overflow:hidden; }
         .card-cover img { width:100%; height:100%; object-fit:cover; }
-        .card-cover .icon-large { font-size:48px; color:var(--vic-silver); }
+        .card-cover .icon-large { font-size:48px; color:var(--vic-silver); position:relative; z-index:1; }
         .card-body { padding:20px; }
         .card-title { font-size:16px; font-weight:700; }
         .card-subtitle { font-size:12px; color:var(--vic-blue-glow); }
@@ -127,7 +124,7 @@
         .toast-container { position:fixed; top:80px; right:10px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
         .toast { background:var(--vic-navy-light); border-radius:8px; padding:12px 16px; min-width:240px; font-size:12px; }
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9998; }
-        .modal { background:var(--vic-navy-light); border-radius:16px; padding:24px; max-width:500px; width:90%; max-height:85vh; overflow-y:auto; }
+        .modal { background:var(--vic-navy-light); border-radius:16px; padding:24px; max-width:500px; width:90%; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-premium); }
         .cta-section { padding:60px 16px; text-align:center; background:var(--premium-dark); }
         .cta-icon { font-size:48px; margin-bottom:16px; }
         .cta-content h2 { font-size:28px; margin-bottom:12px; }
@@ -150,6 +147,20 @@
         .empty-state i { font-size:40px; margin-bottom:12px; color:var(--vic-blue-glow); }
         .empty-state h3 { font-size:18px; margin-bottom:8px; }
         .empty-state p { font-size:13px; margin-bottom:16px; }
+        /* Account menu */
+        #accountMenu { display:none; position:absolute; right:0; top:46px; background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; min-width:180px; box-shadow:var(--shadow-premium); z-index:1001; }
+        #accountMenu a { display:block; padding:8px 14px; color:var(--vic-silver); font-size:12px; text-decoration:none; cursor:pointer; }
+        #accountMenu a:hover { background:rgba(37,99,235,0.1); color:white; }
+        @media (max-width:768px) {
+            .hero h1 { font-size:32px; }
+            .section-title { font-size:24px; }
+            .grid { grid-template-columns:1fr; }
+            .grid-products { grid-template-columns:1fr; }
+            .footer-grid { grid-template-columns:1fr; }
+            .dashboard-layout { grid-template-columns:1fr; }
+            .dashboard-sidebar { position:static; }
+            .nav-actions { gap:4px; }
+        }
         @media (min-width:768px) {
             .hero h1 { font-size:48px; }
             .section-title { font-size:32px; }
@@ -174,24 +185,17 @@
         <i class="fab fa-whatsapp"></i>
     </a>
     
-    <header class="header" id="header">
+    <header class="header">
         <div class="header-container">
             <div class="logo" onclick="showPage('home')">
                 <div class="logo-icon"><span>VP</span></div>
                 <div><span class="logo-text">VicPrime</span><span class="logo-badge">MARKET</span></div>
             </div>
             <div class="nav-actions">
-                <a class="nav-link" onclick="showPage('marketplace')"><i class="fas fa-store"></i> <span class="nav-label">Browse</span></a>
-                <a class="nav-link" onclick="showPage('products')"><i class="fas fa-box"></i> <span class="nav-label">Products</span></a>
-                <a class="nav-link" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> <span class="nav-label">Build Store</span></a>
-                <a class="nav-link" onclick="showPage('orders')"><i class="fas fa-receipt"></i> <span class="nav-label">Orders</span></a>
-                <a class="nav-link" id="dashLink" style="display:none;" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> <span class="nav-label">Dashboard</span></a>
                 <button class="icon-btn" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
                 <div style="position:relative;">
                     <button class="icon-btn" id="userBtn" onclick="toggleAccountMenu()"><i class="fas fa-user"></i></button>
-                    <div id="accountMenu" style="display:none;position:absolute;right:0;top:44px;background:var(--vic-navy-light);border:1px solid rgba(192,192,192,0.1);border-radius:12px;min-width:180px;box-shadow:var(--shadow-premium);z-index:1001;">
-                        <div id="accountMenuContent"></div>
-                    </div>
+                    <div id="accountMenu"></div>
                 </div>
             </div>
         </div>
@@ -364,7 +368,6 @@
             'Automotive':'fa-car',
             'Education':'fa-graduation-cap'
         };
-        // Realistic category images (Pinterest-style)
         const catImages = {
             'Electronics':'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',
             'Fashion':'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop',
@@ -401,34 +404,48 @@
             closeAccountMenu();
         }
         
-        // Account menu
         function toggleAccountMenu() {
             const menu = document.getElementById('accountMenu');
             const user = getCurrentUser();
-            const content = document.getElementById('accountMenuContent');
+            if (menu.style.display === 'block') { menu.style.display = 'none'; return; }
+            let html = '';
             if (user) {
-                content.innerHTML = `
-                    <div style="padding:12px;border-bottom:1px solid rgba(192,192,192,0.1);">
-                        <p style="font-weight:600;font-size:13px;">${user.name}</p>
-                        <p style="font-size:11px;color:var(--vic-gray);">${user.email}</p>
-                    </div>
-                    <a class="nav-link" style="display:block;padding:8px 12px;" onclick="showPage('orders')"><i class="fas fa-receipt"></i> My Orders</a>
-                    ${user.role === 'business' ? `<a class="nav-link" style="display:block;padding:8px 12px;" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                    <a class="nav-link" style="display:block;padding:8px 12px;" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Edit Store</a>` : ''}
-                    <a class="nav-link" style="display:block;padding:8px 12px;color:var(--vic-red);" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                `;
-                menu.style.display = 'block';
+                html += `<div style="padding:12px;border-bottom:1px solid rgba(192,192,192,0.1);"><p style="font-weight:600;font-size:13px;">${user.name}</p><p style="font-size:11px;color:var(--vic-gray);">${user.email}</p></div>`;
+                html += `<a onclick="showPage('home')"><i class="fas fa-home"></i> Home</a>`;
+                html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Businesses</a>`;
+                html += `<a onclick="showPage('products')"><i class="fas fa-box"></i> Browse Products</a>`;
+                html += `<a onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> My Cart</a>`;
+                html += `<a onclick="showPage('orders')"><i class="fas fa-receipt"></i> My Orders</a>`;
+                if (user.role === 'business') {
+                    html += `<a onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>`;
+                    html += `<a onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Edit Store</a>`;
+                    html += `<a onclick="viewMyStore()"><i class="fas fa-eye"></i> View My Store</a>`;
+                }
+                html += `<a onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Store</a>`;
+                html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;
+                html += `<a onclick="logout()" style="color:var(--vic-red);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>`;
             } else {
-                content.innerHTML = `
-                    <a class="nav-link" style="display:block;padding:8px 12px;" onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Sign In</a>
-                    <a class="nav-link" style="display:block;padding:8px 12px;" onclick="showPage('register')"><i class="fas fa-user-plus"></i> Register</a>
-                `;
-                menu.style.display = 'block';
+                html += `<a onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Sign In</a>`;
+                html += `<a onclick="showPage('register')"><i class="fas fa-user-plus"></i> Register</a>`;
+                html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse</a>`;
+                html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;
             }
+            menu.innerHTML = html;
+            menu.style.display = 'block';
         }
         
-        function closeAccountMenu() {
-            document.getElementById('accountMenu').style.display = 'none';
+        function closeAccountMenu() { document.getElementById('accountMenu').style.display = 'none'; }
+        
+        function viewMyStore() {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            apiCall('/businesses').then(result => {
+                if (result.success && result.businesses) {
+                    const myBiz = result.businesses.find(b => b.owner === user.id);
+                    if (myBiz) showBusinessDetail(myBiz._id || myBiz.id);
+                    else toast('No store found', 'error');
+                }
+            });
         }
         
         function logout() {
@@ -746,11 +763,11 @@
         
         function handleLogoUpload(event) {
             const file = event.target.files[0];
-            if (file) { const reader = new FileReader(); reader.onload = (e) => { storeData.design.logo = e.target.result; document.getElementById('logoPreview').innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100px;border-radius:8px;margin-top:8px;">`; toast('Logo uploaded!', 'success'); }; reader.readAsDataURL(file); }
+            if (file) { const reader = new FileReader(); reader.onload = (e) => { storeData.design.logo = e.target.result; document.getElementById('logoPreview').innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100px;border-radius:8px;margin-top:8px;">`; }; reader.readAsDataURL(file); }
         }
         function handleCoverUpload(event) {
             const file = event.target.files[0];
-            if (file) { const reader = new FileReader(); reader.onload = (e) => { storeData.design.cover = e.target.result; document.getElementById('coverPreview').innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100px;border-radius:8px;margin-top:8px;">`; toast('Cover uploaded!', 'success'); }; reader.readAsDataURL(file); }
+            if (file) { const reader = new FileReader(); reader.onload = (e) => { storeData.design.cover = e.target.result; document.getElementById('coverPreview').innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100px;border-radius:8px;margin-top:8px;">`; }; reader.readAsDataURL(file); }
         }
         function saveStep1() {
             storeData.info = { name: document.getElementById('sbName').value.trim(), category: document.getElementById('sbCat').value, description: document.getElementById('sbDesc').value.trim(), location: document.getElementById('sbLoc').value.trim() };
@@ -766,9 +783,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
             modal.innerHTML = `<div class="modal"><h3>Add Product</h3>
-                <div class="form-group"><label class="form-label">Product Images (up to 4)</label>
-                    <div class="image-upload" onclick="document.getElementById('apImages').click()"><i class="fas fa-camera"></i><p style="font-size:11px;margin-top:6px;">Click to add images</p><input type="file" id="apImages" accept="image/*" multiple style="display:none;" onchange="handleProductImages(event)"><div id="apImagesPreview"></div></div>
-                </div>
+                <div class="form-group"><label class="form-label">Product Images (up to 4)</label><div class="image-upload" onclick="document.getElementById('apImages').click()"><i class="fas fa-camera"></i><p style="font-size:11px;margin-top:6px;">Click to add images</p><input type="file" id="apImages" accept="image/*" multiple style="display:none;" onchange="handleProductImages(event)"><div id="apImagesPreview"></div></div></div>
                 <div class="form-group"><input class="form-input" id="apName" placeholder="Product Name"></div>
                 <div class="form-group"><input class="form-input" id="apPrice" placeholder="Price ($)" type="number" min="0"></div>
                 <div class="form-group"><input class="form-input" id="apStock" placeholder="Stock" type="number" min="0"></div>
@@ -808,7 +823,19 @@
             const result = await apiCall('/businesses', 'POST', businessData, getToken());
             if (result.success) {
                 for (const p of storeData.products) { await apiCall('/products', 'POST', { name: p.name, price: p.price, stock: p.stock, description: p.description, category: storeData.info.category, images: p.images || [] }, getToken()); }
-                toast('🎉 Store published!', 'success');
+                // Congratulations popup
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `<div class="modal" style="text-align:center;">
+                    <i class="fas fa-check-circle" style="font-size:60px;color:var(--vic-green);margin-bottom:16px;"></i>
+                    <h2 style="margin-bottom:12px;">🎉 Congratulations!</h2>
+                    <p style="color:var(--vic-gray);margin-bottom:20px;">Your store has been published successfully!</p>
+                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove();viewMyStore()"><i class="fas fa-eye"></i> View My Store</button>
+                        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove();showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+                    </div>
+                </div>`;
+                document.body.appendChild(modal);
                 showPage('dashboard');
             } else { toast(result.message || 'Failed to publish', 'error'); }
         }
@@ -827,7 +854,7 @@
             if (tab === 'overview') {
                 const productsResult = await apiCall(`/products?business=${myBiz._id}`);
                 const ordersResult = await apiCall('/orders', 'GET', null, getToken());
-                c.innerHTML = `<h2 style="margin-bottom:16px;">Overview</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div><div class="stat-card"><div class="stat-value">${ordersResult.success ? ordersResult.count : 0}</div><div class="stat-label">Orders</div></div><div class="stat-card"><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div></div><button class="btn btn-primary btn-sm" onclick="showPage('storeBuilder')">Edit Store</button>`;
+                c.innerHTML = `<h2 style="margin-bottom:16px;">Overview</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div><div class="stat-card"><div class="stat-value">${ordersResult.success ? ordersResult.count : 0}</div><div class="stat-label">Orders</div></div><div class="stat-card"><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div></div><button class="btn btn-primary btn-sm" onclick="showPage('storeBuilder')">Edit Store</button><button class="btn btn-secondary btn-sm" onclick="viewMyStore()">View Store</button>`;
             } else if (tab === 'products') {
                 const result = await apiCall(`/products?business=${myBiz._id}`);
                 c.innerHTML = `<h2>Products</h2>${result.success && result.products.length ? `<div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${result.products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table></div>` : '<p style="color:var(--vic-gray);font-size:12px;">No products yet.</p>'}`;
@@ -874,10 +901,10 @@
         }
         
         function updateUserUI() {
-            const dl = document.getElementById('dashLink');
             const user = getCurrentUser();
-            if (user) { if (user.role === 'business') dl.style.display = 'block'; else dl.style.display = 'none'; }
-            else { dl.style.display = 'none'; }
+            const btn = document.getElementById('userBtn');
+            if (user) { btn.innerHTML = '<i class="fas fa-user"></i>'; }
+            else { btn.innerHTML = '<i class="fas fa-user"></i>'; }
         }
         
         window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50));
