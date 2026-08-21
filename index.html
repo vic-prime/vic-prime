@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VicPrime Market - One Marketplace. Every Business.</title>
-    <meta name="description" content="VicPrime Market - One marketplace. Every business. Discover thousands of businesses and shop unique products.">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --vic-black: #0A0E1A;
@@ -33,372 +30,116 @@
             --shadow-metallic: 0 10px 40px rgba(192,192,192,0.2);
             --shadow-whatsapp: 0 0 30px rgba(37,211,102,0.4);
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--vic-black);
-            color: var(--vic-white);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-        
+        body { font-family: 'Inter', sans-serif; background: var(--vic-black); color: var(--vic-white); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-        
-        .bg-grid {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px);
-            background-size: 50px 50px; pointer-events: none; z-index: 0;
-        }
-        .bg-glow {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at center, rgba(30,64,175,0.1) 0%, transparent 50%);
-            pointer-events: none; z-index: 0; animation: glowPulse 8s ease-in-out infinite;
-        }
-        @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:1} }
-        
-        .header {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(10,14,26,0.95); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(192,192,192,0.1); transition: all 0.3s;
-        }
-        .header.scrolled { box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .header-container {
-            max-width: 1400px; margin: 0 auto; padding: 0 24px; height: 80px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-icon {
-            width: 48px; height: 48px; background: var(--metallic-gradient);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(192,192,192,0.3);
-        }
-        .logo-icon::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-        @keyframes shimmer { 0%{transform:translateX(-100%) rotate(45deg)} 100%{transform:translateX(100%) rotate(45deg)} }
-        .logo-icon span { font-size: 24px; position: relative; z-index: 1; color: var(--vic-black); font-weight: bold; }
-        .logo-text {
-            font-size: 24px; font-weight: 800; background: var(--metallic-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .logo-badge {
-            background: var(--blue-gradient); color: white; font-size: 10px;
-            padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-weight: 600;
-        }
-        .search-bar { flex: 1; max-width: 600px; margin: 0 24px; position: relative; }
-        .search-bar input {
-            width: 100%; background: rgba(15,21,37,0.8); border: 2px solid rgba(192,192,192,0.2);
-            border-radius: 50px; padding: 12px 48px; color: white; font-size: 15px; transition: all 0.3s;
-        }
-        .search-bar input:focus { outline: none; border-color: var(--vic-blue-light); box-shadow: 0 0 30px rgba(37,99,235,0.3); }
-        .search-bar .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--vic-silver); }
-        .search-bar .search-btn {
-            position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
-            background: var(--blue-gradient); border: none; color: white; padding: 8px 20px;
-            border-radius: 50px; cursor: pointer; font-weight: 600;
-        }
-        .nav-actions { display: flex; align-items: center; gap: 12px; }
-        .nav-link {
-            color: var(--vic-silver); text-decoration: none; font-size: 14px; font-weight: 500;
-            padding: 8px 16px; border-radius: 50px; transition: all 0.3s; cursor: pointer;
-        }
+        .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: 0; }
+        .header { position: sticky; top: 0; z-index: 1000; background: rgba(10,14,26,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(192,192,192,0.1); }
+        .header-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; height: 70px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-icon { width: 44px; height: 44px; background: var(--metallic-gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--vic-black); font-size: 20px; }
+        .logo-text { font-size: 22px; font-weight: 800; background: var(--metallic-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .logo-badge { background: var(--blue-gradient); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; }
+        .nav-actions { display: flex; align-items: center; gap: 8px; }
+        .nav-link { color: var(--vic-silver); text-decoration: none; font-size: 13px; padding: 8px 14px; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
         .nav-link:hover { color: white; background: rgba(192,192,192,0.1); }
-        .icon-btn {
-            background: none; border: 2px solid rgba(192,192,192,0.2); color: var(--vic-silver);
-            width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 20px;
-            display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative;
-        }
-        .icon-btn:hover { border-color: var(--vic-blue-light); color: white; box-shadow: 0 0 20px rgba(37,99,235,0.3); }
-        .cart-badge {
-            position: absolute; top: -4px; right: -4px; background: var(--blue-gradient);
-            color: white; font-size: 12px; border-radius: 50%; width: 24px; height: 24px;
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
-        }
-        
-        .btn {
-            display: inline-block; padding: 14px 28px; border-radius: 50px; font-weight: 600;
-            text-decoration: none; transition: all 0.3s; cursor: pointer; border: none;
-            font-size: 15px; letter-spacing: 0.5px;
-        }
+        .icon-btn { background: none; border: 2px solid rgba(192,192,192,0.2); color: var(--vic-silver); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .cart-badge { position: absolute; top: -4px; right: -4px; background: var(--blue-gradient); color: white; font-size: 11px; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .btn { display: inline-block; padding: 14px 28px; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; font-size: 15px; }
         .btn-primary { background: var(--blue-gradient); color: white; box-shadow: var(--shadow-blue-glow); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(37,99,235,0.6); }
+        .btn-primary:hover { transform: translateY(-2px); }
         .btn-secondary { background: transparent; color: var(--vic-silver); border: 2px solid rgba(192,192,192,0.3); }
-        .btn-secondary:hover { border-color: var(--vic-silver); color: white; transform: translateY(-2px); }
+        .btn-whatsapp { background: var(--whatsapp-gradient); color: white; }
         .btn-danger { background: var(--vic-red); color: white; }
-        .btn-whatsapp { background: var(--whatsapp-gradient); color: white; box-shadow: var(--shadow-whatsapp); }
-        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(37,211,102,0.6); }
         .btn-sm { padding: 8px 16px; font-size: 13px; }
         .btn-xs { padding: 6px 12px; font-size: 11px; }
-        
-        .hero {
-            position: relative; padding: 100px 24px; text-align: center; overflow: hidden;
-            background: var(--premium-dark);
-        }
-        .hero::before {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(ellipse at top, rgba(30,64,175,0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom, rgba(192,192,192,0.1) 0%, transparent 50%);
-        }
-        .hero-content { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
-        .hero-badge {
-            display: inline-block; background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.3);
-            color: var(--vic-blue-glow); padding: 8px 20px; border-radius: 50px; font-size: 14px;
-            font-weight: 600; margin-bottom: 32px; letter-spacing: 1px;
-        }
-        .hero h1 { font-size: 64px; font-weight: 900; margin-bottom: 24px; line-height: 1.1; letter-spacing: -2px; }
-        .metallic-text {
-            background: var(--metallic-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            filter: drop-shadow(0 0 30px rgba(192,192,192,0.5));
-        }
-        .blue-text {
-            background: var(--blue-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            filter: drop-shadow(0 0 30px rgba(37,99,235,0.5));
-        }
-        .hero p { font-size: 20px; color: var(--vic-gray); margin-bottom: 40px; line-height: 1.6; }
-        .hero-search {
-            max-width: 700px; margin: 0 auto 32px; display: flex;
-            background: rgba(15,21,37,0.9); border-radius: 50px; overflow: hidden;
-            border: 2px solid rgba(192,192,192,0.2); box-shadow: var(--shadow-premium);
-        }
-        .hero-search input { flex: 1; background: transparent; border: none; padding: 18px 24px; color: white; font-size: 16px; }
-        .hero-search input:focus { outline: none; }
-        .hero-search button {
-            background: var(--blue-gradient); color: white; border: none; padding: 18px 28px;
-            cursor: pointer; font-weight: 600; font-size: 16px;
-        }
-        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 56px; flex-wrap: wrap; }
-        .stat-item { text-align: center; }
-        .stat-number { font-size: 32px; font-weight: 800; background: var(--metallic-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-label { font-size: 14px; color: var(--vic-gray); margin-top: 4px; }
-        
+        .hero { position: relative; padding: 100px 24px; text-align: center; background: var(--premium-dark); }
+        .hero h1 { font-size: 56px; font-weight: 900; margin-bottom: 16px; }
+        .metallic-text { background: var(--metallic-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 30px rgba(192,192,192,0.5)); }
+        .blue-text { background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 18px; color: var(--vic-gray); margin-bottom: 32px; }
+        .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
         .section { padding: 64px 24px; position: relative; z-index: 1; }
-        .section-header {
-            max-width: 1400px; margin: 0 auto 40px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
-        }
-        .section-title { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
+        .section-header { max-width: 1400px; margin: 0 auto 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .section-title { font-size: 36px; font-weight: 800; }
         .section-subtitle { font-size: 15px; color: var(--vic-gray); margin-top: 6px; }
-        
-        .grid {
-            max-width: 1400px; margin: 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px;
-        }
-        .grid-products {
-            max-width: 1400px; margin: 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-        }
-        
-        .card {
-            background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.1);
-            border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s;
-            position: relative;
-        }
-        .card:hover {
-            border-color: rgba(37,99,235,0.4);
-            box-shadow: var(--shadow-premium);
-            transform: translateY(-8px);
-        }
-        .card-cover {
-            height: 180px; display: flex; align-items: center; justify-content: center;
-            font-size: 72px; background: var(--premium-dark); position: relative; overflow: hidden;
-        }
-        .card-cover::before { content: ''; position: absolute; inset: 0; background: var(--blue-gradient); opacity: 0.15; }
-        .card-cover span { position: relative; z-index: 1; }
+        .grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
+        .grid-products { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .card { background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.1); border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s; position: relative; }
+        .card:hover { border-color: rgba(37,99,235,0.4); box-shadow: var(--shadow-premium); transform: translateY(-8px); }
+        .card-cover { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 72px; background: var(--premium-dark); position: relative; }
         .card-body { padding: 28px; }
         .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .card-subtitle { font-size: 13px; color: var(--vic-blue-glow); font-weight: 500; margin-bottom: 8px; }
+        .card-subtitle { font-size: 13px; color: var(--vic-blue-glow); margin-bottom: 8px; }
         .card-desc { font-size: 13px; color: var(--vic-gray); line-height: 1.6; }
-        .verified-badge {
-            position: absolute; top: 14px; left: 14px; background: var(--blue-gradient);
-            color: white; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 600;
-            z-index: 2; box-shadow: 0 0 20px rgba(37,99,235,0.5);
-        }
-        .rating-badge {
-            position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.8);
-            border-radius: 50px; padding: 4px 12px; font-size: 13px; font-weight: 600; z-index: 2;
-        }
-        
-        .product-card {
-            background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.1);
-            border-radius: 16px; overflow: hidden; transition: all 0.3s;
-        }
-        .product-card:hover {
-            border-color: rgba(37,99,235,0.4);
-            box-shadow: var(--shadow-premium);
-            transform: translateY(-4px);
-        }
-        .product-image {
-            height: 180px; display: flex; align-items: center; justify-content: center;
-            background: var(--premium-dark);
-        }
-        .product-image svg { width: 100%; height: 100%; }
+        .verified-badge { position: absolute; top: 14px; left: 14px; background: var(--blue-gradient); color: white; padding: 4px 12px; border-radius: 50px; font-size: 11px; z-index: 2; }
+        .rating-badge { position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.8); border-radius: 50px; padding: 4px 12px; font-size: 13px; z-index: 2; }
+        .product-card { background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.1); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
+        .product-card:hover { border-color: rgba(37,99,235,0.4); box-shadow: var(--shadow-premium); transform: translateY(-4px); }
+        .product-image { height: 180px; display: flex; align-items: center; justify-content: center; background: var(--premium-dark); }
         .product-body { padding: 20px; }
         .product-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-        .product-desc { font-size: 12px; color: var(--vic-gray); margin-bottom: 10px; line-height: 1.4; }
+        .product-desc { font-size: 12px; color: var(--vic-gray); margin-bottom: 10px; }
         .product-price { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
         .product-actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .product-actions .btn { flex: 1; min-width: 60px; text-align: center; padding: 8px 6px; font-size: 10px; }
-        
-        .payment-disclaimer {
-            background: rgba(37,211,102,0.05); border: 1px solid rgba(37,211,102,0.2);
-            border-radius: 14px; padding: 20px; margin: 20px 0;
-        }
+        .payment-disclaimer { background: rgba(37,211,102,0.05); border: 1px solid rgba(37,211,102,0.2); border-radius: 14px; padding: 20px; margin: 20px 0; }
         .payment-disclaimer-title { color: var(--vic-whatsapp); font-weight: 700; font-size: 14px; margin-bottom: 8px; }
         .payment-disclaimer-text { color: var(--vic-gray); font-size: 13px; line-height: 1.5; }
-        
-        .whatsapp-float {
-            position: fixed; bottom: 24px; right: 24px; z-index: 999;
-            width: 56px; height: 56px; background: var(--whatsapp-gradient);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: var(--shadow-whatsapp); animation: pulse 2s infinite;
-        }
+        .whatsapp-float { position: fixed; bottom: 24px; right: 24px; z-index: 999; width: 56px; height: 56px; background: var(--whatsapp-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow-whatsapp); }
         .whatsapp-float svg { width: 28px; height: 28px; fill: white; }
-        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0.4)} 50%{box-shadow:0 0 0 20px rgba(37,211,102,0)} }
-        
-        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 1; }
+        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
         .dashboard-layout { display: grid; grid-template-columns: 240px 1fr; gap: 28px; }
-        .dashboard-sidebar {
-            background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.1);
-            border-radius: 20px; padding: 24px; position: sticky; top: 100px; height: fit-content;
-        }
+        .dashboard-sidebar { background: var(--vic-navy-light); border-radius: 20px; padding: 24px; position: sticky; top: 90px; height: fit-content; }
         .dashboard-nav { display: flex; flex-direction: column; gap: 6px; }
-        .dashboard-nav-item {
-            padding: 10px 14px; border-radius: 10px; cursor: pointer;
-            color: var(--vic-gray); font-size: 13px; font-weight: 500;
-            display: flex; align-items: center; gap: 10px; transition: all 0.3s;
-        }
+        .dashboard-nav-item { padding: 10px 14px; border-radius: 10px; cursor: pointer; color: var(--vic-gray); font-size: 13px; display: flex; align-items: center; gap: 10px; }
         .dashboard-nav-item:hover { background: rgba(37,99,235,0.1); color: white; }
-        .dashboard-nav-item.active { background: var(--blue-gradient); color: white; box-shadow: var(--shadow-blue-glow); }
-        .dashboard-content {
-            background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.1);
-            border-radius: 20px; padding: 32px;
-        }
+        .dashboard-nav-item.active { background: var(--blue-gradient); color: white; }
+        .dashboard-content { background: var(--vic-navy-light); border-radius: 20px; padding: 32px; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .stat-card {
-            background: rgba(15,21,37,0.8); border: 1px solid rgba(192,192,192,0.1);
-            border-radius: 14px; padding: 20px; transition: all 0.3s;
-        }
-        .stat-card:hover { border-color: rgba(37,99,235,0.3); transform: translateY(-4px); }
-        .stat-card-icon { font-size: 28px; margin-bottom: 8px; }
+        .stat-card { background: rgba(15,21,37,0.8); border-radius: 14px; padding: 20px; }
         .stat-value { font-size: 24px; font-weight: 800; }
         .stat-label { font-size: 12px; color: var(--vic-gray); }
-        
         .wizard-steps { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
-        .wizard-step {
-            display: flex; align-items: center; gap: 6px; padding: 10px 16px;
-            border-radius: 50px; background: var(--vic-navy-light);
-            border: 2px solid rgba(192,192,192,0.1); color: var(--vic-gray);
-            font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s;
-        }
-        .wizard-step.active {
-            background: var(--blue-gradient); color: white;
-            border-color: var(--vic-blue-light); box-shadow: var(--shadow-blue-glow);
-        }
-        .wizard-step.completed {
-            background: rgba(16,185,129,0.1); border-color: var(--vic-green); color: var(--vic-green);
-        }
-        .wizard-step-number {
-            width: 24px; height: 24px; border-radius: 50%;
-            background: rgba(192,192,192,0.1); display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 700;
-        }
-        
+        .wizard-step { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 50px; background: var(--vic-navy-light); border: 2px solid rgba(192,192,192,0.1); color: var(--vic-gray); font-size: 12px; cursor: pointer; }
+        .wizard-step.active { background: var(--blue-gradient); color: white; border-color: var(--vic-blue-light); }
+        .wizard-step.completed { background: rgba(16,185,129,0.1); border-color: var(--vic-green); color: var(--vic-green); }
+        .wizard-step-number { width: 24px; height: 24px; border-radius: 50%; background: rgba(192,192,192,0.1); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--vic-silver); }
-        .form-input {
-            width: 100%; background: rgba(10,14,26,0.8); border: 2px solid rgba(192,192,192,0.2);
-            border-radius: 10px; padding: 12px 14px; color: white; font-size: 14px; transition: all 0.3s;
-        }
-        .form-input:focus { outline: none; border-color: var(--vic-blue-light); box-shadow: 0 0 20px rgba(37,99,235,0.2); }
-        .form-select {
-            width: 100%; background: rgba(10,14,26,0.8); border: 2px solid rgba(192,192,192,0.2);
-            border-radius: 10px; padding: 12px 14px; color: white; font-size: 14px;
-        }
-        .form-textarea {
-            width: 100%; background: rgba(10,14,26,0.8); border: 2px solid rgba(192,192,192,0.2);
-            border-radius: 10px; padding: 12px 14px; color: white; font-size: 14px; min-height: 80px; resize: vertical;
-        }
-        
+        .form-input { width: 100%; background: rgba(10,14,26,0.8); border: 2px solid rgba(192,192,192,0.2); border-radius: 10px; padding: 12px 14px; color: white; font-size: 14px; }
+        .form-input:focus { outline: none; border-color: var(--vic-blue-light); }
+        .form-select { width: 100%; background: rgba(10,14,26,0.8); border: 2px solid rgba(192,192,192,0.2); border-radius: 10px; padding: 12px 14px; color: white; font-size: 14px; }
+        .form-textarea { width: 100%; background: rgba(10,14,26,0.8); border: 2px solid rgba(192,192,192,0.2); border-radius: 10px; padding: 12px 14px; color: white; font-size: 14px; min-height: 80px; }
         .toast-container { position: fixed; top: 90px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast {
-            background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.2);
-            border-radius: 10px; padding: 14px 18px; min-width: 280px;
-            display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s;
-        }
+        .toast { background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.2); border-radius: 10px; padding: 14px 18px; min-width: 280px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s; }
         .toast.success { border-left: 4px solid var(--vic-green); }
         .toast.error { border-left: 4px solid var(--vic-red); }
         .toast.info { border-left: 4px solid var(--vic-blue-light); }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
-            z-index: 9998;
-        }
-        .modal {
-            background: var(--vic-navy-light); border: 1px solid rgba(192,192,192,0.2);
-            border-radius: 20px; padding: 28px; max-width: 500px; width: 90%;
-            max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-premium);
-        }
-        
-        .cta-section {
-            padding: 80px 24px; text-align: center;
-            background: var(--premium-dark); position: relative; z-index: 1;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9998; }
+        .modal { background: var(--vic-navy-light); border-radius: 20px; padding: 28px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .cta-section { padding: 80px 24px; text-align: center; background: var(--premium-dark); }
         .cta-icon { font-size: 72px; margin-bottom: 24px; }
         .cta-content h2 { font-size: 40px; font-weight: 900; margin-bottom: 20px; }
         .cta-content p { font-size: 17px; color: var(--vic-gray); margin-bottom: 32px; }
-        
-        .footer {
-            background: var(--vic-navy); border-top: 1px solid rgba(192,192,192,0.1);
-            padding: 56px 24px 28px; margin-top: auto; position: relative; z-index: 1;
-        }
-        .footer-grid {
-            max-width: 1400px; margin: 0 auto; display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px;
-        }
-        .footer-links h4 { font-size: 16px; margin-bottom: 16px; color: var(--vic-silver-light); }
+        .footer { background: var(--vic-navy); padding: 56px 24px 28px; margin-top: auto; }
+        .footer-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-links h4 { font-size: 16px; margin-bottom: 16px; }
         .footer-links ul { list-style: none; }
         .footer-links li { margin-bottom: 10px; }
-        .footer-links a { color: var(--vic-gray); font-size: 13px; cursor: pointer; transition: all 0.3s; }
-        .footer-links a:hover { color: white; padding-left: 4px; }
-        .footer-bottom {
-            max-width: 1400px; margin: 0 auto; text-align: center;
-            padding-top: 24px; border-top: 1px solid rgba(192,192,192,0.1);
-            color: var(--vic-gray); font-size: 13px;
-        }
-        
+        .footer-links a { color: var(--vic-gray); font-size: 13px; cursor: pointer; }
+        .footer-links a:hover { color: white; }
+        .footer-bottom { max-width: 1400px; margin: 0 auto; text-align: center; padding-top: 24px; border-top: 1px solid rgba(192,192,192,0.1); color: var(--vic-gray); font-size: 13px; }
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 14px; text-align: left; border-bottom: 1px solid rgba(192,192,192,0.1); font-size: 13px; }
         th { color: var(--vic-silver); background: rgba(15,21,37,0.5); }
-        tr:hover { background: rgba(37,99,235,0.05); }
-        
-        .theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
-        .theme-card {
-            border: 2px solid rgba(192,192,192,0.1); border-radius: 12px;
-            padding: 12px; cursor: pointer; text-align: center; transition: all 0.3s;
-        }
-        .theme-card.selected { border-color: var(--vic-blue-light); box-shadow: var(--shadow-blue-glow); }
-        .theme-preview { height: 50px; border-radius: 6px; margin-bottom: 6px; }
-        
         @media (max-width: 768px) {
             .hero h1 { font-size: 36px; }
             .section-title { font-size: 26px; }
             .grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; }
-            .search-bar { display: none; }
-            .header-container { height: 64px; }
             .dashboard-layout { grid-template-columns: 1fr; }
             .dashboard-sidebar { position: static; }
         }
@@ -406,26 +147,17 @@
 </head>
 <body>
     <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
     <div class="toast-container" id="toastContainer"></div>
     
     <a href="https://wa.me/1234567890" target="_blank" class="whatsapp-float">
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
     
-    <header class="header" id="header">
+    <header class="header">
         <div class="header-container">
             <div class="logo" onclick="showPage('home')">
-                <div class="logo-icon"><span>VP</span></div>
-                <div>
-                    <span class="logo-text">VicPrime</span>
-                    <span class="logo-badge">MARKET</span>
-                </div>
-            </div>
-            <div class="search-bar">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Search businesses, products..." id="globalSearch" onkeyup="if(event.key==='Enter')doSearch()">
-                <button class="search-btn" onclick="doSearch()">Search</button>
+                <div class="logo-icon">VP</div>
+                <div><span class="logo-text">VicPrime</span><span class="logo-badge">MARKET</span></div>
             </div>
             <div class="nav-actions">
                 <a class="nav-link" onclick="showPage('marketplace')">Browse</a>
@@ -438,69 +170,29 @@
         </div>
     </header>
     
-    <main style="flex:1; position:relative; z-index:1;">
+    <main style="flex:1;">
         <div id="page-home">
             <section class="hero">
-                <div class="hero-content">
-                    <div class="hero-badge">✦ PREMIUM MARKETPLACE ✦</div>
-                    <h1><span class="metallic-text">One Marketplace.</span><br><span class="blue-text">Every Business.</span></h1>
-                    <p>Discover thousands of businesses, shop unique products, and support entrepreneurs worldwide.</p>
-                    <div class="hero-search">
-                        <input type="text" placeholder="What are you looking for?" id="heroSearch" onkeyup="if(event.key==='Enter')doSearch()">
-                        <button onclick="doSearch()">Search</button>
-                    </div>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary" onclick="showPage('marketplace')">Browse Marketplace</button>
-                        <button class="btn btn-secondary" onclick="showPage('storeBuilder')">🏪 Build Your Store</button>
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat-item"><div class="stat-number">10K+</div><div class="stat-label">Businesses</div></div>
-                        <div class="stat-item"><div class="stat-number">50K+</div><div class="stat-label">Products</div></div>
-                        <div class="stat-item"><div class="stat-number">100K+</div><div class="stat-label">Customers</div></div>
-                        <div class="stat-item"><div class="stat-number">150+</div><div class="stat-label">Countries</div></div>
-                    </div>
+                <h1><span class="metallic-text">One Marketplace.</span><br><span class="blue-text">Every Business.</span></h1>
+                <p>Discover thousands of businesses, shop unique products, and support entrepreneurs worldwide.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showPage('marketplace')">Browse Marketplace</button>
+                    <button class="btn btn-secondary" onclick="showPage('storeBuilder')">🏪 Build Your Store</button>
                 </div>
             </section>
-            
             <section class="section">
-                <div class="section-header">
-                    <div><h2 class="section-title">Browse by Category</h2><p class="section-subtitle">Find exactly what you're looking for</p></div>
-                    <a class="nav-link" onclick="showPage('marketplace')">View All →</a>
-                </div>
+                <div class="section-header"><div><h2 class="section-title">Browse by Category</h2></div></div>
                 <div class="grid" id="categoriesGrid"></div>
             </section>
-            
             <section class="section" style="background:rgba(15,21,37,0.3);">
-                <div class="section-header">
-                    <div><h2 class="section-title">Featured Businesses</h2><p class="section-subtitle">Top-rated sellers on VicPrime</p></div>
-                    <a class="nav-link" onclick="showPage('marketplace')">View All →</a>
-                </div>
-                <div class="grid" id="featuredBusinesses"></div>
-            </section>
-            
-            <section class="cta-section">
-                <div class="cta-content">
-                    <div class="cta-icon">🏪</div>
-                    <h2>Ready to Grow Your Business?</h2>
-                    <p>Join thousands of businesses already selling on VicPrime Market.</p>
-                    <button class="btn btn-primary" onclick="showPage('storeBuilder')">🏪 Build Your Store</button>
-                </div>
+                <div class="section-header"><div><h2 class="section-title">Featured Businesses</h2><p class="section-subtitle">From our API backend</p></div></div>
+                <div class="grid" id="featuredBusinesses"><p style="color:var(--vic-gray);text-align:center;grid-column:1/-1;">Loading businesses...</p></div>
             </section>
         </div>
         
         <div id="page-marketplace" style="display:none;">
             <section class="section">
-                <div class="section-header">
-                    <div><h1 class="section-title">Marketplace</h1><p class="section-subtitle" id="marketCount"></p></div>
-                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                        <select class="form-select" style="width:auto;" id="catFilter" onchange="renderMarketplace()"><option value="">All Categories</option></select>
-                        <select class="form-select" style="width:auto;" id="sortFilter" onchange="renderMarketplace()">
-                            <option value="relevance">Relevance</option>
-                            <option value="rating">Highest Rated</option>
-                            <option value="reviews">Most Reviews</option>
-                        </select>
-                    </div>
-                </div>
+                <div class="section-header"><h1 class="section-title">Marketplace</h1><p class="section-subtitle" id="marketCount"></p></div>
                 <div class="grid" id="allBusinesses"></div>
             </section>
         </div>
@@ -510,37 +202,26 @@
         </div>
         
         <div id="page-cart" style="display:none;">
-            <section class="section">
-                <div class="section-header"><h1 class="section-title">Shopping Cart</h1></div>
-                <div id="cartContent" style="max-width:1000px;margin:0 auto;"></div>
-            </section>
+            <section class="section"><div class="section-header"><h1 class="section-title">Shopping Cart</h1></div><div id="cartContent" style="max-width:1000px;margin:0 auto;"></div></section>
         </div>
         
         <div id="page-checkout" style="display:none;">
-            <section class="section">
-                <div class="section-header"><h1 class="section-title">Checkout</h1></div>
-                <div id="checkoutContent" style="max-width:700px;margin:0 auto;"></div>
-            </section>
+            <section class="section"><div class="section-header"><h1 class="section-title">Checkout</h1></div><div id="checkoutContent" style="max-width:700px;margin:0 auto;"></div></section>
         </div>
         
         <div id="page-orders" style="display:none;">
-            <section class="section">
-                <div class="section-header"><h1 class="section-title">My Orders</h1></div>
-                <div id="ordersContent" style="max-width:900px;margin:0 auto;"></div>
-            </section>
+            <section class="section"><div class="section-header"><h1 class="section-title">My Orders</h1></div><div id="ordersContent" style="max-width:900px;margin:0 auto;"></div></section>
         </div>
         
         <div id="page-storeBuilder" style="display:none;">
             <section class="section">
-                <div class="section-header" style="justify-content:center;text-align:center;">
-                    <div><h1 class="section-title">🏪 Build Your Store</h1><p class="section-subtitle">Set up your professional store in minutes</p></div>
-                </div>
+                <div class="section-header" style="justify-content:center;text-align:center;"><div><h1 class="section-title">🏪 Build Your Store</h1></div></div>
                 <div class="wizard-steps" id="wizardSteps">
-                    <div class="wizard-step active" data-step="1" onclick="goToStep(1)"><span class="wizard-step-number">1</span> Business Info</div>
-                    <div class="wizard-step" data-step="2" onclick="goToStep(2)"><span class="wizard-step-number">2</span> Store Design</div>
-                    <div class="wizard-step" data-step="3" onclick="goToStep(3)"><span class="wizard-step-number">3</span> Contact & Payment</div>
+                    <div class="wizard-step active" data-step="1" onclick="goToStep(1)"><span class="wizard-step-number">1</span> Info</div>
+                    <div class="wizard-step" data-step="2" onclick="goToStep(2)"><span class="wizard-step-number">2</span> Design</div>
+                    <div class="wizard-step" data-step="3" onclick="goToStep(3)"><span class="wizard-step-number">3</span> Contact</div>
                     <div class="wizard-step" data-step="4" onclick="goToStep(4)"><span class="wizard-step-number">4</span> Products</div>
-                    <div class="wizard-step" data-step="5" onclick="goToStep(5)"><span class="wizard-step-number">5</span> Preview & Publish</div>
+                    <div class="wizard-step" data-step="5" onclick="goToStep(5)"><span class="wizard-step-number">5</span> Publish</div>
                 </div>
                 <div id="wizardContent" style="max-width:700px;margin:0 auto;"></div>
             </section>
@@ -550,16 +231,11 @@
             <div class="dashboard-container">
                 <div class="dashboard-layout">
                     <div class="dashboard-sidebar">
-                        <div style="text-align:center;margin-bottom:20px;">
-                            <div class="logo-icon" style="width:56px;height:56px;margin:0 auto 10px;"><span style="font-size:28px;">VP</span></div>
-                            <h3 style="font-size:16px;">Business Dashboard</h3>
-                            <p style="color:var(--vic-gray);font-size:12px;" id="dashBizName">My Business</p>
-                        </div>
+                        <div style="text-align:center;margin-bottom:20px;"><h3 style="font-size:16px;">Dashboard</h3></div>
                         <div class="dashboard-nav">
                             <div class="dashboard-nav-item active" data-tab="overview" onclick="switchTab('overview')">📊 Overview</div>
                             <div class="dashboard-nav-item" data-tab="products" onclick="switchTab('products')">📦 Products</div>
                             <div class="dashboard-nav-item" data-tab="orders" onclick="switchTab('orders')">🛒 Orders</div>
-                            <div class="dashboard-nav-item" data-tab="customers" onclick="switchTab('customers')">👥 Customers</div>
                             <div class="dashboard-nav-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Settings</div>
                         </div>
                     </div>
@@ -570,12 +246,8 @@
         
         <div id="page-login" style="display:none;">
             <section class="section" style="max-width:400px;margin:0 auto;padding-top:80px;">
-                <div style="background:var(--vic-navy-light);border-radius:20px;padding:40px;box-shadow:var(--shadow-premium);">
-                    <div style="text-align:center;margin-bottom:28px;">
-                        <div class="logo-icon" style="width:56px;height:56px;margin:0 auto 14px;"><span style="font-size:28px;">VP</span></div>
-                        <h2>Welcome Back</h2>
-                        <p style="color:var(--vic-gray);margin-top:6px;">Sign in to your account</p>
-                    </div>
+                <div style="background:var(--vic-navy-light);border-radius:20px;padding:40px;">
+                    <h2 style="text-align:center;margin-bottom:24px;">Welcome Back</h2>
                     <form onsubmit="doLogin(event)">
                         <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" required></div>
                         <div class="form-group"><input type="password" class="form-input" id="loginPass" placeholder="Password" required></div>
@@ -588,30 +260,18 @@
         
         <div id="page-register" style="display:none;">
             <section class="section" style="max-width:450px;margin:0 auto;padding-top:60px;">
-                <div style="background:var(--vic-navy-light);border-radius:20px;padding:40px;box-shadow:var(--shadow-premium);">
-                    <div style="text-align:center;margin-bottom:28px;">
-                        <div class="logo-icon" style="width:56px;height:56px;margin:0 auto 14px;"><span style="font-size:28px;">VP</span></div>
-                        <h2>Create Account</h2>
-                        <p style="color:var(--vic-gray);margin-top:6px;">Join VicPrime Market</p>
-                    </div>
+                <div style="background:var(--vic-navy-light);border-radius:20px;padding:40px;">
+                    <h2 style="text-align:center;margin-bottom:24px;">Create Account</h2>
                     <form onsubmit="doRegister(event)">
-                        <div class="form-group">
-                            <select class="form-select" id="regRole" onchange="toggleBizFields()">
-                                <option value="customer">Customer</option>
-                                <option value="business">Business Owner</option>
-                            </select>
-                        </div>
+                        <div class="form-group"><select class="form-select" id="regRole" onchange="toggleBizFields()"><option value="customer">Customer</option><option value="business">Business Owner</option></select></div>
                         <div class="form-group"><input type="text" class="form-input" id="regName" placeholder="Full Name" required></div>
                         <div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email" required></div>
                         <div class="form-group"><input type="password" class="form-input" id="regPass" placeholder="Password" required></div>
                         <div id="bizFields" style="display:none;">
                             <div class="form-group"><input type="text" class="form-input" id="regBizName" placeholder="Business Name"></div>
-                            <div class="form-group"><input type="tel" class="form-input" id="regWhatsApp" placeholder="WhatsApp Number (for payments)"></div>
+                            <div class="form-group"><input type="tel" class="form-input" id="regWhatsApp" placeholder="WhatsApp Number"></div>
                         </div>
-                        <div class="payment-disclaimer">
-                            <div class="payment-disclaimer-title">💬 Payment Notice</div>
-                            <div class="payment-disclaimer-text">VicPrime is not responsible for monetary transactions. All payments direct between buyers and sellers.</div>
-                        </div>
+                        <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">VicPrime is not responsible for monetary transactions.</div></div>
                         <button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button>
                     </form>
                     <p style="text-align:center;margin-top:16px;color:var(--vic-gray);font-size:13px;">Have account? <a onclick="showPage('login')" style="color:var(--vic-blue-glow);cursor:pointer;">Sign In</a></p>
@@ -622,83 +282,50 @@
     
     <footer class="footer">
         <div class="footer-grid">
-            <div>
-                <div class="logo" onclick="showPage('home')">
-                    <div class="logo-icon" style="width:36px;height:36px;"><span style="font-size:16px;">VP</span></div>
-                    <span class="logo-text" style="font-size:18px;">VicPrime</span>
-                </div>
-                <p style="color:var(--vic-gray);font-size:13px;margin-top:12px;line-height:1.6;">One marketplace. Every business.<br><br><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p>
-            </div>
-            <div class="footer-links"><h4>Marketplace</h4><ul><li><a onclick="showPage('marketplace')">Browse</a></li><li><a onclick="showPage('home')">Categories</a></li></ul></div>
-            <div class="footer-links"><h4>Business</h4><ul><li><a onclick="showPage('storeBuilder')">Build Store</a></li><li><a onclick="showPage('dashboard')">Dashboard</a></li></ul></div>
-            <div class="footer-links"><h4>Support</h4><ul><li><a>Help</a></li><li><a>Contact</a></li></ul></div>
+            <div><div class="logo"><div class="logo-icon" style="width:36px;height:36px;font-size:16px;">VP</div><span class="logo-text" style="font-size:18px;">VicPrime</span></div><p style="color:var(--vic-gray);font-size:13px;margin-top:12px;"><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p></div>
+            <div class="footer-links"><h4>Marketplace</h4><ul><li><a onclick="showPage('marketplace')">Browse</a></li></ul></div>
+            <div class="footer-links"><h4>Business</h4><ul><li><a onclick="showPage('storeBuilder')">Build Store</a></li></ul></div>
+            <div class="footer-links"><h4>Support</h4><ul><li><a>Contact</a></li></ul></div>
         </div>
         <div class="footer-bottom">© 2024 VicPrime Market. All rights reserved.</div>
     </footer>
     
     <script>
-        const DB = {
-            users: JSON.parse(localStorage.getItem('vp_users') || '[]'),
-            businesses: JSON.parse(localStorage.getItem('vp_businesses') || '[]'),
-            products: JSON.parse(localStorage.getItem('vp_products') || '[]'),
+        // ==================== API CONFIGURATION ====================
+        const API_URL = 'https://backend-4-io0g.onrender.com/api';
+        
+        async function apiCall(endpoint, method = 'GET', body = null, token = null) {
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const options = { method, headers };
+            if (body) options.body = JSON.stringify(body);
+            try {
+                const response = await fetch(`${API_URL}${endpoint}`, options);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                return { success: false, message: 'Network error - cannot connect to backend' };
+            }
+        }
+        
+        function getToken() { return localStorage.getItem('vp_token'); }
+        function getCurrentUser() { return JSON.parse(localStorage.getItem('vp_user') || 'null'); }
+        
+        // ==================== LOCAL DATA (Fallback) ====================
+        let DB = {
+            businesses: [],
+            products: [],
             orders: JSON.parse(localStorage.getItem('vp_orders') || '[]'),
             cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
-            session: localStorage.getItem('vp_session') || null,
             save() {
-                localStorage.setItem('vp_users', JSON.stringify(this.users));
-                localStorage.setItem('vp_businesses', JSON.stringify(this.businesses));
-                localStorage.setItem('vp_products', JSON.stringify(this.products));
                 localStorage.setItem('vp_orders', JSON.stringify(this.orders));
                 localStorage.setItem('vp_cart', JSON.stringify(this.cart));
-                localStorage.setItem('vp_session', this.session);
             }
         };
         
-        if (DB.businesses.length === 0) {
-            const seed = [
-                { id:'b1', name:'TechHub Electronics', category:'Electronics', description:'Premium electronics store offering the latest gadgets and accessories.', location:'New York, USA', rating:4.8, reviewCount:324, verified:true, whatsapp:'+15551234567', email:'tech@example.com', phone:'+15551234567', ownerId:'u1', products:[
-                    {id:'p1',businessId:'b1',name:'iPhone 15 Pro Max',description:'Latest flagship smartphone with A17 Pro chip',price:1199,stock:15,image:'iphone'},
-                    {id:'p2',businessId:'b1',name:'MacBook Pro 16"',description:'Powerful laptop with M3 Max chip',price:2499,stock:8,image:'macbook'},
-                    {id:'p3',businessId:'b1',name:'Sony WH-1000XM5',description:'Noise cancelling headphones',price:399,stock:25,image:'headphones'}
-                ]},
-                { id:'b2', name:'Fashion Forward', category:'Fashion', description:'Trendy clothing and accessories for the modern individual.', location:'Los Angeles, USA', rating:4.6, reviewCount:189, verified:true, whatsapp:'+15559876543', email:'fashion@example.com', phone:'+15559876543', ownerId:'u2', products:[
-                    {id:'p4',businessId:'b2',name:'Designer Leather Jacket',description:'Premium quality genuine leather jacket',price:299,stock:30,image:'jacket'},
-                    {id:'p5',businessId:'b2',name:'Silk Evening Dress',description:'Elegant silk dress',price:199,stock:20,image:'dress'}
-                ]},
-                { id:'b3', name:'Gourmet Delights', category:'Food & Beverage', description:'Fine dining and catering services.', location:'Chicago, USA', rating:4.9, reviewCount:412, verified:true, whatsapp:'+15552468135', email:'gourmet@example.com', phone:'+15552468135', ownerId:'u3', products:[
-                    {id:'p6',businessId:'b3',name:'Signature Dish Set',description:'Gourmet meal set for two',price:89,stock:50,image:'dish'}
-                ]},
-                { id:'b4', name:'Pro Services Hub', category:'Services', description:'Professional services for businesses.', location:'Miami, USA', rating:4.7, reviewCount:156, verified:false, whatsapp:'+15555555555', email:'pro@example.com', phone:'+15555555555', ownerId:'u4', products:[
-                    {id:'p7',businessId:'b4',name:'Business Consultation',description:'One-on-one consultation',price:199,stock:100,image:'consult'}
-                ]},
-                { id:'b5', name:'HomeStyle Living', category:'Home & Garden', description:'Quality furniture and home decor.', location:'Seattle, USA', rating:4.5, reviewCount:98, verified:true, whatsapp:'+15551112222', email:'home@example.com', phone:'+15551112222', ownerId:'u5', products:[
-                    {id:'p8',businessId:'b5',name:'Modern Sofa Set',description:'3-piece sofa set',price:899,stock:10,image:'sofa'}
-                ]},
-                { id:'b6', name:'Wellness Center', category:'Beauty & Health', description:'Wellness and beauty services.', location:'Austin, USA', rating:4.9, reviewCount:267, verified:true, whatsapp:'+15553334444', email:'wellness@example.com', phone:'+15553334444', ownerId:'u6', products:[
-                    {id:'p9',businessId:'b6',name:'Full Spa Package',description:'Complete spa treatment',price:149,stock:40,image:'spa'}
-                ]}
-            ];
-            seed.forEach(b => { const {products, ...biz} = b; DB.businesses.push(biz); products.forEach(p => DB.products.push(p)); });
-            DB.save();
-        }
-        
         const categories = ['Electronics','Fashion','Food & Beverage','Services','Home & Garden','Beauty & Health','Automotive','Education'];
         const catIcons = {'Electronics':'📱','Fashion':'👗','Food & Beverage':'🍽️','Services':'💼','Home & Garden':'🏠','Beauty & Health':'💄','Automotive':'🚗','Education':'📚'};
-        
-        function getProductImage(type) {
-            const svgs = {
-                'iphone': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><rect x="60" y="20" width="80" height="160" rx="12" fill="#2d2d44"/><rect x="70" y="50" width="60" height="100" rx="4" fill="#1e3a5f"/></svg>`,
-                'macbook': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><rect x="30" y="60" width="140" height="90" rx="6" fill="#2d2d44"/><rect x="35" y="65" width="130" height="80" rx="3" fill="#0a0e1a"/></svg>`,
-                'headphones': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><path d="M60 140 Q60 60 100 60 Q140 60 140 140" fill="none" stroke="#444" stroke-width="8"/><rect x="40" y="120" width="35" height="50" rx="15" fill="#2d2d44"/><rect x="125" y="120" width="35" height="50" rx="15" fill="#2d2d44"/></svg>`,
-                'jacket': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><path d="M70 30 L60 80 L40 100 L50 160 L85 160 L85 80 L115 80 L115 160 L150 160 L160 100 L140 80 L130 30 Q100 20 70 30Z" fill="#4a3728"/></svg>`,
-                'dress': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><path d="M100 30 L80 50 L60 40 L70 80 L50 70 L75 100 L60 170 L140 170 L125 100 L150 70 L130 80 L140 40 L120 50 Z" fill="#8B0000"/></svg>`,
-                'dish': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><circle cx="100" cy="100" r="70" fill="#fff"/><circle cx="85" cy="85" r="15" fill="#c67b3d"/><circle cx="115" cy="85" r="12" fill="#3d8b37"/></svg>`,
-                'consult': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><rect x="50" y="50" width="100" height="70" rx="5" fill="#2d2d44"/></svg>`,
-                'sofa': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><rect x="30" y="60" width="140" height="50" rx="10" fill="#4a6fa5"/><rect x="20" y="90" width="30" height="50" rx="8" fill="#4a6fa5"/><rect x="150" y="90" width="30" height="50" rx="8" fill="#4a6fa5"/></svg>`,
-                'spa': `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><circle cx="100" cy="110" r="50" fill="#2d2d44"/><circle cx="100" cy="110" r="40" fill="#1e3a5f"/></svg>`
-            };
-            return svgs[type] || `<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#1a1a2e"/><rect x="50" y="50" width="100" height="100" rx="10" fill="#2d2d44"/></svg>`;
-        }
         
         function toast(msg, type = 'info') {
             const c = document.getElementById('toastContainer');
@@ -714,7 +341,7 @@
             pageIds.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.style.display = 'none'; });
             const el = document.getElementById('page-' + page);
             if (el) el.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0 });
             if (page === 'home') renderHome();
             if (page === 'marketplace') renderMarketplace();
             if (page === 'cart') renderCart();
@@ -723,110 +350,99 @@
             if (page === 'storeBuilder') goToStep(1);
         }
         
-        function doSearch() {
-            const q = document.getElementById('globalSearch').value || document.getElementById('heroSearch').value;
-            localStorage.setItem('vp_search', q);
-            showPage('marketplace');
-        }
-        
-        function renderHome() {
+        // ==================== RENDER HOME ====================
+        async function renderHome() {
             document.getElementById('categoriesGrid').innerHTML = categories.map(c => `
-                <div class="card" onclick="filterCategory('${c}')">
-                    <div class="card-cover"><span>${catIcons[c] || '🏪'}</span></div>
+                <div class="card" onclick="showPage('marketplace')">
+                    <div class="card-cover">${catIcons[c] || '🏪'}</div>
                     <div class="card-body"><div class="card-title">${c}</div></div>
                 </div>`).join('');
-            document.getElementById('featuredBusinesses').innerHTML = DB.businesses.filter(b => b.verified).slice(0, 3).map(businessCardHTML).join('');
+            
+            const result = await apiCall('/businesses');
+            if (result.success && result.businesses && result.businesses.length > 0) {
+                document.getElementById('featuredBusinesses').innerHTML = result.businesses.slice(0, 3).map(businessCardHTML).join('');
+            } else {
+                document.getElementById('featuredBusinesses').innerHTML = '<p style="color:var(--vic-gray);text-align:center;grid-column:1/-1;">No businesses yet. Be the first to <a onclick="showPage(\'storeBuilder\')" style="color:var(--vic-blue-glow);cursor:pointer;">create a store</a>!</p>';
+            }
         }
         
         function businessCardHTML(b) {
-            return `<div class="card" onclick="showBusinessDetail('${b.id}')">
-                <div class="card-cover"><span>${catIcons[b.category] || '🏪'}</span>
+            return `<div class="card" onclick="showBusinessDetail('${b._id || b.id}')">
+                <div class="card-cover">${catIcons[b.category] || '🏪'}
                     ${b.verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
-                    <span class="rating-badge">⭐ ${b.rating}</span>
+                    <span class="rating-badge">⭐ ${b.rating || 0}</span>
                 </div>
                 <div class="card-body">
                     <div class="card-title">${b.name}</div>
                     <div class="card-subtitle">${b.category}</div>
                     <p class="card-desc">${b.description}</p>
-                    <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;">📍 ${b.location} | ${b.reviewCount} reviews</p>
+                    <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;">📍 ${b.location} | ${b.reviewCount || 0} reviews</p>
                 </div>
             </div>`;
         }
         
-        function filterCategory(cat) { localStorage.setItem('vp_cat', cat); showPage('marketplace'); }
-        
-        function renderMarketplace() {
-            const search = localStorage.getItem('vp_search') || '';
-            const cat = localStorage.getItem('vp_cat') || '';
-            const sort = document.getElementById('sortFilter')?.value || 'relevance';
-            const catFilter = document.getElementById('catFilter');
-            if (catFilter) catFilter.innerHTML = '<option value="">All Categories</option>' + categories.map(c => `<option value="${c}" ${cat === c ? 'selected' : ''}>${c}</option>`).join('');
-            
-            let list = [...DB.businesses];
-            if (search) list = list.filter(b => b.name.toLowerCase().includes(search.toLowerCase()) || b.description.toLowerCase().includes(search.toLowerCase()) || b.category.toLowerCase().includes(search.toLowerCase()));
-            if (cat) list = list.filter(b => b.category === cat);
-            if (sort === 'rating') list.sort((a,b) => b.rating - a.rating);
-            if (sort === 'reviews') list.sort((a,b) => b.reviewCount - a.reviewCount);
-            
-            document.getElementById('marketCount').textContent = `${list.length} businesses found`;
-            document.getElementById('allBusinesses').innerHTML = list.map(businessCardHTML).join('') || '<p style="color:var(--vic-gray);text-align:center;padding:48px;grid-column:1/-1;">No businesses found.</p>';
+        // ==================== MARKETPLACE ====================
+        async function renderMarketplace() {
+            const result = await apiCall('/businesses');
+            document.getElementById('marketCount').textContent = result.success ? `${result.count} businesses found` : 'Cannot connect to backend';
+            document.getElementById('allBusinesses').innerHTML = result.success && result.businesses ? 
+                result.businesses.map(businessCardHTML).join('') : 
+                '<p style="color:var(--vic-gray);text-align:center;padding:48px;grid-column:1/-1;">Cannot connect to backend. Please try again.</p>';
         }
         
-        function showBusinessDetail(id) {
-            const b = DB.businesses.find(x => x.id === id);
-            if (!b) return;
-            const products = DB.products.filter(p => p.businessId === id);
+        // ==================== BUSINESS DETAIL ====================
+        async function showBusinessDetail(id) {
+            const result = await apiCall(`/businesses/${id}`);
+            if (!result.success) { toast('Business not found', 'error'); return; }
+            const b = result.business;
+            
+            const productsResult = await apiCall(`/products?business=${id}`);
+            const products = productsResult.success ? productsResult.products : [];
+            
             document.getElementById('businessDetailContent').innerHTML = `
                 <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')" style="margin-bottom:20px;">← Back</button>
                 <div class="card" style="padding:40px;margin-bottom:28px;cursor:default;">
                     <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;">
-                        <div style="width:90px;height:90px;background:var(--metallic-gradient);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:var(--shadow-metallic);">${catIcons[b.category]}</div>
+                        <div style="width:90px;height:90px;background:var(--metallic-gradient);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:44px;">${catIcons[b.category]}</div>
                         <div style="flex:1;">
                             <h2 style="font-size:32px;">${b.name} ${b.verified ? '✓' : ''}</h2>
                             <p style="color:var(--vic-blue-glow);font-size:16px;">${b.category}</p>
-                            <p style="color:var(--vic-gray);">⭐ ${b.rating} (${b.reviewCount} reviews) | 📍 ${b.location}</p>
+                            <p style="color:var(--vic-gray);">⭐ ${b.rating} | 📍 ${b.location}</p>
                         </div>
                         <a href="https://wa.me/${b.whatsapp}" target="_blank" class="btn btn-whatsapp">💬 WhatsApp</a>
                     </div>
-                    <p style="color:var(--vic-gray);margin-top:20px;line-height:1.8;">${b.description}</p>
-                    <div class="payment-disclaimer">
-                        <div class="payment-disclaimer-title">💬 Payment Notice</div>
-                        <div class="payment-disclaimer-text">All payments are direct between you and ${b.name}. VicPrime is not responsible for monetary transactions.</div>
-                    </div>
+                    <p style="color:var(--vic-gray);margin-top:20px;">${b.description}</p>
+                    <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">All payments direct with ${b.name}. VicPrime is not responsible.</div></div>
                 </div>
                 <h3 style="font-size:28px;margin-bottom:20px;">Products (${products.length})</h3>
-                <div class="grid-products">
-                    ${products.map(p => productCardHTML(p, b)).join('')}
-                </div>`;
+                <div class="grid-products">${products.map(p => productCardHTML(p, b)).join('') || '<p style="color:var(--vic-gray);">No products yet.</p>'}</div>`;
             showPage('businessDetail');
         }
         
         function productCardHTML(p, b) {
             return `<div class="product-card">
-                <div class="product-image">${getProductImage(p.image)}</div>
+                <div class="product-image" style="font-size:60px;">📦</div>
                 <div class="product-body">
                     <div class="product-name">${p.name}</div>
                     <p class="product-desc">${p.description}</p>
                     <p class="product-price metallic-text">$${p.price}</p>
                     <div class="product-actions">
-                        <button class="btn btn-primary btn-xs" onclick="addToCart('${p.id}')">🛒 Add</button>
-                        <button class="btn btn-secondary btn-xs" onclick="showPage('cart')">View Cart</button>
+                        <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id}', '${p.name}', ${p.price}, '${b.name}', '${b.whatsapp}')">🛒 Add</button>
+                        <button class="btn btn-secondary btn-xs" onclick="showPage('cart')">Cart</button>
                         <a href="https://wa.me/${b.whatsapp}?text=Hello, I'm interested in ${p.name} ($${p.price})" target="_blank" class="btn btn-whatsapp btn-xs" style="text-align:center;">💬 WhatsApp</a>
                     </div>
                 </div>
             </div>`;
         }
         
-        function addToCart(productId) {
-            const p = DB.products.find(x => x.id === productId);
-            if (!p) return;
-            const b = DB.businesses.find(x => x.id === p.businessId);
+        // ==================== CART ====================
+        function addToCart(productId, name, price, businessName, whatsapp) {
             const existing = DB.cart.find(c => c.productId === productId);
             if (existing) existing.quantity++;
-            else DB.cart.push({ productId, businessId: p.businessId, name: p.name, price: p.price, businessName: b?.name, whatsapp: b?.whatsapp, quantity: 1 });
+            else DB.cart.push({ productId, name, price, businessName, whatsapp, quantity: 1 });
             DB.save();
             updateCartBadge();
-            toast(`${p.name} added!`, 'success');
+            toast(`${name} added!`, 'success');
         }
         
         function updateCartBadge() {
@@ -839,7 +455,7 @@
         function renderCart() {
             const c = document.getElementById('cartContent');
             if (DB.cart.length === 0) {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;margin-bottom:16px;">🛒</div><h2>Cart is empty</h2><button class="btn btn-primary" onclick="showPage(\'marketplace\')">Shop Now</button></div>';
+                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;">🛒</div><h2>Cart is empty</h2><button class="btn btn-primary" onclick="showPage(\'marketplace\')">Shop Now</button></div>';
                 return;
             }
             const total = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
@@ -854,9 +470,9 @@
                         <button class="btn btn-danger btn-sm" onclick="removeItem('${item.productId}')">🗑️</button>
                     </div>
                 </div>`).join('') + `
-                <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">All payments direct with sellers. VicPrime not responsible for transactions.</div></div>
+                <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">All payments direct with sellers. VicPrime not responsible.</div></div>
                 <div class="card" style="padding:28px;display:flex;justify-content:space-between;align-items:center;cursor:default;">
-                    <span>Total: <span class="metallic-text" style="font-size:28px;font-weight:800;">$${total.toFixed(2)}</span></span>
+                    <span>Total: <span class="metallic-text" style="font-size:28px;">$${total.toFixed(2)}</span></span>
                     <button class="btn btn-primary" onclick="checkout()">Checkout</button>
                 </div>`;
         }
@@ -869,53 +485,77 @@
         
         function checkout() {
             showPage('checkout');
-            const c = document.getElementById('checkoutContent');
             const total = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
-            c.innerHTML = `
+            document.getElementById('checkoutContent').innerHTML = `
                 <div class="card" style="padding:28px;margin-bottom:16px;cursor:default;">
                     <h3>Contact Info</h3>
                     <div class="form-group"><input class="form-input" id="coName" placeholder="Full Name"></div>
                     <div class="form-group"><input class="form-input" id="coPhone" placeholder="Phone"></div>
                 </div>
-                <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment via WhatsApp</div><div class="payment-disclaimer-text">Place order, then contact seller via WhatsApp to pay. VicPrime not responsible.</div></div>
+                <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment via WhatsApp</div><div class="payment-disclaimer-text">Place order, then contact seller via WhatsApp to pay.</div></div>
                 <div class="card" style="padding:28px;cursor:default;">
                     <h3>Summary</h3>
                     ${DB.cart.map(i => `<div style="display:flex;justify-content:space-between;margin:8px 0;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
-                    <hr style="border-color:rgba(192,192,192,0.1);margin:16px 0;">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:16px;"><strong>Total</strong><span class="metallic-text" style="font-size:22px;">$${total.toFixed(2)}</span></div>
+                    <div style="display:flex;justify-content:space-between;margin:16px 0;"><strong>Total</strong><span class="metallic-text">$${total.toFixed(2)}</span></div>
                     <button class="btn btn-primary" style="width:100%;" onclick="placeOrder()">Place Order</button>
-                    ${DB.cart.map(i => `<a href="https://wa.me/${i.whatsapp}?text=Hello, I want to pay for ${i.name}" target="_blank" class="btn btn-whatsapp btn-sm" style="width:100%;margin-top:8px;">💬 Pay ${i.businessName}</a>`).join('')}
+                    ${DB.cart.map(i => `<a href="https://wa.me/${i.whatsapp}?text=Payment" target="_blank" class="btn btn-whatsapp btn-sm" style="width:100%;margin-top:8px;">💬 Pay ${i.businessName}</a>`).join('')}
                 </div>`;
         }
         
-        function placeOrder() {
+        async function placeOrder() {
+            const user = getCurrentUser();
             const name = document.getElementById('coName').value;
             const phone = document.getElementById('coPhone').value;
             if (!name || !phone) { toast('Fill all fields', 'error'); return; }
-            DB.orders.push({ id: 'ORD-' + Date.now(), items: [...DB.cart], total: DB.cart.reduce((s,i) => s + i.price*i.quantity, 0), customer: { name, phone }, status: 'pending_payment', date: new Date().toISOString() });
-            DB.cart = [];
-            DB.save();
-            updateCartBadge();
-            toast('Order placed! Contact seller via WhatsApp.', 'success');
-            showPage('orders');
-        }
-        
-        function renderOrders() {
-            const c = document.getElementById('ordersContent');
-            if (DB.orders.length === 0) {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;margin-bottom:16px;">📦</div><h2>No orders</h2><button class="btn btn-primary" onclick="showPage(\'marketplace\')">Shop</button></div>';
-                return;
+            
+            if (user) {
+                const items = DB.cart.map(i => ({ product: i.productId, quantity: i.quantity }));
+                const result = await apiCall('/orders', 'POST', { items, customerInfo: { name, phone } }, getToken());
+                if (result.success) {
+                    DB.cart = []; DB.save(); updateCartBadge();
+                    toast('Order placed!', 'success'); showPage('orders');
+                } else {
+                    toast(result.message || 'Order failed', 'error');
+                }
+            } else {
+                // Save locally for guest
+                DB.orders.push({ id: 'ORD-' + Date.now(), items: [...DB.cart], total: DB.cart.reduce((s,i) => s + i.price*i.quantity, 0), customer: { name, phone }, status: 'pending_payment', date: new Date().toISOString() });
+                DB.cart = []; DB.save(); updateCartBadge();
+                toast('Order placed! Contact seller via WhatsApp.', 'success'); showPage('orders');
             }
-            c.innerHTML = DB.orders.map(o => `
-                <div class="card" style="padding:20px;margin-bottom:12px;cursor:default;">
-                    <div style="display:flex;justify-content:space-between;"><strong>${o.id}</strong><span style="color:var(--vic-yellow);">${o.status}</span></div>
-                    <p style="color:var(--vic-gray);font-size:12px;">${new Date(o.date).toLocaleString()}</p>
-                    ${o.items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
-                    <div style="display:flex;justify-content:space-between;margin-top:12px;"><strong>Total</strong><span class="metallic-text">$${o.total.toFixed(2)}</span></div>
-                    ${o.status === 'pending_payment' ? o.items.map(i => `<a href="https://wa.me/${i.whatsapp}?text=Payment for ${o.id}" target="_blank" class="btn btn-whatsapp btn-sm" style="margin-top:8px;">💬 Pay ${i.businessName}</a>`).join('') : ''}
-                </div>`).join('');
         }
         
+        // ==================== ORDERS ====================
+        async function renderOrders() {
+            const c = document.getElementById('ordersContent');
+            const user = getCurrentUser();
+            
+            if (user) {
+                const result = await apiCall('/orders', 'GET', null, getToken());
+                if (result.success && result.orders && result.orders.length > 0) {
+                    c.innerHTML = result.orders.map(o => `
+                        <div class="card" style="padding:20px;margin-bottom:12px;cursor:default;">
+                            <div style="display:flex;justify-content:space-between;"><strong>${o.orderNumber}</strong><span style="color:var(--vic-yellow);">${o.status}</span></div>
+                            ${o.items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+                            <div style="display:flex;justify-content:space-between;margin-top:12px;"><strong>Total</strong><span class="metallic-text">$${o.totalAmount.toFixed(2)}</span></div>
+                        </div>`).join('');
+                    return;
+                }
+            }
+            
+            if (DB.orders.length === 0) {
+                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;">📦</div><h2>No orders</h2><button class="btn btn-primary" onclick="showPage(\'marketplace\')">Shop</button></div>';
+            } else {
+                c.innerHTML = DB.orders.map(o => `
+                    <div class="card" style="padding:20px;margin-bottom:12px;cursor:default;">
+                        <div style="display:flex;justify-content:space-between;"><strong>${o.id}</strong><span style="color:var(--vic-yellow);">${o.status}</span></div>
+                        ${o.items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+                        <div style="display:flex;justify-content:space-between;margin-top:12px;"><strong>Total</strong><span class="metallic-text">$${o.total.toFixed(2)}</span></div>
+                    </div>`).join('');
+            }
+        }
+        
+        // ==================== STORE BUILDER ====================
         const storeData = { info: {}, design: {}, contact: {}, products: [] };
         
         function goToStep(step) {
@@ -926,54 +566,42 @@
             });
             const c = document.getElementById('wizardContent');
             if (step === 1) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
-                    <h2 style="margin-bottom:24px;">Business Information</h2>
-                    <div class="form-group"><label class="form-label">Business Name *</label><input class="form-input" id="sbName" value="${storeData.info.name || ''}" placeholder="e.g. TechHub Electronics"></div>
-                    <div class="form-group"><label class="form-label">Category *</label><select class="form-select" id="sbCat">${categories.map(c => `<option value="${c}" ${storeData.info.category === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2>Business Information</h2>
+                    <div class="form-group"><label class="form-label">Business Name *</label><input class="form-input" id="sbName" value="${storeData.info.name || ''}"></div>
+                    <div class="form-group"><label class="form-label">Category *</label><select class="form-select" id="sbCat">${categories.map(x => `<option value="${x}">${x}</option>`).join('')}</select></div>
                     <div class="form-group"><label class="form-label">Description *</label><textarea class="form-textarea" id="sbDesc">${storeData.info.description || ''}</textarea></div>
                     <div class="form-group"><label class="form-label">Location *</label><input class="form-input" id="sbLoc" value="${storeData.info.location || ''}"></div>
-                    <div style="display:flex;justify-content:flex-end;"><button class="btn btn-primary" onclick="saveStep1()">Next →</button></div>
-                </div>`;
+                    <button class="btn btn-primary" onclick="saveStep1()">Next →</button></div>`;
             } else if (step === 2) {
-                const themes = [['dark','Dark','#0A0E1A,#1A1F2E,#2563EB'],['metallic','Metallic','#0F1525,#C0C0C0,#1E40AF'],['blue','Blue','#0A0E1A,#1E3A5F,#3B82F6'],['silver','Silver','#1A1F2E,#E8E8E8,#2563EB']];
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
-                    <h2 style="margin-bottom:24px;">Store Design</h2>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2>Store Design</h2>
                     <div class="form-group"><label class="form-label">Store URL</label><input class="form-input" id="sbSlug" value="${storeData.design.slug || ''}" placeholder="your-store-name"></div>
-                    <div class="form-group"><label class="form-label">Theme</label><div class="theme-grid">${themes.map(t => `<div class="theme-card ${storeData.design.theme === t[0] ? 'selected' : ''}" onclick="selectTheme('${t[0]}')"><div class="theme-preview" style="background:linear-gradient(135deg,${t[2]})"></div><p style="font-size:11px;">${t[1]}</p></div>`).join('')}</div></div>
-                    <div style="display:flex;gap:12px;justify-content:space-between;"><button class="btn btn-secondary" onclick="goToStep(1)">← Back</button><button class="btn btn-primary" onclick="goToStep(3)">Next →</button></div>
-                </div>`;
+                    <button class="btn btn-primary" onclick="goToStep(3)">Next →</button></div>`;
             } else if (step === 3) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
-                    <h2 style="margin-bottom:24px;">Contact & Payment</h2>
-                    <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="sbEmail" value="${storeData.contact.email || ''}" type="email"></div>
-                    <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="sbPhone" value="${storeData.contact.phone || ''}" type="tel"></div>
-                    <div class="form-group"><label class="form-label">WhatsApp (for payments) *</label><input class="form-input" id="sbWhatsApp" value="${storeData.contact.whatsapp || ''}" type="tel" placeholder="+1234567890"></div>
-                    <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">Customers will pay you directly via WhatsApp. VicPrime is not responsible for monetary transactions.</div></div>
-                    <div style="display:flex;gap:12px;justify-content:space-between;"><button class="btn btn-secondary" onclick="goToStep(2)">← Back</button><button class="btn btn-primary" onclick="saveStep3()">Next →</button></div>
-                </div>`;
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2>Contact & Payment</h2>
+                    <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="sbEmail" type="email"></div>
+                    <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="sbPhone" type="tel"></div>
+                    <div class="form-group"><label class="form-label">WhatsApp *</label><input class="form-input" id="sbWhatsApp" type="tel"></div>
+                    <div class="payment-disclaimer"><div class="payment-disclaimer-text">Customers pay you directly via WhatsApp. VicPrime not responsible.</div></div>
+                    <button class="btn btn-primary" onclick="saveStep3()">Next →</button></div>`;
             } else if (step === 4) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h2>Products</h2><button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Add Product</button></div>
-                    <div id="sbProducts">${storeData.products.length ? storeData.products.map((p, i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:rgba(15,21,37,0.5);border-radius:10px;margin-bottom:8px;"><div><strong>${p.name}</strong><br><span style="color:var(--vic-gray);font-size:12px;">$${p.price} | Stock: ${p.stock}</span></div><button class="btn btn-danger btn-sm" onclick="removeSBProduct(${i})">Remove</button></div>`).join('') : '<p style="color:var(--vic-gray);text-align:center;padding:28px;">No products yet.</p>'}</div>
-                    <div style="display:flex;gap:12px;justify-content:space-between;margin-top:20px;"><button class="btn btn-secondary" onclick="goToStep(3)">← Back</button><button class="btn btn-primary" onclick="goToStep(5)">Next →</button></div>
-                </div>`;
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2>Products</h2>
+                    <button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Add Product</button>
+                    <div id="sbProducts" style="margin-top:16px;">${storeData.products.length ? storeData.products.map((p, i) => `<div style="display:flex;justify-content:space-between;padding:12px;background:rgba(15,21,37,0.5);border-radius:10px;margin-bottom:8px;"><div><strong>${p.name}</strong><br><span style="color:var(--vic-gray);font-size:12px;">$${p.price}</span></div><button class="btn btn-danger btn-sm" onclick="removeSBProduct(${i})">Remove</button></div>`).join('') : '<p style="color:var(--vic-gray);">No products yet.</p>'}</div>
+                    <button class="btn btn-primary" onclick="goToStep(5)">Next →</button></div>`;
             } else if (step === 5) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
-                    <h2 style="margin-bottom:24px;">Preview & Publish</h2>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2>Preview & Publish</h2>
                     <div style="background:rgba(15,21,37,0.5);border-radius:14px;padding:28px;margin-bottom:20px;">
                         <h3>${storeData.info.name || 'Your Store'}</h3>
-                        <p style="color:var(--vic-blue-glow);">${storeData.info.category || 'Category'}</p>
-                        <p style="color:var(--vic-gray);">📍 ${storeData.info.location || 'Location'}</p>
-                        <p style="color:var(--vic-gray);margin-top:8px;">${storeData.info.description || 'Description'}</p>
-                        <p style="margin-top:8px;">💬 WhatsApp: ${storeData.contact.whatsapp || 'N/A'}</p>
-                        <p style="margin-top:8px;">📦 Products: ${storeData.products.length}</p>
+                        <p style="color:var(--vic-blue-glow);">${storeData.info.category}</p>
+                        <p style="color:var(--vic-gray);">📍 ${storeData.info.location}</p>
+                        <p style="color:var(--vic-gray);">${storeData.info.description}</p>
+                        <p>💬 WhatsApp: ${storeData.contact.whatsapp}</p>
+                        <p>📦 Products: ${storeData.products.length}</p>
                     </div>
-                    <div style="display:flex;gap:12px;justify-content:space-between;"><button class="btn btn-secondary" onclick="goToStep(4)">← Back</button><button class="btn btn-primary" onclick="publishStore()">🚀 Publish Store</button></div>
-                </div>`;
+                    <button class="btn btn-primary" onclick="publishStore()">🚀 Publish Store</button></div>`;
             }
         }
         
-        function selectTheme(t) { storeData.design.theme = t; document.querySelectorAll('.theme-card').forEach(el => el.classList.toggle('selected', el.textContent.trim().startsWith(t))); }
         function saveStep1() {
             storeData.info = { name: document.getElementById('sbName').value, category: document.getElementById('sbCat').value, description: document.getElementById('sbDesc').value, location: document.getElementById('sbLoc').value };
             if (!storeData.info.name || !storeData.info.category) { toast('Fill required fields', 'error'); return; }
@@ -987,12 +615,12 @@
         function showAddProduct() {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal"><h3 style="margin-bottom:16px;">Add Product</h3>
+            modal.innerHTML = `<div class="modal"><h3>Add Product</h3>
                 <div class="form-group"><input class="form-input" id="apName" placeholder="Name"></div>
                 <div class="form-group"><input class="form-input" id="apPrice" placeholder="Price" type="number"></div>
                 <div class="form-group"><input class="form-input" id="apStock" placeholder="Stock" type="number"></div>
                 <div class="form-group"><textarea class="form-textarea" id="apDesc" placeholder="Description"></textarea></div>
-                <div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button><button class="btn btn-primary" onclick="confirmAddSBProduct()">Add</button></div></div>`;
+                <button class="btn btn-primary" onclick="confirmAddSBProduct()">Add</button></div>`;
             document.body.appendChild(modal);
         }
         function confirmAddSBProduct() {
@@ -1005,111 +633,159 @@
         }
         function removeSBProduct(i) { storeData.products.splice(i, 1); goToStep(4); }
         
-        function publishStore() {
-            if (!DB.session) { toast('Please login first', 'error'); showPage('login'); return; }
-            const biz = { id: 'b' + Date.now(), name: storeData.info.name, category: storeData.info.category, description: storeData.info.description, location: storeData.info.location, rating: 0, reviewCount: 0, verified: false, whatsapp: storeData.contact.whatsapp, email: storeData.contact.email, phone: storeData.contact.phone, ownerId: DB.session, slug: storeData.design.slug || storeData.info.name.toLowerCase().replace(/[^a-z0-9]/g, '-') };
-            DB.businesses.push(biz);
-            storeData.products.forEach(p => DB.products.push({ id: 'p' + Date.now() + Math.random(), businessId: biz.id, name: p.name, price: p.price, stock: p.stock, description: p.description, image: 'default' }));
-            DB.save();
-            toast('🎉 Store published successfully!', 'success');
-            showPage('dashboard');
+        async function publishStore() {
+            const user = getCurrentUser();
+            if (!user) { toast('Please login first', 'error'); showPage('login'); return; }
+            
+            const businessData = {
+                name: storeData.info.name,
+                category: storeData.info.category,
+                description: storeData.info.description,
+                location: storeData.info.location,
+                email: storeData.contact.email,
+                phone: storeData.contact.phone,
+                whatsapp: storeData.contact.whatsapp
+            };
+            
+            const result = await apiCall('/businesses', 'POST', businessData, getToken());
+            
+            if (result.success) {
+                for (const p of storeData.products) {
+                    await apiCall('/products', 'POST', {
+                        name: p.name, price: p.price, stock: p.stock,
+                        description: p.description, category: storeData.info.category
+                    }, getToken());
+                }
+                toast('🎉 Store published!', 'success');
+                showPage('dashboard');
+            } else {
+                toast(result.message || 'Failed to publish. Make sure you registered as business owner.', 'error');
+            }
         }
         
-        function switchTab(tab) {
+        // ==================== DASHBOARD ====================
+        async function switchTab(tab) {
             document.querySelectorAll('.dashboard-nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
             const c = document.getElementById('dashContent');
-            const biz = DB.businesses.find(b => b.ownerId === DB.session);
-            if (!biz) {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;margin-bottom:16px;">🏪</div><h2>No Business Found</h2><p style="color:var(--vic-gray);margin:16px 0;">Create your store to get started!</p><button class="btn btn-primary" onclick="showPage(\'storeBuilder\')">🏪 Build Your Store</button></div>';
+            const user = getCurrentUser();
+            
+            if (!user || user.role !== 'business') {
+                c.innerHTML = '<div style="text-align:center;padding:80px;"><h2>Business Login Required</h2><p style="color:var(--vic-gray);margin:16px 0;">Register as business owner to access dashboard.</p><button class="btn btn-primary" onclick="showPage(\'register\')">Register</button></div>';
                 return;
             }
-            document.getElementById('dashBizName').textContent = biz.name;
+            
+            c.innerHTML = '<p style="color:var(--vic-gray);">Loading...</p>';
+            
+            const bizResult = await apiCall('/businesses');
+            const myBiz = bizResult.success ? bizResult.businesses.find(b => b.owner === user.id) : null;
+            
+            if (!myBiz) {
+                c.innerHTML = '<div style="text-align:center;padding:80px;"><h2>No Business Found</h2><p style="color:var(--vic-gray);margin:16px 0;">Create your store!</p><button class="btn btn-primary" onclick="showPage(\'storeBuilder\')">🏪 Build Store</button></div>';
+                return;
+            }
             
             if (tab === 'overview') {
-                const bizOrders = DB.orders.filter(o => o.items.some(i => i.businessId === biz.id));
-                const bizProducts = DB.products.filter(p => p.businessId === biz.id);
-                c.innerHTML = `<h2 style="margin-bottom:24px;">Overview</h2>
+                const productsResult = await apiCall(`/products?business=${myBiz._id}`);
+                const ordersResult = await apiCall('/orders', 'GET', null, getToken());
+                c.innerHTML = `<h2>Overview</h2>
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-card-icon">📦</div><div class="stat-value">${bizOrders.length}</div><div class="stat-label">Orders</div></div>
-                        <div class="stat-card"><div class="stat-card-icon">📦</div><div class="stat-value">${bizProducts.length}</div><div class="stat-label">Products</div></div>
-                        <div class="stat-card"><div class="stat-card-icon">⭐</div><div class="stat-value">${biz.rating}</div><div class="stat-label">Rating</div></div>
-                        <div class="stat-card"><div class="stat-card-icon">💬</div><div class="stat-value">${biz.whatsapp}</div><div class="stat-label">WhatsApp</div></div>
+                        <div class="stat-card"><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div>
+                        <div class="stat-card"><div class="stat-value">${ordersResult.success ? ordersResult.count : 0}</div><div class="stat-label">Orders</div></div>
+                        <div class="stat-card"><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div>
+                        <div class="stat-card"><div class="stat-value">${myBiz.whatsapp}</div><div class="stat-label">WhatsApp</div></div>
                     </div>
                     <button class="btn btn-primary" onclick="showPage('storeBuilder')">🏪 Edit Store</button>`;
             } else if (tab === 'products') {
-                const products = DB.products.filter(p => p.businessId === biz.id);
-                c.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:20px;"><h2>Products</h2><button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Add</button></div>
-                    ${products.length ? `<div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table></div>` : '<p style="color:var(--vic-gray);">No products yet.</p>'}`;
+                const result = await apiCall(`/products?business=${myBiz._id}`);
+                c.innerHTML = `<h2>Products</h2>${result.success && result.products.length ? `<table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${result.products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table>` : '<p style="color:var(--vic-gray);">No products yet.</p>'}`;
             } else if (tab === 'orders') {
-                const orders = DB.orders.filter(o => o.items.some(i => i.businessId === biz.id));
-                c.innerHTML = `<h2 style="margin-bottom:20px;">Orders</h2>${orders.length ? orders.map(o => `<div class="card" style="padding:14px;margin-bottom:8px;cursor:default;"><strong>${o.id}</strong> - ${o.status}<br><span style="color:var(--vic-gray);font-size:12px;">${o.customer.name} | ${o.customer.phone}</span></div>`).join('') : '<p style="color:var(--vic-gray);">No orders yet.</p>'}`;
-            } else if (tab === 'customers') {
-                const orders = DB.orders.filter(o => o.items.some(i => i.businessId === biz.id));
-                const customers = [...new Set(orders.map(o => o.customer.phone))];
-                c.innerHTML = `<h2 style="margin-bottom:20px;">Customers</h2>${customers.length ? customers.map(ph => { const o = orders.find(x => x.customer.phone === ph); return `<div class="card" style="padding:14px;margin-bottom:8px;cursor:default;"><strong>${o.customer.name}</strong><br><span style="color:var(--vic-gray);font-size:12px;">${ph}</span><br><a href="https://wa.me/${ph}" target="_blank" class="btn btn-whatsapp btn-sm" style="margin-top:8px;">💬 WhatsApp</a></div>`; }).join('') : '<p style="color:var(--vic-gray);">No customers yet.</p>'}`;
+                const result = await apiCall('/orders', 'GET', null, getToken());
+                c.innerHTML = `<h2>Orders</h2>${result.success && result.orders.length ? result.orders.map(o => `<div class="card" style="padding:14px;margin-bottom:8px;cursor:default;"><strong>${o.orderNumber}</strong> - ${o.status}<br><span style="color:var(--vic-gray);font-size:12px;">Total: $${o.totalAmount}</span></div>`).join('') : '<p style="color:var(--vic-gray);">No orders yet.</p>'}`;
             } else if (tab === 'settings') {
-                c.innerHTML = `<h2 style="margin-bottom:20px;">Settings</h2>
-                    <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" id="setName" value="${biz.name}"></div>
-                    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="setDesc">${biz.description}</textarea></div>
-                    <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="setLoc" value="${biz.location}"></div>
-                    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="setWa" value="${biz.whatsapp}"></div>
-                    <button class="btn btn-primary" onclick="saveSettings('${biz.id}')">Save</button>`;
+                c.innerHTML = `<h2>Settings</h2>
+                    <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" id="setName" value="${myBiz.name}"></div>
+                    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="setDesc">${myBiz.description}</textarea></div>
+                    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="setWa" value="${myBiz.whatsapp}"></div>
+                    <button class="btn btn-primary" onclick="saveSettings('${myBiz._id}')">Save</button>`;
             }
         }
         
-        function saveSettings(id) {
-            const biz = DB.businesses.find(b => b.id === id);
-            if (biz) {
-                biz.name = document.getElementById('setName').value;
-                biz.description = document.getElementById('setDesc').value;
-                biz.location = document.getElementById('setLoc').value;
-                biz.whatsapp = document.getElementById('setWa').value;
-                DB.save();
-                toast('Saved!', 'success');
-            }
+        async function saveSettings(id) {
+            const result = await apiCall(`/businesses/${id}`, 'PUT', {
+                name: document.getElementById('setName').value,
+                description: document.getElementById('setDesc').value,
+                whatsapp: document.getElementById('setWa').value
+            }, getToken());
+            if (result.success) toast('Saved!', 'success');
+            else toast('Failed to save', 'error');
         }
         
+        // ==================== AUTH ====================
         function toggleUser() {
-            if (DB.session) {
-                if (confirm('Sign out?')) { DB.session = null; DB.save(); updateUserUI(); toast('Signed out', 'success'); showPage('home'); }
+            if (getCurrentUser()) {
+                if (confirm('Sign out?')) {
+                    localStorage.removeItem('vp_token');
+                    localStorage.removeItem('vp_user');
+                    updateUserUI();
+                    toast('Signed out', 'success');
+                    showPage('home');
+                }
             } else { showPage('login'); }
         }
         function toggleBizFields() { document.getElementById('bizFields').style.display = document.getElementById('regRole').value === 'business' ? 'block' : 'none'; }
-        function doLogin(e) {
+        
+        async function doLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
-            const user = DB.users.find(u => u.email === email);
-            if (user) { DB.session = user.id; DB.save(); updateUserUI(); toast('Logged in!', 'success'); showPage('home'); }
-            else { toast('User not found. Register first.', 'error'); }
-        }
-        function doRegister(e) {
-            e.preventDefault();
-            const user = { id: 'u' + Date.now(), name: document.getElementById('regName').value, email: document.getElementById('regEmail').value, role: document.getElementById('regRole').value };
-            DB.users.push(user);
-            DB.session = user.id;
-            if (user.role === 'business') {
-                const bizName = document.getElementById('regBizName').value;
-                const wa = document.getElementById('regWhatsApp').value;
-                if (bizName && wa) {
-                    DB.businesses.push({ id: 'b' + Date.now(), name: bizName, category: 'Services', description: 'New business', location: 'TBD', rating: 0, reviewCount: 0, verified: false, whatsapp: wa, email: user.email, phone: wa, ownerId: user.id });
-                }
+            const password = document.getElementById('loginPass').value;
+            const result = await apiCall('/auth/login', 'POST', { email, password });
+            if (result.success) {
+                localStorage.setItem('vp_token', result.token);
+                localStorage.setItem('vp_user', JSON.stringify(result.user));
+                updateUserUI();
+                toast('Logged in!', 'success');
+                showPage('home');
+            } else {
+                toast(result.message || 'Login failed', 'error');
             }
-            DB.save();
-            updateUserUI();
-            toast('Account created!', 'success');
-            if (user.role === 'business') showPage('storeBuilder');
-            else showPage('home');
         }
+        
+        async function doRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+            const role = document.getElementById('regRole').value;
+            const whatsapp = document.getElementById('regWhatsApp')?.value || '';
+            
+            const result = await apiCall('/auth/register', 'POST', { name, email, password, role, whatsapp });
+            
+            if (result.success) {
+                localStorage.setItem('vp_token', result.token);
+                localStorage.setItem('vp_user', JSON.stringify(result.user));
+                updateUserUI();
+                toast('Account created!', 'success');
+                if (role === 'business') showPage('storeBuilder');
+                else showPage('home');
+            } else {
+                toast(result.message || 'Registration failed', 'error');
+            }
+        }
+        
         function updateUserUI() {
             const dl = document.getElementById('dashLink');
             const ub = document.getElementById('userBtn');
-            if (DB.session) {
-                const u = DB.users.find(x => x.id === DB.session);
-                if (u) { ub.textContent = u.name[0].toUpperCase(); if (u.role === 'business') dl.style.display = 'block'; }
-            } else { dl.style.display = 'none'; ub.textContent = '👤'; }
+            const user = getCurrentUser();
+            if (user) {
+                ub.textContent = user.name[0].toUpperCase();
+                if (user.role === 'business') dl.style.display = 'block';
+            } else {
+                dl.style.display = 'none';
+                ub.textContent = '👤';
+            }
         }
         
-        window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50));
+        // ==================== INIT ====================
         updateCartBadge();
         updateUserUI();
         renderHome();
