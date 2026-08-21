@@ -3,416 +3,507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VicPrime – Shop & Earn</title>
+    <title>VicPrime Market</title>
     <style>
-        /* White clean theme */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #f9f9f9; color: #333; }
-        .container { max-width: 1200px; margin: auto; padding: 20px; }
-        /* Header */
-        header { background: #fff; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: bold; color: #007bff; } /* change to your logo */
-        .search-bar { flex: 1; margin: 0 20px; }
-        .search-bar input { width: 100%; padding: 8px; }
-        /* Buttons */
-        .btn { padding: 10px 15px; background: #007bff; color: #fff; border: none; cursor: pointer; }
-        .btn-secondary { background: #6c757d; }
-        /* Product grid */
-        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
-        .product-card { background: #fff; padding: 15px; border: 1px solid #ddd; }
-        .product-card img { width: 100%; height: 150px; object-fit: cover; }
-        /* Chat */
-        .chat-window { border: 1px solid #ddd; background: #fff; height: 300px; overflow-y: auto; padding: 10px; }
-        /* Live */
-        .live-box { background: #000; color: #fff; padding: 20px; text-align: center; }
-        /* Gifts */
-        .gift-options { display: flex; gap: 10px; margin-top: 10px; }
-        .gift-btn { padding: 5px 10px; border: 1px solid #ccc; cursor: pointer; }
-        /* Cart disclaimer */
-        .disclaimer { background: #fff3cd; border: 1px solid #ffeeba; padding: 10px; margin: 20px 0; font-size: 14px; }
-        /* Modal */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #fff; padding: 20px; width: 400px; }
+        /* --- YOUR BRAND COLORS (White, Navy, Silver) --- */
+        :root {
+            --navy: #0A2540;
+            --silver: #B0B0B0;
+            --light-silver: #E0E0E0;
+            --white: #FFFFFF;
+            --bg: #F8F9FA;
+            --crown: #C0C0C0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--white); color: var(--navy); }
+        
+        /* NAV BAR */
+        header { background: var(--white); border-bottom: 2px solid var(--light-silver); padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 28px; font-weight: 900; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .crown { color: var(--crown); font-size: 22px; margin-right: -5px; }
+        .logo-v { color: var(--navy); }
+        .logo-p { color: var(--silver); }
+        .logo-text { color: var(--silver); font-family: sans-serif; }
+        /* Replace the logo div with: <img src="YOUR_LOGO.png" style="height:50px;"> */
+
+        .search-bar { flex: 1; margin: 0 30px; display: flex; }
+        .search-bar input { width: 100%; padding: 12px; border: 1px solid var(--silver); border-radius: 5px 0 0 5px; }
+        .search-bar button { background: var(--navy); color: var(--white); border: none; padding: 12px 20px; cursor: pointer; border-radius: 0 5px 5px 0; font-weight: bold; }
+
+        /* BUTTONS */
+        .btn { padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.2s; }
+        .btn-navy { background: var(--navy); color: var(--white); }
+        .btn-silver { background: var(--silver); color: var(--white); }
+        .btn-outline { background: transparent; border: 2px solid var(--navy); color: var(--navy); }
+        .btn-green { background: #28a745; color: white; }
+        
+        /* LAYOUT */
+        .container { max-width: 1400px; margin: auto; padding: 20px; display: flex; gap: 20px; }
+        .sidebar { width: 250px; background: var(--white); border: 1px solid var(--light-silver); border-radius: 8px; padding: 20px; }
+        .main-content { flex: 1; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* CARDS & GRID */
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--white); border: 1px solid var(--light-silver); border-radius: 8px; overflow: hidden; transition: 0.2s; }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .card-img { height: 200px; background: var(--light-silver); display: flex; align-items: center; justify-content: center; color: var(--navy); font-weight: bold; font-size: 30px; }
+        .card-body { padding: 15px; }
+        .price { font-weight: bold; font-size: 20px; color: var(--navy); }
+        
+        /* CART DISCLAIMER */
+        .disclaimer { background: #FFF3CD; border: 1px solid #FFE69C; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #856404; }
+        
+        /* CHAT UI */
+        .chat-box { border: 1px solid var(--light-silver); height: 400px; overflow-y: auto; background: var(--white); padding: 20px; display: flex; flex-direction: column; }
+        .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; max-width: 70%; }
+        .msg-user { background: var(--navy); color: var(--white); align-self: flex-end; }
+        .msg-seller { background: var(--light-silver); color: var(--navy); }
+
+        /* LIVE STREAM */
+        .live-box { background: #000; color: var(--white); position: relative; height: 500px; display: flex; align-items: center; justify-content: center; border-radius: 10px; }
+        .live-badge { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        .gift-area { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; }
+        .gift-btn { background: rgba(255,255,255,0.2); border: none; color: var(--white); padding: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+
+        /* DASHBOARD */
+        .dash-grid { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
+        .dash-sidebar { background: var(--white); border: 1px solid var(--light-silver); border-radius: 8px; padding: 20px; }
+        .dash-sidebar a { display: block; padding: 10px; color: var(--navy); text-decoration: none; border-radius: 5px; cursor: pointer; }
+        .dash-sidebar a:hover { background: var(--light-silver); }
+
+        /* MODALS */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 200; }
+        .modal-content { background: var(--white); padding: 30px; border-radius: 10px; width: 500px; max-width: 90%; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid var(--silver); border-radius: 5px; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } .container { flex-direction: column; } }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">VicPrime</div>
-        <div class="search-bar">
-            <input type="text" placeholder="Search products..." id="searchInput">
-        </div>
-        <div>
-            <button class="btn" onclick="showLogin()">Login</button>
-            <button class="btn btn-secondary" onclick="showRegister()">Register</button>
-            <button class="btn" onclick="showCart()">Cart (<span id="cartCount">0</span>)</button>
-        </div>
-    </header>
 
-    <div class="container">
-        <!-- Home / Product listing -->
-        <div id="homePage">
-            <h2>All Products</h2>
+<header>
+    <div class="logo" onclick="navigate('home')">
+        <span class="crown">👑</span><span class="logo-v">V</span><span class="logo-p">P</span><span class="logo-text"> VIC-PRIME</span>
+        <!-- REPLACE THIS DIV WITH <img src="YOUR_LOGO.png"> -->
+    </div>
+    <div class="search-bar"><input type="text" id="searchInput" placeholder="Search Amazon-scale products..."><button onclick="filterProducts()">Search</button></div>
+    <div id="authBtns">
+        <button class="btn btn-outline" onclick="showModal('loginModal')">Login</button>
+        <button class="btn btn-navy" onclick="showModal('regModal')">Register</button>
+    </div>
+    <div id="userMenu" style="display:none;">
+        <span id="userName" style="margin-right:10px;"></span>
+        <button class="btn btn-silver" onclick="navigate('dashboard')">Dashboard</button>
+        <button class="btn btn-outline" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<div class="container">
+    <!-- SIDEBAR FOR CATEGORIES -->
+    <div class="sidebar">
+        <h3>Categories</h3>
+        <a href="#" onclick="filterByCat('Electronics')">Electronics</a>
+        <a href="#" onclick="filterByCat('Fashion')">Fashion</a>
+        <a href="#" onclick="filterByCat('Home')">Home</a>
+        <a href="#" onclick="filterByCat('Beauty')">Beauty</a>
+        <hr style="margin:20px 0;">
+        <h3>User Links</h3>
+        <a href="#" onclick="navigate('wishlist')">Wishlist</a>
+        <a href="#" onclick="navigate('live')">Live Shopping</a>
+    </div>
+
+    <div class="main-content">
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <h2>Prime Deals</h2>
             <div class="products" id="productList"></div>
         </div>
 
-        <!-- Product Detail -->
-        <div id="productDetail" style="display:none;">
-            <button class="btn btn-secondary" onclick="goHome()">Back</button>
-            <div id="detailContent"></div>
+        <!-- PRODUCT DETAIL -->
+        <div id="product" class="page">
+            <button class="btn btn-outline" onclick="navigate('home')">← Back</button>
+            <div id="productDetail"></div>
         </div>
 
-        <!-- Cart -->
-        <div id="cartPage" style="display:none;">
+        <!-- CART -->
+        <div id="cart" class="page">
             <h2>Your Cart</h2>
             <div class="disclaimer">
-                <strong>Notice:</strong> VicPrime is not involved in monetary transactions between buyers and sellers.
-                All payments are handled directly between the buyer and seller. VicPrime only facilitates communication.
+                <strong>Legal Notice:</strong> VicPrime is <u>NOT</u> involved in monetary transactions between buyers and sellers. All payments, refunds, and disputes are handled directly between the buyer and the seller. VicPrime only facilitates communication.
             </div>
             <div id="cartItems"></div>
-            <button class="btn" onclick="checkout()">Proceed to Contact Seller</button>
+            <button class="btn btn-navy" onclick="checkout()">Contact Sellers to Arrange Payment</button>
         </div>
 
-        <!-- Chat -->
-        <div id="chatPage" style="display:none;">
-            <h2>Chat with Seller</h2>
-            <div class="chat-window" id="chatWindow"></div>
-            <input type="text" id="chatInput" placeholder="Type message..." />
-            <button class="btn" onclick="sendChat()">Send</button>
-        </div>
-
-        <!-- Live Streaming -->
-        <div id="livePage" style="display:none;">
-            <h2>Live Streams</h2>
-            <div class="live-box">
-                <h3>Live Shop: <span id="liveStoreName">Seller's Name</span></h3>
-                <p>Streaming video placeholder</p>
-                <div class="gift-options">
-                    <button class="gift-btn" onclick="sendGift('coin')">Coin (5F)</button>
-                    <button class="gift-btn" onclick="sendGift('star')">Star (50F)</button>
-                    <button class="gift-btn" onclick="sendGift('crown')">Crown (500F)</button>
-                </div>
-                <div id="giftMessage"></div>
+        <!-- CHAT -->
+        <div id="chat" class="page">
+            <h2>Direct Message</h2>
+            <div class="chat-box" id="chatWindow"></div>
+            <div style="display:flex; margin-top:10px;">
+                <input type="text" id="chatInput" style="flex:1; padding:10px;" placeholder="Type message...">
+                <button class="btn btn-navy" onclick="sendChat()">Send</button>
+                <button class="btn btn-silver" onclick="openWhatsApp()" style="margin-left:10px;">WhatsApp (Secondary)</button>
             </div>
         </div>
 
-        <!-- Store Setup -->
-        <div id="storePage" style="display:none;">
-            <h2>My Store Settings</h2>
-            <input type="text" id="storeName" placeholder="Store Name" />
-            <textarea id="storeDesc" placeholder="Store Description"></textarea>
-            <button class="btn" onclick="saveStore()">Save Store</button>
+        <!-- LIVE SHOPPING -->
+        <div id="live" class="page">
+            <div class="live-box">
+                <div class="live-badge">🔴 LIVE</div>
+                <h1>Live Stream</h1>
+                <div class="gift-area">
+                    <button class="gift-btn" onclick="sendGift('coin')">🪙 Coin (5F)</button>
+                    <button class="gift-btn" onclick="sendGift('star')">⭐ Star (50F)</button>
+                    <button class="gift-btn" onclick="sendGift('crown')">👑 Crown (500F)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD (Customer & Seller) -->
+        <div id="dashboard" class="page">
+            <div class="dash-grid">
+                <div class="dash-sidebar">
+                    <a onclick="dash('profile')">My Profile</a>
+                    <a onclick="dash('orders')">My Orders</a>
+                    <a onclick="dash('store')">Sell on VicPrime</a>
+                    <a onclick="dash('coins')">Wallet & Vic-Coins</a>
+                </div>
+                <div id="dashContent"></div>
+            </div>
+        </div>
+
+        <!-- WISHLIST -->
+        <div id="wishlist" class="page">
+            <h2>My Wishlist</h2>
+            <div id="wishlistItems"></div>
         </div>
     </div>
+</div>
 
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <h3>Login</h3>
-            <input type="email" id="loginEmail" placeholder="Email" />
-            <input type="password" id="loginPassword" placeholder="Password" />
-            <button class="btn" onclick="doLogin()">Login</button>
-            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-        </div>
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <h3>Login</h3>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button class="btn btn-navy" onclick="doLogin()">Login</button>
+        <button class="btn btn-silver" onclick="hideModal()">Close</button>
     </div>
+</div>
 
-    <!-- Register Modal -->
-    <div class="modal" id="registerModal">
-        <div class="modal-content">
-            <h3>Register</h3>
-            <p>Same registration for customers and sellers – you can create a store later.</p>
-            <input type="text" id="regName" placeholder="Full Name" />
-            <input type="email" id="regEmail" placeholder="Email" />
-            <input type="password" id="regPassword" placeholder="Password" />
-            <button class="btn" onclick="doRegister()">Register</button>
-            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-        </div>
+<!-- REGISTER MODAL -->
+<div class="modal" id="regModal">
+    <div class="modal-content">
+        <h3>Join VicPrime</h3>
+        <p style="color:var(--silver); margin-bottom:10px;">All users register the same. Open your store anytime.</p>
+        <input type="text" id="regName" placeholder="Full Name">
+        <input type="email" id="regEmail" placeholder="Email">
+        <input type="password" id="regPassword" placeholder="Password">
+        <button class="btn btn-navy" onclick="doRegister()">Register</button>
+        <button class="btn btn-silver" onclick="hideModal()">Close</button>
     </div>
+</div>
 
-    <!-- Coin Purchase Modal -->
-    <div class="modal" id="coinModal">
-        <div class="modal-content">
-            <h3>Buy Vic‑Coins</h3>
-            <p>1 Coin = 5 FCFA – Minimum 50 coins (250 FCFA)</p>
-            <input type="number" id="coinAmount" placeholder="Number of coins" min="50" />
-            <p>Payment methods:</p>
-            <ul>
-                <li>MTN MoMo: +237675903626</li>
-                <li>Orange MoMo: +237657754321</li>
-                <li>Bank (UBA Cameroon): 16059001065 – Fon Vicnuel Fondom</li>
-            </ul>
-            <button class="btn" onclick="purchaseCoins()">Submit Payment Request</button>
-            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+<!-- COIN PURCHASE MODAL -->
+<div class="modal" id="coinModal">
+    <div class="modal-content">
+        <h3>Purchase Vic-Coins</h3>
+        <p>1 Coin = 5 FCFA | Min: 50 Coins (250 FCFA)</p>
+        <input type="number" id="coinAmount" placeholder="Number of Coins" min="50">
+        <div style="font-size:14px; background:var(--light-silver); padding:10px; border-radius:5px;">
+            <strong>Payment Instructions:</strong><br>
+            MTN MoMo: +237 675 903 626<br>
+            Orange MoMo: +237 657 754 321<br>
+            UBA Bank: 16059001065 (Fon Vicnuel Fondom)
         </div>
+        <button class="btn btn-navy" onclick="purchaseCoins()">Submit Payment Request</button>
+        <button class="btn btn-silver" onclick="hideModal()">Close</button>
     </div>
+</div>
 
-    <script>
-        // ======== STATE ========
-        let state = {
-            token: localStorage.getItem('vp_token') || null,
-            user: JSON.parse(localStorage.getItem('vp_user') || 'null'),
-            cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
-            products: [],
-            currentProduct: null,
-            currentSeller: null
-        };
+<script>
+    // ==========================================
+    // MOCK BACKEND (SIMULATES THE FULL AMAZON API)
+    // ==========================================
+    // (Replace these variables with actual calls to https://backend-4-io0g.onrender.com/api)
+    let DB = {
+        users: [{ id: 1, name: "Admin", email: "admin@vicprime.com", pass: "123", balance: 1000, role: "both" }],
+        products: [
+            { id: 101, name: "Amazon Echo (Smart Speaker)", price: 25000, cat: "Electronics", img: "🔊", sellerId: 1, hasShare: true, rating: 4.8 },
+            { id: 102, name: "Designer Handbag", price: 15000, cat: "Fashion", img: "👜", sellerId: 1, hasShare: true, rating: 4.9 },
+            { id: 103, name: "Premium Sneakers", price: 30000, cat: "Fashion", img: "👟", sellerId: 1, hasShare: false, rating: 4.5 },
+            { id: 104, name: "Smart 4K TV", price: 150000, cat: "Electronics", img: "📺", sellerId: 1, hasShare: true, rating: 4.7 }
+        ],
+        coins: { 1: 500 }, // Platform coins for admin
+        cart: [],
+        wishlist: [],
+        chat: []
+    };
 
-        // ======== API CONFIG ========
-        const API_BASE = 'https://backend-4-io0g.onrender.com/api';
+    let state = {
+        user: JSON.parse(localStorage.getItem('vp_user') || 'null'),
+        cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
+        wishlist: JSON.parse(localStorage.getItem('vp_wishlist') || '[]'),
+        referrerId: new URLSearchParams(window.location.search).get('ref') || null
+    };
 
-        // ======== UTILITIES ========
-        async function api(endpoint, options = {}) {
-            const headers = { 'Content-Type': 'application/json' };
-            if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
-            const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
-            const data = await res.json();
-            return data;
-        }
+    // ==========================================
+    // NAVIGATION & UI
+    // ==========================================
+    function navigate(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if (pageId === 'home') renderProducts();
+        if (pageId === 'cart') renderCart();
+        if (pageId === 'wishlist') renderWishlist();
+        if (pageId === 'dashboard') dash('profile');
+    }
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function hideModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
-        // ======== NAVIGATION ========
-        function showPage(pageId) {
-            document.querySelectorAll('.container > div').forEach(el => el.style.display = 'none');
-            document.getElementById(pageId).style.display = 'block';
-        }
-
-        function goHome() {
-            showPage('homePage');
-            loadProducts();
-        }
-
-        // ======== PRODUCTS ========
-        async function loadProducts() {
-            const data = await api('/products'); // adjust endpoint as per your API
-            state.products = data;
-            const list = document.getElementById('productList');
-            list.innerHTML = '';
-            state.products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}">
-                    <h3>${product.name}</h3>
-                    <p>Price: ${product.price} FCFA</p>
-                    <button class="btn" onclick="viewProduct('${product.id}')">View</button>
-                    <button class="btn btn-secondary" onclick="addToCart('${product.id}')">Add to Cart</button>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function viewProduct(id) {
-            const product = state.products.find(p => p.id === id);
-            state.currentProduct = product;
-            const detail = document.getElementById('detailContent');
-            detail.innerHTML = `
-                <img src="${product.image}" style="width:100%; max-height:400px; object-fit:contain;">
-                <h1>${product.name}</h1>
-                <p>${product.description}</p>
-                <p><strong>Price:</strong> ${product.price} FCFA</p>
-                <button class="btn" onclick="addToCart('${product.id}')">Add to Cart</button>
-                <button class="btn btn-secondary" onclick="shareProduct('${product.id}')">Share & Earn</button>
-                <button class="btn btn-secondary" onclick="chatWithSeller('${product.sellerId}')">Chat with Seller</button>
-            `;
-            showPage('productDetail');
-        }
-
-        function addToCart(id) {
-            state.cart.push(id);
-            localStorage.setItem('vp_cart', JSON.stringify(state.cart));
-            document.getElementById('cartCount').innerText = state.cart.length;
-            alert('Added to cart!');
-        }
-
-        // ======== CART ========
-        function showCart() {
-            const items = document.getElementById('cartItems');
-            items.innerHTML = '';
-            if (state.cart.length === 0) {
-                items.innerHTML = '<p>Cart is empty</p>';
-            } else {
-                state.cart.forEach(pid => {
-                    const product = state.products.find(p => p.id === pid);
-                    if (product) {
-                        items.innerHTML += `<p>${product.name} – ${product.price} FCFA</p>`;
-                    }
-                });
-                items.innerHTML += '<button class="btn" onclick="clearCart()">Clear Cart</button>';
-            }
-            showPage('cartPage');
-        }
-
-        function checkout() {
-            alert('This is a demo: In real app, you would be redirected to chat with the seller to arrange payment.');
-            // Optionally open chat with the first seller
-            if (state.cart.length > 0) {
-                const product = state.products.find(p => p.id === state.cart[0]);
-                chatWithSeller(product.sellerId);
-            }
-        }
-
-        function clearCart() {
-            state.cart = [];
-            localStorage.setItem('vp_cart', JSON.stringify(state.cart));
-            showCart();
-        }
-
-        // ======== CHAT ========
-        function chatWithSeller(sellerId) {
-            state.currentSeller = sellerId;
-            showPage('chatPage');
-            // Load chat messages from API (if you have endpoint)
-            // For now, clear the chat window
-            document.getElementById('chatWindow').innerHTML = '';
-            if (!state.user) {
-                alert('Please register or login to chat.');
-                showLogin();
-            }
-        }
-
-        function sendChat() {
-            const msg = document.getElementById('chatInput').value;
-            if (!msg) return;
-            // Send message via API (endpoint needed)
-            const chat = document.getElementById('chatWindow');
-            chat.innerHTML += `<p><strong>You:</strong> ${msg}</p>`;
-            document.getElementById('chatInput').value = '';
-        }
-
-        // ======== SHARE & EARN ========
-        function shareProduct(productId) {
-            if (!state.user) {
-                alert('Please login to share products.');
-                showLogin();
-                return;
-            }
-            const product = state.products.find(p => p.id === productId);
-            if (!product) return;
-            // Check if seller has coins (should be handled by backend)
-            // For demo, assume seller has coins
-            const shareLink = `${window.location.origin}?ref=${state.user.id}&product=${productId}`;
-            const caption = 'I found this amazing product on VicPrime!';
-            const shareText = encodeURIComponent(`${caption}\n${shareLink}`);
-            const url = `https://wa.me/?text=${shareText}`; // WhatsApp, but you can add other socials
-            window.open(url, '_blank');
-        }
-
-        // ======== LIVE STREAM & GIFTS ========
-        function openLive(storeId) {
-            showPage('livePage');
-            // Fetch live stream info from API
-            document.getElementById('liveStoreName').innerText = 'Seller Name'; // demo
-        }
-
-        function sendGift(type) {
-            if (!state.user) {
-                alert('Login to send gifts.');
-                return;
-            }
-            // Values (FCFA)
-            let value = 0;
-            if (type === 'coin') value = 5;
-            if (type === 'star') value = 50;
-            if (type === 'crown') value = 500;
-            alert(`You sent a ${type} (worth ${value} FCFA). VicPrime keeps 3% commission.`);
-            // Call API to record gift
-        }
-
-        // ======== COIN PURCHASE ========
-        function purchaseCoins() {
-            const amount = document.getElementById('coinAmount').value;
-            if (!amount || amount < 50) {
-                alert('Minimum 50 coins');
-                return;
-            }
-            alert('Payment request sent. Please complete payment via MoMo/Bank and you will be credited.');
-            closeModal();
-        }
-
-        // ======== STORE SETUP ========
-        function saveStore() {
-            const name = document.getElementById('storeName').value;
-            const desc = document.getElementById('storeDesc').value;
-            // Call API to save store
-            alert('Store saved!');
-        }
-
-        // ======== AUTH ========
-        function showLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-        function showRegister() { document.getElementById('registerModal').style.display = 'flex'; }
-        function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-
-        async function doLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-            if (data.token) {
-                state.token = data.token;
-                state.user = data.user;
-                localStorage.setItem('vp_token', state.token);
-                localStorage.setItem('vp_user', JSON.stringify(state.user));
-                alert('Login successful!');
-                closeModal();
-                // Update UI (hide login buttons, show user name)
-                loadProducts(); // refresh if needed
-            } else {
-                alert('Login failed: ' + data.message);
-            }
-        }
-
-        async function doRegister() {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            // Get referral code from URL if present
-            const params = new URLSearchParams(window.location.search);
-            const ref = params.get('ref');
-            const data = await api('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password, referral: ref }) });
-            if (data.token) {
-                state.token = data.token;
-                state.user = data.user;
-                localStorage.setItem('vp_token', state.token);
-                localStorage.setItem('vp_user', JSON.stringify(state.user));
-                alert('Registration successful!');
-                // If referral, redirect to chat with seller (as per spec)
-                if (ref) {
-                    // After registration, auto-open chat with store owner (need to determine which seller)
-                    // For demo, just alert
-                    alert('You have been redirected to the seller chat!');
-                    chatWithSeller(null); // you can implement logic to get the original product seller
-                }
-                closeModal();
-                loadProducts();
-            } else {
-                alert('Registration failed: ' + data.message);
-            }
-        }
-
-        // ======== CURRENCY ========
-        // Simple: always FCFA for now
-        // Could use IP API for location detection later
-
-        // ======== INIT ========
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user logged in from localStorage
-            if (state.token) {
-                // Optionally validate token with API
-                document.querySelector('header').innerHTML = `
-                    <div class="logo">VicPrime</div>
-                    <div class="search-bar"><input type="text" placeholder="Search products..."></div>
-                    <div>
-                        <span>Hello, ${state.user.name}</span>
-                        <button class="btn" onclick="showCart()">Cart (<span id="cartCount">0</span>)</button>
-                        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+    // ==========================================
+    // MAIN STORE LOGIC (AMAZON-LIKE)
+    // ==========================================
+    function renderProducts() {
+        let list = document.getElementById('productList');
+        list.innerHTML = '';
+        DB.products.forEach(p => {
+            list.innerHTML += `
+                <div class="card">
+                    <div class="card-img">${p.img}</div>
+                    <div class="card-body">
+                        <h3>${p.name}</h3>
+                        <div class="price">${p.price.toLocaleString()} FCFA</div>
+                        <div style="color:var(--silver); margin-bottom:10px;">Rating: ${p.rating} ⭐</div>
+                        <button class="btn btn-outline" onclick="viewProduct(${p.id})">View</button>
+                        <button class="btn btn-navy" onclick="addToCart(${p.id})">Add to Cart</button>
                     </div>
-                `;
-            }
-            loadProducts();
+                </div>`;
         });
+    }
 
-        function logout() {
-            localStorage.removeItem('vp_token');
-            localStorage.removeItem('vp_user');
-            location.reload();
+    function viewProduct(id) {
+        let p = DB.products.find(x => x.id === id);
+        document.getElementById('productDetail').innerHTML = `
+            <div style="display:flex; gap:30px; margin-top:20px; background:var(--white); padding:20px;">
+                <div style="flex:1; height:400px; background:var(--light-silver); display:flex; align-items:center; justify-content:center; font-size:100px;">${p.img}</div>
+                <div style="flex:1;">
+                    <h1>${p.name}</h1>
+                    <h2>${p.price.toLocaleString()} FCFA</h2>
+                    <p style="color:var(--silver); margin:20px 0;">Category: ${p.cat} | Rating: ${p.rating} ⭐</p>
+                    <button class="btn btn-navy" onclick="addToCart(${p.id})">Add to Cart</button>
+                    <button class="btn btn-green" onclick="chatWithSeller(${p.sellerId})">Chat with Seller</button>
+                    <button class="btn btn-outline" onclick="addToWishlist(${p.id})">♡ Wishlist</button>
+                    ${p.hasShare ? `<button class="btn btn-silver" onclick="shareProduct(${p.id})">Share & Earn Coins</button>` : `<button class="btn btn-silver" disabled>Share Disabled (Need Coins)</button>`}
+                    <button class="btn btn-outline" onclick="navigate('live')">Go to Live</button>
+                </div>
+            </div>`;
+        navigate('product');
+    }
+
+    function addToCart(id) {
+        state.cart.push(id);
+        localStorage.setItem('vp_cart', JSON.stringify(state.cart));
+        alert("Added to Cart!");
+    }
+    function addToWishlist(id) {
+        state.wishlist.push(id);
+        localStorage.setItem('vp_wishlist', JSON.stringify(state.wishlist));
+        navigate('wishlist');
+    }
+
+    function renderCart() {
+        let items = document.getElementById('cartItems');
+        items.innerHTML = '';
+        if (state.cart.length === 0) items.innerHTML = '<p>Cart is empty</p>';
+        state.cart.forEach(pid => {
+            let p = DB.products.find(x => x.id === pid);
+            if (p) items.innerHTML += `<p>${p.img} ${p.name} - ${p.price.toLocaleString()} FCFA</p>`;
+        });
+    }
+
+    function renderWishlist() {
+        let items = document.getElementById('wishlistItems');
+        items.innerHTML = '';
+        state.wishlist.forEach(pid => {
+            let p = DB.products.find(x => x.id === pid);
+            if (p) items.innerHTML += `<div class="card"><div class="card-body"><h3>${p.name}</h3><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
+        });
+    }
+
+    // ==========================================
+    // CHAT & WHATSAPP LOGIC
+    // ==========================================
+    function chatWithSeller(sellerId) {
+        if (!state.user) {
+            alert("Please register to chat with seller.");
+            showModal('regModal');
+            return;
         }
-    </script>
+        navigate('chat');
+        document.getElementById('chatWindow').innerHTML = '<div class="chat-msg msg-seller">Welcome to my store! How can I help you today?</div>';
+    }
+    function sendChat() {
+        let msg = document.getElementById('chatInput').value;
+        if (!msg) return;
+        let win = document.getElementById('chatWindow');
+        win.innerHTML += `<div class="chat-msg msg-user">${msg}</div>`;
+        document.getElementById('chatInput').value = '';
+    }
+    function openWhatsApp() {
+        let phone = "237675903626"; // Your WhatsApp
+        window.open(`https://wa.me/${phone}?text=Hello, I have a question about a product on VicPrime`, '_blank');
+    }
+
+    // ==========================================
+    // LIVE GIFTS & COINS SYSTEM
+    // ==========================================
+    function sendGift(type) {
+        if (!state.user) { alert("Login to send gifts"); showModal('loginModal'); return; }
+        let val = type === 'coin' ? 5 : (type === 'star' ? 50 : 500);
+        alert(`You sent a ${type} worth ${val} FCFA. VicPrime keeps 3% (${val*0.03} FCFA).`);
+        DB.chat.push({ type: 'gift', value: val });
+    }
+
+    function purchaseCoins() {
+        let amount = document.getElementById('coinAmount').value;
+        if (amount < 50) return alert("Minimum purchase is 50 coins (250 FCFA)");
+        alert("Payment request submitted. You will be credited once payment is confirmed via MTN/Orange/Bank.");
+        hideModal();
+    }
+
+    // ==========================================
+    // SHARE & EARN REFERRAL SYSTEM
+    // ==========================================
+    function shareProduct(productId) {
+        if (!state.user) { alert("Login to share"); showModal('loginModal'); return; }
+        let link = `${window.location.origin}?ref=${state.user.id}&prod=${productId}`;
+        let caption = "I found this amazing product on VicPrime!";
+        let msg = encodeURIComponent(caption + "\n" + link);
+        window.open(`https://wa.me/?text=${msg}`, '_blank');
+        
+        // Backend logic: New user registering via this link gives sharer 1 coin.
+        // Sharer gets 3 FCFA, Platform gets 2 FCFA.
+        alert("Share link generated! You will earn 1 coin when a new user registers via this link.");
+    }
+
+    // ==========================================
+    // AUTH & REFERRAL LOGIC
+    // ==========================================
+    function doLogin() {
+        let email = document.getElementById('loginEmail').value;
+        let pass = document.getElementById('loginPassword').value;
+        // Mock validation
+        state.user = { id: 1, name: "John Doe", email: email };
+        localStorage.setItem('vp_user', JSON.stringify(state.user));
+        updateHeader(); hideModal(); navigate('home');
+        alert("Login successful!");
+    }
+
+    function doRegister() {
+        let name = document.getElementById('regName').value;
+        let email = document.getElementById('regEmail').value;
+        let pass = document.getElementById('regPassword').value;
+        
+        // Registration logic
+        state.user = { id: Date.now(), name: name, email: email };
+        localStorage.setItem('vp_user', JSON.stringify(state.user));
+        updateHeader(); hideModal();
+
+        // Check for Referrer
+        if (state.referrerId) {
+            // Simulate rewarding the referrer
+            let referrer = DB.users.find(u => u.id == state.referrerId);
+            if (referrer) {
+                referrer.balance += 1; // 1 Vic-Coin = 3 FCFA (2 FCFA goes to platform)
+                alert(`Thank you for registering via a referral! The sharer just earned 1 Vic-Coin (3 FCFA). Platform keeps 2 FCFA for maintenance.`);
+            }
+            
+            // AUTOMATIC REDIRECT: Takes the new user straight to the store owner's chat
+            alert("Registration successful! Redirecting you to the seller's chat...");
+            navigate('chat');
+        } else {
+            alert("Registration successful!");
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('vp_user');
+        state.user = null;
+        updateHeader();
+    }
+
+    function updateHeader() {
+        if (state.user) {
+            document.getElementById('authBtns').style.display = 'none';
+            document.getElementById('userMenu').style.display = 'block';
+            document.getElementById('userName').innerText = "Hello, " + state.user.name;
+        }
+    }
+
+    // ==========================================
+    // DASHBOARD (STORE OWNER & CUSTOMER)
+    // ==========================================
+    function dash(tab) {
+        let content = document.getElementById('dashContent');
+        if (tab === 'profile') content.innerHTML = `<h2>Profile</h2><p>Name: ${state.user ? state.user.name : "Guest"}</p><p>Email: ${state.user ? state.user.email : "Guest"}</p>`;
+        
+        if (tab === 'orders') content.innerHTML = `<h2>My Orders</h2><p>No orders yet. Since VicPrime is not involved in payments, track orders directly with sellers.</p>`;
+        
+        if (tab === 'store') {
+            content.innerHTML = `
+                <h2>Sell on VicPrime</h2>
+                <input type="text" id="storeName" placeholder="Store Name">
+                <textarea id="storeDesc" placeholder="Describe your store"></textarea>
+                <button class="btn btn-navy" onclick="createStore()">Create Store</button>
+                <button class="btn btn-silver" onclick="showModal('coinModal')">Buy Vic-Coins (5F each)</button>
+                <p style="margin-top:10px; font-size:12px;">1 Coin = 5F = 1 Person Reach</p>`;
+        }
+        
+        if (tab === 'coins') content.innerHTML = `<h2>Wallet</h2><p>Balance: ${state.user ? DB.coins[state.user.id] || 0 : 0} Vic-Coins</p><button class="btn btn-navy" onclick="showModal('coinModal')">Buy Coins</button>`;
+    }
+
+    function createStore() {
+        alert("Store created! Upload products to start sharing.");
+    }
+
+    // ==========================================
+    // CURRENCY & SEARCH
+    // ==========================================
+    function filterProducts() {
+        let q = document.getElementById('searchInput').value.toLowerCase();
+        let list = document.getElementById('productList');
+        list.innerHTML = '';
+        DB.products.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
+            list.innerHTML += `<div class="card"><div class="card-img">${p.img}</div><div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toLocaleString()} FCFA</div><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
+        });
+    }
+
+    function filterByCat(cat) {
+        let list = document.getElementById('productList');
+        list.innerHTML = '';
+        DB.products.filter(p => p.cat === cat).forEach(p => {
+            list.innerHTML += `<div class="card"><div class="card-img">${p.img}</div><div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toLocaleString()} FCFA</div><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
+        });
+    }
+
+    // AUTO-CURRENCY DETECTION (Simple IP based simulation)
+    // In real app, you'd use an API like ipapi.co to detect country and change currency
+    let userCurrency = "FCFA";
+    // Can be modified to show EUR/USD if IP is detected outside Cameroon.
+
+    // INIT
+    window.onload = () => {
+        // If a user just registered via a referral link, automatically open chat
+        updateHeader();
+        renderProducts();
+        if (state.referrerId) {
+            alert("New user detected via referral! Opening chat with seller...");
+            navigate('chat');
+        }
+    };
+</script>
 </body>
 </html>
