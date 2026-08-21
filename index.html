@@ -5,173 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VicPrime Market</title>
     <style>
-        /* --- YOUR BRAND COLORS (White, Navy, Silver) --- */
         :root {
             --navy: #0A2540;
             --silver: #B0B0B0;
             --light-silver: #E0E0E0;
             --white: #FFFFFF;
             --bg: #F8F9FA;
-            --crown: #C0C0C0;
+            --red: #FF0000;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--white); color: var(--navy); }
+        body { background: var(--white); color: var(--navy); overflow-x: hidden; }
         
-        /* NAV BAR */
-        header { background: var(--white); border-bottom: 2px solid var(--light-silver); padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 28px; font-weight: 900; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .crown { color: var(--crown); font-size: 22px; margin-right: -5px; }
-        .logo-v { color: var(--navy); }
-        .logo-p { color: var(--silver); }
-        .logo-text { color: var(--silver); font-family: sans-serif; }
-        /* Replace the logo div with: <img src="YOUR_LOGO.png" style="height:50px;"> */
-
-        .search-bar { flex: 1; margin: 0 30px; display: flex; }
-        .search-bar input { width: 100%; padding: 12px; border: 1px solid var(--silver); border-radius: 5px 0 0 5px; }
-        .search-bar button { background: var(--navy); color: var(--white); border: none; padding: 12px 20px; cursor: pointer; border-radius: 0 5px 5px 0; font-weight: bold; }
-
+        /* HEADER */
+        header { background: var(--white); border-bottom: 2px solid var(--light-silver); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 30px; font-weight: 900; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .logo-crown { color: var(--silver); font-size: 26px; }
+        .logo-v { color: var(--navy); font-size: 34px; }
+        .logo-p { color: var(--silver); font-size: 34px; }
+        .logo-text { color: var(--silver); font-size: 18px; letter-spacing: 2px; margin-left: 8px; }
+        /* Replace above with: <img src="your_logo.png" style="height:55px;" onclick="navigate('home')"> */
+        
+        .search-bar { flex: 1; margin: 0 20px; display: flex; max-width: 600px; }
+        .search-bar input { flex: 1; padding: 12px; border: 1px solid var(--silver); border-radius: 8px 0 0 8px; font-size: 14px; }
+        .search-bar button { background: var(--navy); color: var(--white); border: none; padding: 12px 20px; cursor: pointer; border-radius: 0 8px 8px 0; font-weight: bold; }
+        
         /* BUTTONS */
-        .btn { padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.2s; }
+        .btn { padding: 10px 20px; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.2s; font-size: 14px; }
         .btn-navy { background: var(--navy); color: var(--white); }
+        .btn-navy:hover { opacity: 0.9; }
         .btn-silver { background: var(--silver); color: var(--white); }
+        .btn-silver:hover { opacity: 0.9; }
         .btn-outline { background: transparent; border: 2px solid var(--navy); color: var(--navy); }
+        .btn-outline:hover { background: var(--navy); color: var(--white); }
         .btn-green { background: #28a745; color: white; }
+        .btn-green:hover { background: #218838; }
         
         /* LAYOUT */
-        .container { max-width: 1400px; margin: auto; padding: 20px; display: flex; gap: 20px; }
-        .sidebar { width: 250px; background: var(--white); border: 1px solid var(--light-silver); border-radius: 8px; padding: 20px; }
-        .main-content { flex: 1; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; display: flex; gap: 20px; }
+        .sidebar { width: 250px; background: var(--white); border: 1px solid var(--light-silver); border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 90px; }
+        .sidebar h3 { font-size: 16px; margin-bottom: 15px; color: var(--navy); border-bottom: 1px solid var(--light-silver); padding-bottom: 10px; }
+        .sidebar a { display: block; padding: 10px; color: var(--navy); text-decoration: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .sidebar a:hover { background: var(--light-silver); }
+        .main-content { flex: 1; min-width: 0; }
         .page { display: none; }
-        .page.active { display: block; }
-
-        /* CARDS & GRID */
-        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: var(--white); border: 1px solid var(--light-silver); border-radius: 8px; overflow: hidden; transition: 0.2s; }
-        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
-        .card-img { height: 200px; background: var(--light-silver); display: flex; align-items: center; justify-content: center; color: var(--navy); font-weight: bold; font-size: 30px; }
-        .card-body { padding: 15px; }
-        .price { font-weight: bold; font-size: 20px; color: var(--navy); }
+        .page.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* CART DISCLAIMER */
+        /* PRODUCT GRID */
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        .card { background: var(--white); border: 1px solid var(--light-silver); border-radius: 12px; overflow: hidden; transition: 0.3s; }
+        .card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
+        .card-img { height: 200px; background: var(--light-silver); display: flex; align-items: center; justify-content: center; font-size: 50px; }
+        .card-body { padding: 15px; }
+        .card-body h3 { font-size: 15px; margin-bottom: 8px; }
+        .price { font-weight: bold; font-size: 18px; color: var(--navy); margin-bottom: 10px; }
+        .rating { color: #f1c40f; font-size: 14px; margin-bottom: 10px; }
+        .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        /* DISCLAIMER */
         .disclaimer { background: #FFF3CD; border: 1px solid #FFE69C; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #856404; }
         
-        /* CHAT UI */
-        .chat-box { border: 1px solid var(--light-silver); height: 400px; overflow-y: auto; background: var(--white); padding: 20px; display: flex; flex-direction: column; }
-        .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; max-width: 70%; }
+        /* CHAT */
+        .chat-box { border: 1px solid var(--light-silver); height: 450px; overflow-y: auto; background: var(--white); padding: 20px; display: flex; flex-direction: column; border-radius: 12px; }
+        .chat-msg { margin-bottom: 10px; padding: 10px 14px; border-radius: 12px; max-width: 70%; font-size: 14px; }
         .msg-user { background: var(--navy); color: var(--white); align-self: flex-end; }
         .msg-seller { background: var(--light-silver); color: var(--navy); }
-
-        /* LIVE STREAM */
-        .live-box { background: #000; color: var(--white); position: relative; height: 500px; display: flex; align-items: center; justify-content: center; border-radius: 10px; }
-        .live-badge { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
-        .gift-area { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; }
-        .gift-btn { background: rgba(255,255,255,0.2); border: none; color: var(--white); padding: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; }
-
+        .chat-input { display: flex; margin-top: 15px; gap: 10px; }
+        .chat-input input { flex: 1; padding: 12px; border: 1px solid var(--silver); border-radius: 8px; }
+        
+        /* LIVE */
+        .live-box { background: #000; color: var(--white); position: relative; height: 600px; display: flex; align-items: center; justify-content: center; border-radius: 16px; overflow: hidden; }
+        .live-badge { position: absolute; top: 20px; left: 20px; background: var(--red); padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        .live-badge::before { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .gift-area { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .gift-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 12px; border-radius: 50%; font-size: 18px; cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s; }
+        .gift-btn:hover { background: rgba(255,255,255,0.4); transform: scale(1.1); }
+        .live-chat-overlay { position: absolute; bottom: 20px; left: 20px; width: 300px; max-height: 200px; background: rgba(0,0,0,0.6); border-radius: 12px; padding: 10px; overflow-y: auto; }
+        
+        /* VIDEO FEED (TIKTOK STYLE) */
+        .video-feed { height: 80vh; overflow-y: scroll; scroll-snap-type: y mandatory; border-radius: 16px; }
+        .video-item { height: 90%; scroll-snap-align: start; position: relative; border-radius: 16px; overflow: hidden; margin-bottom: 15px; background: #000; }
+        .video-item video, .video-item iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
+        .video-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .video-info { flex: 1; }
+        .video-info h4 { font-size: 18px; margin-bottom: 5px; }
+        .video-stats { display: flex; gap: 15px; font-size: 14px; margin-top: 5px; }
+        .video-actions { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .product-tag { background: var(--navy); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+        .product-tag:hover { background: var(--silver); }
+        .share-video-btn { background: var(--silver); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; border: none; }
+        .share-video-btn:hover { background: var(--navy); }
+        
         /* DASHBOARD */
-        .dash-grid { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
-        .dash-sidebar { background: var(--white); border: 1px solid var(--light-silver); border-radius: 8px; padding: 20px; }
-        .dash-sidebar a { display: block; padding: 10px; color: var(--navy); text-decoration: none; border-radius: 5px; cursor: pointer; }
+        .dash-grid { display: grid; grid-template-columns: 220px 1fr; gap: 20px; }
+        .dash-sidebar { background: var(--white); border: 1px solid var(--light-silver); border-radius: 12px; padding: 20px; }
+        .dash-sidebar a { display: block; padding: 12px; color: var(--navy); text-decoration: none; border-radius: 6px; cursor: pointer; margin-bottom: 5px; font-size: 14px; }
         .dash-sidebar a:hover { background: var(--light-silver); }
-
+        
         /* MODALS */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 200; }
-        .modal-content { background: var(--white); padding: 30px; border-radius: 10px; width: 500px; max-width: 90%; }
-        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid var(--silver); border-radius: 5px; }
-
-        @media (max-width: 768px) { .sidebar { display: none; } .container { flex-direction: column; } }
+        .modal-content { background: var(--white); padding: 30px; border-radius: 16px; width: 500px; max-width: 95%; max-height: 90vh; overflow-y: auto; }
+        .modal-content h3 { margin-bottom: 20px; }
+        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--silver); border-radius: 8px; font-size: 14px; }
+        
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .sidebar { position: static; width: 100%; display: flex; flex-wrap: wrap; gap: 10px; }
+            .sidebar h3 { display: none; }
+            .sidebar a { font-size: 13px; padding: 8px; }
+            .header { flex-wrap: wrap; gap: 10px; }
+            .search-bar { order: 3; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <header>
+    <!-- YOUR LOGO HERE: Replace next line with <img src="logo.png" style="height:55px;" onclick="navigate('home')"> -->
     <div class="logo" onclick="navigate('home')">
-        <span class="crown">👑</span><span class="logo-v">V</span><span class="logo-p">P</span><span class="logo-text"> VIC-PRIME</span>
-        <!-- REPLACE THIS DIV WITH <img src="YOUR_LOGO.png"> -->
+        <span class="logo-crown">👑</span><span class="logo-v">V</span><span class="logo-p">P</span><span class="logo-text">VIC-PRIME</span>
     </div>
-    <div class="search-bar"><input type="text" id="searchInput" placeholder="Search Amazon-scale products..."><button onclick="filterProducts()">Search</button></div>
-    <div id="authBtns">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products, sellers, videos...">
+        <button onclick="searchAll()">Search</button>
+    </div>
+    <div id="authBtns" style="display:flex; gap:10px;">
         <button class="btn btn-outline" onclick="showModal('loginModal')">Login</button>
         <button class="btn btn-navy" onclick="showModal('regModal')">Register</button>
     </div>
-    <div id="userMenu" style="display:none;">
-        <span id="userName" style="margin-right:10px;"></span>
+    <div id="userMenu" style="display:none; align-items:center; gap:10px;">
+        <span id="userName" style="font-weight:bold; font-size:14px;"></span>
         <button class="btn btn-silver" onclick="navigate('dashboard')">Dashboard</button>
         <button class="btn btn-outline" onclick="logout()">Logout</button>
     </div>
 </header>
 
 <div class="container">
-    <!-- SIDEBAR FOR CATEGORIES -->
     <div class="sidebar">
         <h3>Categories</h3>
-        <a href="#" onclick="filterByCat('Electronics')">Electronics</a>
-        <a href="#" onclick="filterByCat('Fashion')">Fashion</a>
-        <a href="#" onclick="filterByCat('Home')">Home</a>
-        <a href="#" onclick="filterByCat('Beauty')">Beauty</a>
-        <hr style="margin:20px 0;">
-        <h3>User Links</h3>
-        <a href="#" onclick="navigate('wishlist')">Wishlist</a>
-        <a href="#" onclick="navigate('live')">Live Shopping</a>
+        <a onclick="filterCat('All')">🏠 All</a>
+        <a onclick="filterCat('Electronics')">📱 Electronics</a>
+        <a onclick="filterCat('Fashion')">👗 Fashion</a>
+        <a onclick="filterCat('Home')">🏡 Home</a>
+        <a onclick="filterCat('Beauty')">💄 Beauty</a>
+        <hr style="margin:15px 0;">
+        <h3>Quick Links</h3>
+        <a onclick="navigate('videos')">🎬 Video Shopping</a>
+        <a onclick="navigate('live')">🔴 Live Shopping</a>
+        <a onclick="navigate('wishlist')">❤️ Wishlist</a>
     </div>
 
     <div class="main-content">
-        <!-- HOME PAGE -->
+        <!-- HOME -->
         <div id="home" class="page active">
-            <h2>Prime Deals</h2>
+            <h2>Featured Products</h2>
             <div class="products" id="productList"></div>
         </div>
 
         <!-- PRODUCT DETAIL -->
         <div id="product" class="page">
-            <button class="btn btn-outline" onclick="navigate('home')">← Back</button>
-            <div id="productDetail"></div>
+            <button class="btn btn-outline" onclick="navigate('home')">← Back to Products</button>
+            <div id="productDetail" style="margin-top:20px;"></div>
         </div>
 
         <!-- CART -->
         <div id="cart" class="page">
             <h2>Your Cart</h2>
             <div class="disclaimer">
-                <strong>Legal Notice:</strong> VicPrime is <u>NOT</u> involved in monetary transactions between buyers and sellers. All payments, refunds, and disputes are handled directly between the buyer and the seller. VicPrime only facilitates communication.
+                <strong>⚠️ Legal Notice:</strong> VicPrime is <u>NOT</u> involved in monetary transactions between buyers and sellers. All payments, refunds, and delivery are arranged directly between you and the seller. VicPrime only facilitates communication.
             </div>
-            <div id="cartItems"></div>
+            <div id="cartItems" style="margin-bottom:20px;"></div>
             <button class="btn btn-navy" onclick="checkout()">Contact Sellers to Arrange Payment</button>
-        </div>
-
-        <!-- CHAT -->
-        <div id="chat" class="page">
-            <h2>Direct Message</h2>
-            <div class="chat-box" id="chatWindow"></div>
-            <div style="display:flex; margin-top:10px;">
-                <input type="text" id="chatInput" style="flex:1; padding:10px;" placeholder="Type message...">
-                <button class="btn btn-navy" onclick="sendChat()">Send</button>
-                <button class="btn btn-silver" onclick="openWhatsApp()" style="margin-left:10px;">WhatsApp (Secondary)</button>
-            </div>
-        </div>
-
-        <!-- LIVE SHOPPING -->
-        <div id="live" class="page">
-            <div class="live-box">
-                <div class="live-badge">🔴 LIVE</div>
-                <h1>Live Stream</h1>
-                <div class="gift-area">
-                    <button class="gift-btn" onclick="sendGift('coin')">🪙 Coin (5F)</button>
-                    <button class="gift-btn" onclick="sendGift('star')">⭐ Star (50F)</button>
-                    <button class="gift-btn" onclick="sendGift('crown')">👑 Crown (500F)</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- DASHBOARD (Customer & Seller) -->
-        <div id="dashboard" class="page">
-            <div class="dash-grid">
-                <div class="dash-sidebar">
-                    <a onclick="dash('profile')">My Profile</a>
-                    <a onclick="dash('orders')">My Orders</a>
-                    <a onclick="dash('store')">Sell on VicPrime</a>
-                    <a onclick="dash('coins')">Wallet & Vic-Coins</a>
-                </div>
-                <div id="dashContent"></div>
-            </div>
         </div>
 
         <!-- WISHLIST -->
@@ -179,17 +185,61 @@
             <h2>My Wishlist</h2>
             <div id="wishlistItems"></div>
         </div>
+
+        <!-- CHAT -->
+        <div id="chat" class="page">
+            <h2>Live Chat with Seller</h2>
+            <div class="chat-box" id="chatWindow"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button class="btn btn-navy" onclick="sendChat()">Send</button>
+                <button class="btn btn-silver" onclick="openWhatsApp()" style="margin-left:10px;">WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- LIVE SHOPPING -->
+        <div id="live" class="page">
+            <div class="live-box">
+                <div class="live-badge">LIVE</div>
+                <h2>Live Stream with Seller</h2>
+                <div class="live-chat-overlay" id="liveChat"></div>
+                <div class="gift-area">
+                    <button class="gift-btn" onclick="sendGift('coin')" title="Coin (5F)">🪙</button>
+                    <button class="gift-btn" onclick="sendGift('star')" title="Star (50F)">⭐</button>
+                    <button class="gift-btn" onclick="sendGift('crown')" title="Crown (500F)">👑</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="page">
+            <div class="dash-grid">
+                <div class="dash-sidebar">
+                    <a onclick="dash('profile')">👤 Profile</a>
+                    <a onclick="dash('orders')">📦 My Orders</a>
+                    <a onclick="dash('store')">🏪 Sell on VicPrime</a>
+                    <a onclick="dash('coins')">💰 Wallet & Coins</a>
+                </div>
+                <div id="dashContent"></div>
+            </div>
+        </div>
+
+        <!-- TIKTOK VIDEO FEED -->
+        <div id="videos" class="page">
+            <h2 style="margin-bottom:15px;">🎬 Video Shopping</h2>
+            <div class="video-feed" id="videoFeed"></div>
+        </div>
     </div>
 </div>
 
 <!-- LOGIN MODAL -->
 <div class="modal" id="loginModal">
     <div class="modal-content">
-        <h3>Login</h3>
+        <h3>Login to VicPrime</h3>
         <input type="email" id="loginEmail" placeholder="Email">
         <input type="password" id="loginPassword" placeholder="Password">
-        <button class="btn btn-navy" onclick="doLogin()">Login</button>
-        <button class="btn btn-silver" onclick="hideModal()">Close</button>
+        <button class="btn btn-navy" onclick="doLogin()" style="width:100%; margin-top:10px;">Login</button>
+        <button class="btn btn-silver" onclick="hideModal()" style="width:100%; margin-top:10px;">Cancel</button>
     </div>
 </div>
 
@@ -197,12 +247,12 @@
 <div class="modal" id="regModal">
     <div class="modal-content">
         <h3>Join VicPrime</h3>
-        <p style="color:var(--silver); margin-bottom:10px;">All users register the same. Open your store anytime.</p>
+        <p style="color:var(--silver); margin-bottom:15px;">All users register the same. You can open your store anytime.</p>
         <input type="text" id="regName" placeholder="Full Name">
         <input type="email" id="regEmail" placeholder="Email">
         <input type="password" id="regPassword" placeholder="Password">
-        <button class="btn btn-navy" onclick="doRegister()">Register</button>
-        <button class="btn btn-silver" onclick="hideModal()">Close</button>
+        <button class="btn btn-navy" onclick="doRegister()" style="width:100%; margin-top:10px;">Register</button>
+        <button class="btn btn-silver" onclick="hideModal()" style="width:100%; margin-top:10px;">Cancel</button>
     </div>
 </div>
 
@@ -212,45 +262,52 @@
         <h3>Purchase Vic-Coins</h3>
         <p>1 Coin = 5 FCFA | Min: 50 Coins (250 FCFA)</p>
         <input type="number" id="coinAmount" placeholder="Number of Coins" min="50">
-        <div style="font-size:14px; background:var(--light-silver); padding:10px; border-radius:5px;">
-            <strong>Payment Instructions:</strong><br>
+        <div style="background:var(--light-silver); padding:15px; border-radius:8px; margin:15px 0; font-size:13px;">
+            <strong>Payment Methods:</strong><br>
             MTN MoMo: +237 675 903 626<br>
             Orange MoMo: +237 657 754 321<br>
             UBA Bank: 16059001065 (Fon Vicnuel Fondom)
         </div>
-        <button class="btn btn-navy" onclick="purchaseCoins()">Submit Payment Request</button>
-        <button class="btn btn-silver" onclick="hideModal()">Close</button>
+        <button class="btn btn-navy" onclick="purchaseCoins()" style="width:100%;">Submit Payment Request</button>
+        <button class="btn btn-silver" onclick="hideModal()" style="width:100%; margin-top:10px;">Cancel</button>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // MOCK BACKEND (SIMULATES THE FULL AMAZON API)
+    // DATABASE (Mocking backend)
     // ==========================================
-    // (Replace these variables with actual calls to https://backend-4-io0g.onrender.com/api)
-    let DB = {
-        users: [{ id: 1, name: "Admin", email: "admin@vicprime.com", pass: "123", balance: 1000, role: "both" }],
+    const DB = {
         products: [
-            { id: 101, name: "Amazon Echo (Smart Speaker)", price: 25000, cat: "Electronics", img: "🔊", sellerId: 1, hasShare: true, rating: 4.8 },
-            { id: 102, name: "Designer Handbag", price: 15000, cat: "Fashion", img: "👜", sellerId: 1, hasShare: true, rating: 4.9 },
-            { id: 103, name: "Premium Sneakers", price: 30000, cat: "Fashion", img: "👟", sellerId: 1, hasShare: false, rating: 4.5 },
-            { id: 104, name: "Smart 4K TV", price: 150000, cat: "Electronics", img: "📺", sellerId: 1, hasShare: true, rating: 4.7 }
+            { id: 101, name: "Amazon Echo Smart Speaker", price: 25000, cat: "Electronics", img: "🔊", sellerId: 1, hasShare: true, rating: 4.8 },
+            { id: 102, name: "Designer Leather Handbag", price: 15000, cat: "Fashion", img: "👜", sellerId: 1, hasShare: true, rating: 4.9 },
+            { id: 103, name: "Premium Running Sneakers", price: 30000, cat: "Fashion", img: "👟", sellerId: 1, hasShare: false, rating: 4.5 },
+            { id: 104, name: "4K Smart Television", price: 150000, cat: "Electronics", img: "📺", sellerId: 1, hasShare: true, rating: 4.7 },
+            { id: 105, name: "Organic Beauty Cream", price: 8000, cat: "Beauty", img: "🧴", sellerId: 1, hasShare: true, rating: 4.6 },
+            { id: 106, name: "Modern Coffee Table", price: 45000, cat: "Home", img: "🪑", sellerId: 1, hasShare: true, rating: 4.4 },
         ],
-        coins: { 1: 500 }, // Platform coins for admin
-        cart: [],
-        wishlist: [],
-        chat: []
+        videos: [
+            { id: 1, url: "https://www.w3schools.com/html/mov_bbb.mp4", productId: 101, title: "Amazon Echo Unboxing", likes: 1200, sellerId: 1 },
+            { id: 2, url: "https://www.w3schools.com/html/mov_bbb.mp4", productId: 102, title: "Designer Bag Review", likes: 890, sellerId: 1 },
+            { id: 3, url: "https://www.w3schools.com/html/mov_bbb.mp4", productId: 103, title: "Sneaker Try-On", likes: 540, sellerId: 1 },
+            { id: 4, url: "https://www.w3schools.com/html/mov_bbb.mp4", productId: 104, title: "4K TV Setup", likes: 2300, sellerId: 1 },
+        ]
     };
 
+    // ==========================================
+    // STATE
+    // ==========================================
     let state = {
         user: JSON.parse(localStorage.getItem('vp_user') || 'null'),
         cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
         wishlist: JSON.parse(localStorage.getItem('vp_wishlist') || '[]'),
-        referrerId: new URLSearchParams(window.location.search).get('ref') || null
+        referrerId: new URLSearchParams(window.location.search).get('ref') || null,
+        currentProductId: null,
+        currentSellerId: null,
     };
 
     // ==========================================
-    // NAVIGATION & UI
+    // NAVIGATION
     // ==========================================
     function navigate(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -258,16 +315,19 @@
         if (pageId === 'home') renderProducts();
         if (pageId === 'cart') renderCart();
         if (pageId === 'wishlist') renderWishlist();
+        if (pageId === 'videos') renderVideos();
         if (pageId === 'dashboard') dash('profile');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
     function hideModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
     // ==========================================
-    // MAIN STORE LOGIC (AMAZON-LIKE)
+    // PRODUCTS
     // ==========================================
     function renderProducts() {
-        let list = document.getElementById('productList');
+        const list = document.getElementById('productList');
         list.innerHTML = '';
         DB.products.forEach(p => {
             list.innerHTML += `
@@ -276,28 +336,32 @@
                     <div class="card-body">
                         <h3>${p.name}</h3>
                         <div class="price">${p.price.toLocaleString()} FCFA</div>
-                        <div style="color:var(--silver); margin-bottom:10px;">Rating: ${p.rating} ⭐</div>
-                        <button class="btn btn-outline" onclick="viewProduct(${p.id})">View</button>
-                        <button class="btn btn-navy" onclick="addToCart(${p.id})">Add to Cart</button>
+                        <div class="rating">${'⭐'.repeat(Math.floor(p.rating))} (${p.rating})</div>
+                        <div class="card-actions">
+                            <button class="btn btn-outline" style="font-size:13px;" onclick="viewProduct(${p.id})">View</button>
+                            <button class="btn btn-navy" style="font-size:13px;" onclick="addToCart(${p.id})">🛒 Add</button>
+                        </div>
                     </div>
                 </div>`;
         });
     }
 
     function viewProduct(id) {
-        let p = DB.products.find(x => x.id === id);
-        document.getElementById('productDetail').innerHTML = `
-            <div style="display:flex; gap:30px; margin-top:20px; background:var(--white); padding:20px;">
-                <div style="flex:1; height:400px; background:var(--light-silver); display:flex; align-items:center; justify-content:center; font-size:100px;">${p.img}</div>
+        const p = DB.products.find(x => x.id === id);
+        state.currentProductId = id;
+        const detail = document.getElementById('productDetail');
+        detail.innerHTML = `
+            <div style="display:flex; gap:30px; background:var(--white); padding:30px; border-radius:16px; border:1px solid var(--light-silver);">
+                <div style="flex:1; height:400px; background:var(--light-silver); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:120px;">${p.img}</div>
                 <div style="flex:1;">
-                    <h1>${p.name}</h1>
-                    <h2>${p.price.toLocaleString()} FCFA</h2>
-                    <p style="color:var(--silver); margin:20px 0;">Category: ${p.cat} | Rating: ${p.rating} ⭐</p>
-                    <button class="btn btn-navy" onclick="addToCart(${p.id})">Add to Cart</button>
-                    <button class="btn btn-green" onclick="chatWithSeller(${p.sellerId})">Chat with Seller</button>
-                    <button class="btn btn-outline" onclick="addToWishlist(${p.id})">♡ Wishlist</button>
-                    ${p.hasShare ? `<button class="btn btn-silver" onclick="shareProduct(${p.id})">Share & Earn Coins</button>` : `<button class="btn btn-silver" disabled>Share Disabled (Need Coins)</button>`}
-                    <button class="btn btn-outline" onclick="navigate('live')">Go to Live</button>
+                    <h1 style="font-size:28px; margin-bottom:10px;">${p.name}</h1>
+                    <h2 style="color:var(--navy); font-size:32px; margin-bottom:10px;">${p.price.toLocaleString()} FCFA</h2>
+                    <p style="color:var(--silver); margin-bottom:20px;">Category: ${p.cat} | Rating: ${p.rating} ⭐</p>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <button class="btn btn-navy" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+                        <button class="btn btn-green" onclick="chatWithSeller(${p.sellerId})">💬 Chat with Seller</button>
+                        ${p.hasShare ? `<button class="btn btn-silver" onclick="shareProduct(${p.id})">📤 Share & Earn Coins</button>` : `<button class="btn btn-silver" disabled>Share Disabled (Need Coins)</button>`}
+                    </div>
                 </div>
             </div>`;
         navigate('product');
@@ -306,8 +370,9 @@
     function addToCart(id) {
         state.cart.push(id);
         localStorage.setItem('vp_cart', JSON.stringify(state.cart));
-        alert("Added to Cart!");
+        alert('Added to Cart!');
     }
+
     function addToWishlist(id) {
         state.wishlist.push(id);
         localStorage.setItem('vp_wishlist', JSON.stringify(state.wishlist));
@@ -315,117 +380,201 @@
     }
 
     function renderCart() {
-        let items = document.getElementById('cartItems');
+        const items = document.getElementById('cartItems');
         items.innerHTML = '';
-        if (state.cart.length === 0) items.innerHTML = '<p>Cart is empty</p>';
-        state.cart.forEach(pid => {
-            let p = DB.products.find(x => x.id === pid);
-            if (p) items.innerHTML += `<p>${p.img} ${p.name} - ${p.price.toLocaleString()} FCFA</p>`;
-        });
+        if (state.cart.length === 0) {
+            items.innerHTML = '<p>Your cart is empty. Go shopping!</p>';
+        } else {
+            let total = 0;
+            state.cart.forEach(pid => {
+                const p = DB.products.find(x => x.id === pid);
+                if (p) {
+                    total += p.price;
+                    items.innerHTML += `<div style="display:flex; align-items:center; gap:10px; border:1px solid var(--light-silver); padding:10px; margin-bottom:10px; border-radius:8px;">
+                        <span style="font-size:30px;">${p.img}</span>
+                        <div style="flex:1;"><strong>${p.name}</strong><br>${p.price.toLocaleString()} FCFA</div>
+                        <button class="btn btn-outline" style="font-size:12px;" onclick="removeFromCart(${p.id})">Remove</button>
+                    </div>`;
+                }
+            });
+            items.innerHTML += `<h3 style="text-align:right; margin-top:10px;">Total: ${total.toLocaleString()} FCFA</h3>`;
+        }
+    }
+
+    function removeFromCart(id) {
+        state.cart = state.cart.filter(x => x !== id);
+        localStorage.setItem('vp_cart', JSON.stringify(state.cart));
+        renderCart();
+    }
+
+    function checkout() {
+        if (state.cart.length === 0) return alert('Cart is empty!');
+        const firstSeller = DB.products.find(p => p.id === state.cart[0]).sellerId;
+        alert('Redirecting you to chat with sellers to arrange payment directly...');
+        chatWithSeller(firstSeller);
     }
 
     function renderWishlist() {
-        let items = document.getElementById('wishlistItems');
+        const items = document.getElementById('wishlistItems');
         items.innerHTML = '';
-        state.wishlist.forEach(pid => {
-            let p = DB.products.find(x => x.id === pid);
-            if (p) items.innerHTML += `<div class="card"><div class="card-body"><h3>${p.name}</h3><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
+        if (state.wishlist.length === 0) {
+            items.innerHTML = '<p>No items in your wishlist yet.</p>';
+        } else {
+            state.wishlist.forEach(pid => {
+                const p = DB.products.find(x => x.id === pid);
+                if (p) {
+                    items.innerHTML += `<div class="card" style="margin-bottom:15px;"><div class="card-body"><h3>${p.name}</h3><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
+                }
+            });
+        }
+    }
+
+    // ==========================================
+    // SEARCH & FILTER
+    // ==========================================
+    function searchAll() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const list = document.getElementById('productList');
+        list.innerHTML = '';
+        DB.products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)).forEach(p => {
+            list.innerHTML += `<div class="card"><div class="card-img">${p.img}</div><div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toLocaleString()} FCFA</div><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
         });
     }
 
+    function filterCat(cat) {
+        const list = document.getElementById('productList');
+        list.innerHTML = '';
+        if (cat === 'All') {
+            renderProducts();
+        } else {
+            DB.products.filter(p => p.cat === cat).forEach(p => {
+                list.innerHTML += `<div class="card"><div class="card-img">${p.img}</div><div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toLocaleString()} FCFA</div><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
+            });
+        }
+    }
+
     // ==========================================
-    // CHAT & WHATSAPP LOGIC
+    // CHAT & WHATSAPP
     // ==========================================
     function chatWithSeller(sellerId) {
         if (!state.user) {
-            alert("Please register to chat with seller.");
+            alert('Please register to chat with sellers.');
             showModal('regModal');
             return;
         }
+        state.currentSellerId = sellerId;
         navigate('chat');
-        document.getElementById('chatWindow').innerHTML = '<div class="chat-msg msg-seller">Welcome to my store! How can I help you today?</div>';
+        document.getElementById('chatWindow').innerHTML = '<div class="chat-msg msg-seller">Welcome! How can I help you today?</div>';
     }
+
     function sendChat() {
-        let msg = document.getElementById('chatInput').value;
+        const msg = document.getElementById('chatInput').value;
         if (!msg) return;
-        let win = document.getElementById('chatWindow');
+        const win = document.getElementById('chatWindow');
         win.innerHTML += `<div class="chat-msg msg-user">${msg}</div>`;
         document.getElementById('chatInput').value = '';
+        win.scrollTop = win.scrollHeight;
     }
+
     function openWhatsApp() {
-        let phone = "237675903626"; // Your WhatsApp
-        window.open(`https://wa.me/${phone}?text=Hello, I have a question about a product on VicPrime`, '_blank');
+        const phone = '237675903626';
+        window.open(`https://wa.me/${phone}?text=Hello, I have a question on VicPrime`, '_blank');
     }
 
     // ==========================================
-    // LIVE GIFTS & COINS SYSTEM
+    // LIVE & GIFTS
     // ==========================================
     function sendGift(type) {
-        if (!state.user) { alert("Login to send gifts"); showModal('loginModal'); return; }
+        if (!state.user) { alert('Login to send gifts'); showModal('loginModal'); return; }
         let val = type === 'coin' ? 5 : (type === 'star' ? 50 : 500);
-        alert(`You sent a ${type} worth ${val} FCFA. VicPrime keeps 3% (${val*0.03} FCFA).`);
-        DB.chat.push({ type: 'gift', value: val });
-    }
-
-    function purchaseCoins() {
-        let amount = document.getElementById('coinAmount').value;
-        if (amount < 50) return alert("Minimum purchase is 50 coins (250 FCFA)");
-        alert("Payment request submitted. You will be credited once payment is confirmed via MTN/Orange/Bank.");
-        hideModal();
+        const commission = val * 0.03;
+        alert(`You sent a ${type} worth ${val} FCFA. VicPrime keeps 3% (${commission.toFixed(2)} FCFA) for maintenance.`);
+        document.getElementById('liveChat').innerHTML += `<p style="margin:5px 0;">🎁 ${state.user.name} sent a ${type}!</p>`;
     }
 
     // ==========================================
-    // SHARE & EARN REFERRAL SYSTEM
+    // SHARE & EARN REFERRAL
     // ==========================================
     function shareProduct(productId) {
-        if (!state.user) { alert("Login to share"); showModal('loginModal'); return; }
-        let link = `${window.location.origin}?ref=${state.user.id}&prod=${productId}`;
-        let caption = "I found this amazing product on VicPrime!";
-        let msg = encodeURIComponent(caption + "\n" + link);
-        window.open(`https://wa.me/?text=${msg}`, '_blank');
-        
-        // Backend logic: New user registering via this link gives sharer 1 coin.
-        // Sharer gets 3 FCFA, Platform gets 2 FCFA.
-        alert("Share link generated! You will earn 1 coin when a new user registers via this link.");
+        if (!state.user) { alert('Login to share'); showModal('loginModal'); return; }
+        const link = `${window.location.origin}?ref=${state.user.id}&prod=${productId}`;
+        const caption = 'I found this amazing product on VicPrime!';
+        window.open(`https://wa.me/?text=${encodeURIComponent(caption + "\n" + link)}`, '_blank');
+        alert('Share link created! You will earn 1 coin when a new user registers via your link.');
+    }
+
+    function shareVideo(videoId) {
+        if (!state.user) { alert('Login to share videos'); showModal('loginModal'); return; }
+        const link = `${window.location.origin}?ref=${state.user.id}&video=${videoId}`;
+        const caption = 'Check out this amazing video on VicPrime!';
+        window.open(`https://wa.me/?text=${encodeURIComponent(caption + "\n" + link)}`, '_blank');
+        alert('Video share link created! You will earn 1 coin when a new user registers.');
+    }
+
+    // ==========================================
+    // VIDEO FEED (TIKTOK STYLE)
+    // ==========================================
+    function renderVideos() {
+        const feed = document.getElementById('videoFeed');
+        feed.innerHTML = '';
+        DB.videos.forEach(v => {
+            const product = DB.products.find(p => p.id === v.productId);
+            feed.innerHTML += `
+                <div class="video-item">
+                    <video src="${v.url}" autoplay loop muted playsinline></video>
+                    <div class="video-overlay">
+                        <div class="video-info">
+                            <h4>${v.title}</h4>
+                            <div class="video-stats">❤️ ${v.likes.toLocaleString()} likes</div>
+                            <div style="margin-top:10px;">
+                                <span class="product-tag" onclick="viewProduct(${v.productId})">🛒 Buy: ${product.name}</span>
+                                <button class="share-video-btn" onclick="shareVideo(${v.id})" style="margin-left:10px;">📤 Share & Earn</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        });
     }
 
     // ==========================================
     // AUTH & REFERRAL LOGIC
     // ==========================================
     function doLogin() {
-        let email = document.getElementById('loginEmail').value;
-        let pass = document.getElementById('loginPassword').value;
-        // Mock validation
-        state.user = { id: 1, name: "John Doe", email: email };
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        if (!email || !pass) return alert('Please fill in all fields');
+        
+        // Mock login
+        state.user = { id: 1, name: 'John Doe', email: email };
         localStorage.setItem('vp_user', JSON.stringify(state.user));
-        updateHeader(); hideModal(); navigate('home');
-        alert("Login successful!");
+        updateHeader();
+        hideModal();
+        navigate('home');
+        alert('Login successful!');
     }
 
     function doRegister() {
-        let name = document.getElementById('regName').value;
-        let email = document.getElementById('regEmail').value;
-        let pass = document.getElementById('regPassword').value;
-        
-        // Registration logic
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPassword').value;
+        if (!name || !email || !pass) return alert('Please fill in all fields');
+
+        // Mock registration
         state.user = { id: Date.now(), name: name, email: email };
         localStorage.setItem('vp_user', JSON.stringify(state.user));
-        updateHeader(); hideModal();
+        updateHeader();
+        hideModal();
 
-        // Check for Referrer
+        // Referral check
         if (state.referrerId) {
-            // Simulate rewarding the referrer
-            let referrer = DB.users.find(u => u.id == state.referrerId);
-            if (referrer) {
-                referrer.balance += 1; // 1 Vic-Coin = 3 FCFA (2 FCFA goes to platform)
-                alert(`Thank you for registering via a referral! The sharer just earned 1 Vic-Coin (3 FCFA). Platform keeps 2 FCFA for maintenance.`);
-            }
-            
-            // AUTOMATIC REDIRECT: Takes the new user straight to the store owner's chat
-            alert("Registration successful! Redirecting you to the seller's chat...");
+            // Reward referrer (1 coin = 3 FCFA; 2 FCFA to platform)
+            alert('🎉 Registration successful! The person who shared with you just earned 1 Vic-Coin (3 FCFA). Platform keeps 2 FCFA for maintenance.');
+            // Auto-redirect to chat
+            alert('Redirecting you to chat with the seller...');
             navigate('chat');
         } else {
-            alert("Registration successful!");
+            alert('Registration successful!');
+            navigate('home');
         }
     }
 
@@ -433,77 +582,71 @@
         localStorage.removeItem('vp_user');
         state.user = null;
         updateHeader();
+        navigate('home');
     }
 
     function updateHeader() {
         if (state.user) {
             document.getElementById('authBtns').style.display = 'none';
-            document.getElementById('userMenu').style.display = 'block';
-            document.getElementById('userName').innerText = "Hello, " + state.user.name;
+            document.getElementById('userMenu').style.display = 'flex';
+            document.getElementById('userName').innerText = 'Hello, ' + state.user.name.split(' ')[0];
+        } else {
+            document.getElementById('authBtns').style.display = 'flex';
+            document.getElementById('userMenu').style.display = 'none';
         }
     }
 
     // ==========================================
-    // DASHBOARD (STORE OWNER & CUSTOMER)
+    // COIN SYSTEM
+    // ==========================================
+    function purchaseCoins() {
+        const amount = document.getElementById('coinAmount').value;
+        if (amount < 50) return alert('Minimum purchase is 50 coins (250 FCFA)');
+        alert('Payment request submitted! You will be credited once payment is confirmed via MTN/Orange/Bank.');
+        hideModal();
+    }
+
+    // ==========================================
+    // DASHBOARD
     // ==========================================
     function dash(tab) {
-        let content = document.getElementById('dashContent');
-        if (tab === 'profile') content.innerHTML = `<h2>Profile</h2><p>Name: ${state.user ? state.user.name : "Guest"}</p><p>Email: ${state.user ? state.user.email : "Guest"}</p>`;
-        
-        if (tab === 'orders') content.innerHTML = `<h2>My Orders</h2><p>No orders yet. Since VicPrime is not involved in payments, track orders directly with sellers.</p>`;
-        
+        const content = document.getElementById('dashContent');
+        if (tab === 'profile') {
+            content.innerHTML = `<h2>Profile</h2><p><strong>Name:</strong> ${state.user ? state.user.name : 'Guest'}</p><p><strong>Email:</strong> ${state.user ? state.user.email : 'Guest'}</p>`;
+        }
+        if (tab === 'orders') {
+            content.innerHTML = `<h2>My Orders</h2><p>No orders yet. Since VicPrime is not involved in payments, track your orders directly with sellers.</p>`;
+        }
         if (tab === 'store') {
             content.innerHTML = `
                 <h2>Sell on VicPrime</h2>
-                <input type="text" id="storeName" placeholder="Store Name">
-                <textarea id="storeDesc" placeholder="Describe your store"></textarea>
-                <button class="btn btn-navy" onclick="createStore()">Create Store</button>
-                <button class="btn btn-silver" onclick="showModal('coinModal')">Buy Vic-Coins (5F each)</button>
-                <p style="margin-top:10px; font-size:12px;">1 Coin = 5F = 1 Person Reach</p>`;
+                <input type="text" placeholder="Store Name">
+                <textarea placeholder="Describe your store" rows="4"></textarea>
+                <button class="btn btn-navy" onclick="alert('Store created!')">Create Store</button>
+                <button class="btn btn-silver" onclick="showModal('coinModal')" style="margin-top:10px;">💰 Buy Vic-Coins (5F each)</button>
+                <p style="margin-top:10px; font-size:13px; color:var(--silver);">1 Coin = 5F = 1 Person Reach. Minimum 50 coins.</p>`;
         }
-        
-        if (tab === 'coins') content.innerHTML = `<h2>Wallet</h2><p>Balance: ${state.user ? DB.coins[state.user.id] || 0 : 0} Vic-Coins</p><button class="btn btn-navy" onclick="showModal('coinModal')">Buy Coins</button>`;
-    }
-
-    function createStore() {
-        alert("Store created! Upload products to start sharing.");
+        if (tab === 'coins') {
+            content.innerHTML = `<h2>Wallet</h2><p><strong>Balance:</strong> 0 Vic-Coins</p><button class="btn btn-navy" onclick="showModal('coinModal')">Buy Coins</button>`;
+        }
     }
 
     // ==========================================
-    // CURRENCY & SEARCH
+    // INITIALIZATION
     // ==========================================
-    function filterProducts() {
-        let q = document.getElementById('searchInput').value.toLowerCase();
-        let list = document.getElementById('productList');
-        list.innerHTML = '';
-        DB.products.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
-            list.innerHTML += `<div class="card"><div class="card-img">${p.img}</div><div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toLocaleString()} FCFA</div><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
-        });
-    }
-
-    function filterByCat(cat) {
-        let list = document.getElementById('productList');
-        list.innerHTML = '';
-        DB.products.filter(p => p.cat === cat).forEach(p => {
-            list.innerHTML += `<div class="card"><div class="card-img">${p.img}</div><div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toLocaleString()} FCFA</div><button class="btn btn-navy" onclick="viewProduct(${p.id})">View</button></div></div>`;
-        });
-    }
-
-    // AUTO-CURRENCY DETECTION (Simple IP based simulation)
-    // In real app, you'd use an API like ipapi.co to detect country and change currency
-    let userCurrency = "FCFA";
-    // Can be modified to show EUR/USD if IP is detected outside Cameroon.
-
-    // INIT
     window.onload = () => {
-        // If a user just registered via a referral link, automatically open chat
         updateHeader();
         renderProducts();
+        
+        // If user came via referral link, handle special flow
         if (state.referrerId) {
-            alert("New user detected via referral! Opening chat with seller...");
-            navigate('chat');
+            setTimeout(() => {
+                alert('New user detected via referral! Opening chat with seller...');
+                navigate('chat');
+            }, 500);
         }
     };
 </script>
+
 </body>
 </html>
