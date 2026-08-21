@@ -141,6 +141,15 @@
         .review-comment { color:var(--vic-gray); font-size:11px; }
         .review-stars { color:#FFD700; font-size:10px; }
         .review-date { color:var(--vic-gray); font-size:10px; }
+        .comment-section { margin-top:16px; }
+        .comment-item { background:rgba(15,21,37,0.5); border-radius:8px; padding:10px; margin-bottom:8px; }
+        .comment-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+        .comment-author { font-weight:600; font-size:11px; }
+        .comment-date { font-size:10px; color:var(--vic-gray); }
+        .comment-text { font-size:11px; color:var(--vic-gray); }
+        .comment-actions { display:flex; gap:8px; margin-top:4px; }
+        .like-btn { font-size:10px; cursor:pointer; color:var(--vic-gray); }
+        .like-btn.liked { color:var(--vic-red); }
         .loading-skeleton { background: linear-gradient(90deg, #1a1f2e 25%, #2a2f3e 50%, #1a1f2e 75%); background-size:200% 100%; animation:skeleton 1.5s infinite; border-radius:8px; }
         @keyframes skeleton { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         .empty-state { text-align:center; padding:40px 16px; color:var(--vic-gray); }
@@ -359,10 +368,14 @@
             orders: JSON.parse(localStorage.getItem('vp_orders') || '[]'),
             cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
             reviews: JSON.parse(localStorage.getItem('vp_reviews') || '[]'),
+            comments: JSON.parse(localStorage.getItem('vp_comments') || '[]'),
+            likes: JSON.parse(localStorage.getItem('vp_likes') || '[]'),
             save() {
                 localStorage.setItem('vp_orders', JSON.stringify(this.orders));
                 localStorage.setItem('vp_cart', JSON.stringify(this.cart));
                 localStorage.setItem('vp_reviews', JSON.stringify(this.reviews));
+                localStorage.setItem('vp_comments', JSON.stringify(this.comments));
+                localStorage.setItem('vp_likes', JSON.stringify(this.likes));
             }
         };
         
@@ -379,7 +392,7 @@
         };
         const catImages = {
             'Electronics':'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',
-            'Fashion':'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop',
+            'Fashion':'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop',
             'Food & Beverage':'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
             'Services':'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
             'Home & Garden':'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
@@ -428,6 +441,7 @@
                 if (user.role === 'business') {
                     html += `<a onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>`;
                     html += `<a onclick="viewMyStore()"><i class="fas fa-eye"></i> View My Store</a>`;
+                    html += `<a onclick="copyStoreLink()"><i class="fas fa-link"></i> Copy Store Link</a>`;
                 } else {
                     html += `<a onclick="showPage('becomeSeller')"><i class="fas fa-arrow-up"></i> Become a Business Owner</a>`;
                 }
@@ -457,10 +471,25 @@
             });
         }
         
+        function copyStoreLink() {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            apiCall('/businesses').then(result => {
+                if (result.success && result.businesses) {
+                    const myBiz = result.businesses.find(b => b.owner === user.id);
+                    if (myBiz) {
+                        const link = `${window.location.origin}/#/business/${myBiz._id || myBiz.id}`;
+                        navigator.clipboard.writeText(link).then(() => toast('Store link copied!', 'success'));
+                    } else {
+                        toast('No store found', 'error');
+                    }
+                }
+            });
+        }
+        
         function upgradeToBusiness() {
             const user = getCurrentUser();
             if (!user) { showPage('login'); return; }
-            // Simple upgrade: update local user role and redirect to store builder
             user.role = 'business';
             localStorage.setItem('vp_user', JSON.stringify(user));
             toast('You are now a Business Owner! Build your store.', 'success');
@@ -511,12 +540,13 @@
         
         function businessCardHTML(b) {
             const img = b.logo && b.logo !== 'default-logo.png' ? b.logo : (catImages[b.category] || '');
+            const slug = b.slug || (b.name ? b.name.toLowerCase().replace(/[^a-z0-9]/g, '-') : '');
             return `<div class="card" onclick="showBusinessDetail('${b._id || b.id}')">
                 <div class="card-cover">${img ? `<img src="${img}" alt="${b.name}">` : `<i class="fas ${catIcons[b.category]} icon-large"></i>`}
                     ${b.verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
                     <span class="rating-badge">★ ${b.rating || 0}</span>
                 </div>
-                <div class="card-body"><div class="card-title">${b.name}</div><div class="card-subtitle">${b.category}</div><p class="card-desc">${b.description}</p></div>
+                <div class="card-body"><div class="card-title">${b.name}</div><div class="card-subtitle">${b.category}</div><p class="card-desc">${b.description}</p>${slug ? `<p style="font-size:11px;color:var(--vic-blue-glow);margin-top:8px;">🔗 vicprime.com/${slug}</p>` : ''}</div>
             </div>`;
         }
         
@@ -566,6 +596,8 @@
             const sellerName = business.name || p.businessName || 'Unknown';
             const sellerWhatsApp = business.whatsapp || p.whatsapp || '';
             const mainImg = p.images && p.images[0] ? p.images[0] : '';
+            const comments = DB.comments.filter(c => c.productId === p._id || c.productId === p.id);
+            const likes = DB.likes.filter(l => l.productId === p._id || l.productId === p.id);
             return `<div class="product-card">
                 <div class="product-image" onclick="showProductDetail('${p._id || p.id}')">${mainImg ? `<img src="${mainImg}" alt="${p.name}">` : `<i class="fas fa-box-open icon-large"></i>`}</div>
                 <div class="product-body">
@@ -574,6 +606,7 @@
                     <div class="product-price metallic-text">$${p.price}</div>
                     <p style="font-size:11px;color:var(--vic-gray);">Seller: ${sellerName}</p>
                     ${p.rating ? `<p style="font-size:11px;color:#FFD700;">★ ${p.rating}</p>` : ''}
+                    <p style="font-size:11px;color:var(--vic-gray);"><i class="far fa-comment"></i> ${comments.length} | <i class="far fa-heart"></i> ${likes.length}</p>
                     <div class="product-actions">
                         <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id || p.id}','${p.name}',${p.price},'${sellerName}','${sellerWhatsApp}')">Add</button>
                         <button class="btn btn-secondary btn-xs" onclick="showProductDetail('${p._id || p.id}')">View</button>
@@ -590,12 +623,13 @@
             const productsResult = await apiCall(`/products?business=${id}`);
             const products = productsResult.success ? productsResult.products : [];
             const reviews = DB.reviews.filter(r => r.businessId === id);
+            const slug = b.slug || (b.name ? b.name.toLowerCase().replace(/[^a-z0-9]/g, '-') : '');
             document.getElementById('businessDetailContent').innerHTML = `
                 <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')">← Back</button>
                 <div class="card" style="padding:24px;margin:16px 0;cursor:default;">
                     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
                         <div style="width:70px;height:70px;background:var(--metallic-gradient);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;">${b.logo && b.logo !== 'default-logo.png' ? `<img src="${b.logo}" style="width:100%;height:100%;object-fit:cover;">` : `<i class="fas ${catIcons[b.category]}"></i>`}</div>
-                        <div style="flex:1;"><h2 style="font-size:24px;">${b.name} ${b.verified ? '✓' : ''}</h2><p style="color:var(--vic-blue-glow);">${b.category}</p><p style="color:var(--vic-gray);font-size:12px;">★ ${b.rating} | 📍 ${b.location}</p></div>
+                        <div style="flex:1;"><h2 style="font-size:24px;">${b.name} ${b.verified ? '✓' : ''}</h2><p style="color:var(--vic-blue-glow);">${b.category}</p><p style="color:var(--vic-gray);font-size:12px;">★ ${b.rating} | 📍 ${b.location}</p>${slug ? `<p style="font-size:12px;color:var(--vic-blue-glow);margin-top:4px;">🔗 <span id="storeUrlText">${window.location.origin}/#/business/${b._id || b.id}</span> <button class="btn btn-xs btn-secondary" onclick="copyStoreUrl()"><i class="fas fa-copy"></i> Copy</button></p>` : ''}</div>
                         <a href="https://wa.me/${b.whatsapp}" target="_blank" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                     </div>
                     <p style="color:var(--vic-gray);margin-top:12px;font-size:13px;">${b.description}</p>
@@ -605,26 +639,15 @@
                 <div class="grid-products">${products.map(p => productCardHTML(p)).join('') || '<p style="color:var(--vic-gray);">No products yet.</p>'}</div>
                 <h3 style="font-size:18px;margin:24px 0 12px;">Reviews (${reviews.length})</h3>
                 <div>${reviews.length ? reviews.map(r => `<div class="review-item"><div class="review-author">${r.author}</div><div class="review-stars">${'★'.repeat(r.rating)}</div><div class="review-comment">${r.comment}</div><div class="review-date">${new Date(r.date).toLocaleDateString()}</div></div>`).join('') : '<p style="color:var(--vic-gray);">No reviews yet.</p>'}</div>
-                ${canReviewBusiness(id) ? `<div style="margin-top:12px;"><div class="form-group"><input class="form-input" id="reviewAuthor" placeholder="Your name"></div><div class="form-group"><select class="form-select" id="reviewRating"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></div><div class="form-group"><textarea class="form-textarea" id="reviewComment" placeholder="Your review"></textarea></div><button class="btn btn-primary btn-sm" onclick="addBusinessReview('${id}')">Submit</button></div>` : '<p style="color:var(--vic-gray);font-size:11px;margin-top:8px;">You can review after purchasing.</p>'}
             `;
             showPage('businessDetail');
         }
         
-        function canReviewBusiness(businessId) {
-            const user = getCurrentUser();
-            if (!user) return false;
-            return DB.orders.some(o => o.items.some(i => i.businessId === businessId));
-        }
-        
-        function addBusinessReview(businessId) {
-            const author = document.getElementById('reviewAuthor').value || 'Anonymous';
-            const rating = parseInt(document.getElementById('reviewRating').value);
-            const comment = document.getElementById('reviewComment').value;
-            if (!comment) { toast('Please write a review', 'error'); return; }
-            DB.reviews.push({ businessId, author, rating, comment, date: new Date().toISOString() });
-            DB.save();
-            toast('Review added!', 'success');
-            showBusinessDetail(businessId);
+        function copyStoreUrl() {
+            const url = document.getElementById('storeUrlText')?.textContent;
+            if (url) {
+                navigator.clipboard.writeText(url).then(() => toast('Store link copied!', 'success'));
+            }
         }
         
         async function showProductDetail(id) {
@@ -633,6 +656,8 @@
             const p = result.product;
             const business = p.business || {};
             const productReviews = DB.reviews.filter(r => r.productId === id);
+            const productComments = DB.comments.filter(c => c.productId === id);
+            const productLikes = DB.likes.filter(l => l.productId === id);
             const images = p.images && p.images.length ? p.images : [];
             document.getElementById('productDetailContent').innerHTML = `
                 <button class="btn btn-secondary btn-sm" onclick="showPage('products')">← Back</button>
@@ -654,31 +679,59 @@
                                 <button class="btn btn-primary btn-sm" onclick="addToCart('${p._id}','${p.name}',${p.price},'${business.name || ''}','${business.whatsapp || ''}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
                                 ${business.whatsapp ? `<a href="https://wa.me/${business.whatsapp}?text=Hello, I'm interested in ${encodeURIComponent(p.name)}" target="_blank" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> Chat</a>` : ''}
                             </div>
+                            <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+                                <button class="btn btn-secondary btn-xs" onclick="toggleLike('${p._id}')"><i class="far fa-heart"></i> <span id="likeCount">${productLikes.length}</span> Likes</button>
+                                <span style="font-size:12px;color:var(--vic-gray);"><i class="far fa-comment"></i> ${productComments.length} Comments</span>
+                            </div>
                             <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">All payments direct with seller. VicPrime not responsible.</div></div>
                         </div>
                     </div>
                 </div>
+                
+                <h3 style="font-size:18px;margin:20px 0 10px;">Comments (${productComments.length})</h3>
+                <div id="commentsList">
+                    ${productComments.length ? productComments.map(c => `
+                        <div class="comment-item">
+                            <div class="comment-header"><span class="comment-author"><i class="fas fa-user"></i> ${c.author}</span><span class="comment-date">${new Date(c.date).toLocaleDateString()}</span></div>
+                            <div class="comment-text">${c.text}</div>
+                        </div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No comments yet. Be the first to comment!</p>'}
+                </div>
+                
+                <div style="margin-top:12px;background:var(--vic-navy-light);border-radius:12px;padding:16px;">
+                    <h4 style="margin-bottom:8px;font-size:13px;">Leave a Comment</h4>
+                    <div class="form-group"><input class="form-input" id="commentAuthor" placeholder="Your name"></div>
+                    <div class="form-group"><textarea class="form-textarea" id="commentText" placeholder="Write a comment..."></textarea></div>
+                    <button class="btn btn-primary btn-sm" onclick="addComment('${p._id}')"><i class="fas fa-paper-plane"></i> Post Comment</button>
+                </div>
+                
                 <h3 style="font-size:18px;margin:20px 0 10px;">Reviews (${productReviews.length})</h3>
-                <div>${productReviews.length ? productReviews.map(r => `<div class="review-item"><div class="review-author">${r.author}</div><div class="review-stars">${'★'.repeat(r.rating)}</div><div class="review-comment">${r.comment}</div><div class="review-date">${new Date(r.date).toLocaleDateString()}</div></div>`).join('') : '<p style="color:var(--vic-gray);">No reviews yet.</p>'}</div>
-                ${canReviewProduct(id) ? `<div style="margin-top:12px;"><div class="form-group"><input class="form-input" id="prAuthor" placeholder="Your name"></div><div class="form-group"><select class="form-select" id="prRating"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></div><div class="form-group"><textarea class="form-textarea" id="prComment" placeholder="Your review"></textarea></div><button class="btn btn-primary btn-sm" onclick="submitProductReview('${p._id}')">Submit</button></div>` : '<p style="color:var(--vic-gray);font-size:11px;margin-top:8px;">You can review after purchasing.</p>'}
+                <div>${productReviews.length ? productReviews.map(r => `<div class="review-item"><div class="review-author">${r.author}</div><div class="review-stars">${'★'.repeat(r.rating)}</div><div class="review-comment">${r.comment}</div><div class="review-date">${new Date(r.date).toLocaleDateString()}</div></div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No reviews yet.</p>'}</div>
             `;
             showPage('productDetail');
         }
         
-        function canReviewProduct(productId) {
+        function toggleLike(productId) {
             const user = getCurrentUser();
-            if (!user) return false;
-            return DB.orders.some(o => o.items.some(i => i.productId === productId));
+            if (!user) { showPage('login'); return; }
+            const existing = DB.likes.find(l => l.productId === productId && l.userId === user.id);
+            if (existing) {
+                DB.likes = DB.likes.filter(l => !(l.productId === productId && l.userId === user.id));
+            } else {
+                DB.likes.push({ productId, userId: user.id, date: new Date().toISOString() });
+            }
+            DB.save();
+            const count = DB.likes.filter(l => l.productId === productId).length;
+            document.getElementById('likeCount').textContent = count;
+            toast(existing ? 'Unliked' : 'Liked!', 'success');
         }
         
-        function submitProductReview(productId) {
-            const author = document.getElementById('prAuthor').value || 'Anonymous';
-            const rating = parseInt(document.getElementById('prRating').value);
-            const comment = document.getElementById('prComment').value;
-            if (!comment) { toast('Write a review', 'error'); return; }
-            DB.reviews.push({ productId, author, rating, comment, date: new Date().toISOString() });
+        function addComment(productId) {
+            const author = document.getElementById('commentAuthor').value || 'Anonymous';
+            const text = document.getElementById('commentText').value.trim();
+            if (!text) { toast('Write a comment', 'error'); return; }
+            DB.comments.push({ productId, author, text, date: new Date().toISOString() });
             DB.save();
-            toast('Review added!', 'success');
+            toast('Comment added!', 'success');
             showProductDetail(productId);
         }
         
@@ -756,14 +809,14 @@
             const c = document.getElementById('wizardContent');
             if (step === 1) {
                 c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Business Information</h2>
-                    <div class="form-group"><label class="form-label">Business Name *</label><input class="form-input" id="sbName" value="${storeData.info.name || ''}"></div>
+                    <div class="form-group"><label class="form-label">Business Name *</label><input class="form-input" id="sbName" value="${storeData.info.name || ''}" onkeyup="generateSlug()"></div>
                     <div class="form-group"><label class="form-label">Category *</label><select class="form-select" id="sbCat">${categories.map(x => `<option value="${x}" ${storeData.info.category === x ? 'selected' : ''}>${x}</option>`).join('')}</select></div>
                     <div class="form-group"><label class="form-label">Description *</label><textarea class="form-textarea" id="sbDesc">${storeData.info.description || ''}</textarea></div>
                     <div class="form-group"><label class="form-label">Location *</label><input class="form-input" id="sbLoc" value="${storeData.info.location || ''}"></div>
+                    <div class="form-group"><label class="form-label">Your Store URL</label><input class="form-input" id="sbSlug" value="${storeData.design.slug || ''}" readonly style="background:rgba(15,21,37,0.5);"></div>
                     <button class="btn btn-primary" onclick="saveStep1()">Next →</button></div>`;
             } else if (step === 2) {
                 c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Store Design</h2>
-                    <div class="form-group"><label class="form-label">Store URL</label><input class="form-input" id="sbSlug" value="${storeData.design.slug || ''}"></div>
                     <div class="form-group"><label class="form-label">Store Logo</label><div class="image-upload" onclick="document.getElementById('logoUpload').click()"><i class="fas fa-camera"></i><p style="font-size:11px;margin-top:6px;">Click to upload logo</p><input type="file" id="logoUpload" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)"><div id="logoPreview"></div></div></div>
                     <div class="form-group"><label class="form-label">Cover Image</label><div class="image-upload" onclick="document.getElementById('coverUpload').click()"><i class="fas fa-image"></i><p style="font-size:11px;margin-top:6px;">Click to upload cover</p><input type="file" id="coverUpload" accept="image/*" style="display:none;" onchange="handleCoverUpload(event)"><div id="coverPreview"></div></div></div>
                     <button class="btn btn-primary" onclick="goToStep(3)">Next →</button></div>`;
@@ -776,8 +829,20 @@
             } else if (step === 4) {
                 c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2>Products</h2><button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Add</button></div><div id="sbProducts">${storeData.products.length ? storeData.products.map((p, i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:rgba(15,21,37,0.5);border-radius:8px;margin-bottom:6px;"><div><strong style="font-size:13px;">${p.name}</strong><br><span style="font-size:11px;color:var(--vic-gray);">$${p.price} | ${p.images ? p.images.length + ' photos' : '0 photos'}</span></div><button class="btn btn-danger btn-xs" onclick="removeSBProduct(${i})">Remove</button></div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No products yet.</p>'}</div><button class="btn btn-primary" onclick="goToStep(5)">Next →</button></div>`;
             } else if (step === 5) {
-                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Preview & Publish</h2><div style="background:rgba(15,21,37,0.5);border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;">${storeData.design.logo ? `<img src="${storeData.design.logo}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;margin-bottom:8px;">` : ''}<h3>${storeData.info.name || 'Your Store'}</h3><p style="color:var(--vic-blue-glow);font-size:13px;">${storeData.info.category}</p><p style="font-size:12px;color:var(--vic-gray);">📍 ${storeData.info.location}</p><p style="font-size:12px;color:var(--vic-gray);">${storeData.info.description}</p><p style="font-size:12px;">WhatsApp: ${storeData.contact.whatsapp}</p><p style="font-size:12px;">Products: ${storeData.products.length}</p></div><button class="btn btn-primary" onclick="publishStore()">🚀 Publish Store</button></div>`;
+                const storeUrl = `${window.location.origin}/#/business/${storeData.design.slug}`;
+                c.innerHTML = `<div class="card" style="padding:24px;cursor:default;"><h2 style="margin-bottom:16px;">Preview & Publish</h2><div style="background:rgba(15,21,37,0.5);border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;">${storeData.design.logo ? `<img src="${storeData.design.logo}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;margin-bottom:8px;">` : ''}<h3>${storeData.info.name || 'Your Store'}</h3><p style="color:var(--vic-blue-glow);font-size:13px;">${storeData.info.category}</p><p style="font-size:12px;color:var(--vic-gray);">📍 ${storeData.info.location}</p><p style="font-size:12px;color:var(--vic-gray);">${storeData.info.description}</p><p style="font-size:12px;">WhatsApp: ${storeData.contact.whatsapp}</p><p style="font-size:12px;">Products: ${storeData.products.length}</p><p style="font-size:12px;color:var(--vic-blue-glow);margin-top:8px;">🔗 Your Store URL: ${storeUrl}</p><button class="btn btn-xs btn-secondary" onclick="copyStoreUrlFromPreview('${storeUrl}')"><i class="fas fa-copy"></i> Copy Link</button></div><button class="btn btn-primary" onclick="publishStore()">🚀 Publish Store</button></div>`;
             }
+        }
+        
+        function generateSlug() {
+            const name = document.getElementById('sbName').value;
+            const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            document.getElementById('sbSlug').value = slug;
+            storeData.design.slug = slug;
+        }
+        
+        function copyStoreUrlFromPreview(url) {
+            navigator.clipboard.writeText(url).then(() => toast('Store link copied!', 'success'));
         }
         
         function handleLogoUpload(event) {
@@ -791,6 +856,7 @@
         function saveStep1() {
             storeData.info = { name: document.getElementById('sbName').value.trim(), category: document.getElementById('sbCat').value, description: document.getElementById('sbDesc').value.trim(), location: document.getElementById('sbLoc').value.trim() };
             if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) { toast('Please fill all required fields', 'error'); return; }
+            storeData.design.slug = document.getElementById('sbSlug').value;
             goToStep(2);
         }
         function saveStep3() {
@@ -835,17 +901,17 @@
         async function publishStore() {
             const user = getCurrentUser();
             if (!user) { toast('Please login first', 'error'); showPage('login'); return; }
-            if (user.role !== 'business') { toast('You need to be a Business Owner. Use "Become a Business Owner" in the menu.', 'error'); return; }
+            if (user.role !== 'business') { toast('You need to be a Business Owner', 'error'); return; }
             if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) { toast('Store info incomplete', 'error'); return; }
             if (!storeData.contact.email || !storeData.contact.whatsapp) { toast('Contact info incomplete', 'error'); return; }
             if (storeData.products.length === 0) { toast('Add at least one product', 'error'); return; }
-            const businessData = { name: storeData.info.name, category: storeData.info.category, description: storeData.info.description, location: storeData.info.location, email: storeData.contact.email, phone: storeData.contact.phone, whatsapp: storeData.contact.whatsapp, logo: storeData.design.logo || '', coverImage: storeData.design.cover || '' };
+            const businessData = { name: storeData.info.name, category: storeData.info.category, description: storeData.info.description, location: storeData.info.location, email: storeData.contact.email, phone: storeData.contact.phone, whatsapp: storeData.contact.whatsapp, logo: storeData.design.logo || '', coverImage: storeData.design.cover || '', slug: storeData.design.slug };
             const result = await apiCall('/businesses', 'POST', businessData, getToken());
             if (result.success) {
                 for (const p of storeData.products) { await apiCall('/products', 'POST', { name: p.name, price: p.price, stock: p.stock, description: p.description, category: storeData.info.category, images: p.images || [] }, getToken()); }
                 const modal = document.createElement('div');
                 modal.className = 'modal-overlay';
-                modal.innerHTML = `<div class="modal" style="text-align:center;"><i class="fas fa-check-circle" style="font-size:60px;color:var(--vic-green);margin-bottom:16px;"></i><h2 style="margin-bottom:12px;">🎉 Congratulations!</h2><p style="color:var(--vic-gray);margin-bottom:20px;">Your store has been published successfully!</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove();viewMyStore()"><i class="fas fa-eye"></i> View My Store</button><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove();showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button></div></div>`;
+                modal.innerHTML = `<div class="modal" style="text-align:center;"><i class="fas fa-check-circle" style="font-size:60px;color:var(--vic-green);margin-bottom:16px;"></i><h2 style="margin-bottom:12px;">🎉 Congratulations!</h2><p style="color:var(--vic-gray);margin-bottom:20px;">Your store has been published successfully!</p><p style="font-size:12px;color:var(--vic-blue-glow);margin-bottom:16px;">🔗 ${window.location.origin}/#/business/${storeData.design.slug}</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove();viewMyStore()"><i class="fas fa-eye"></i> View My Store</button><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove();showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button></div></div>`;
                 document.body.appendChild(modal);
                 showPage('dashboard');
             } else { toast(result.message || 'Failed to publish', 'error'); }
@@ -865,7 +931,8 @@
             if (tab === 'overview') {
                 const productsResult = await apiCall(`/products?business=${myBiz._id}`);
                 const ordersResult = await apiCall('/orders', 'GET', null, getToken());
-                c.innerHTML = `<h2 style="margin-bottom:16px;">Overview</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div><div class="stat-card"><div class="stat-value">${ordersResult.success ? ordersResult.count : 0}</div><div class="stat-label">Orders</div></div><div class="stat-card"><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div></div><button class="btn btn-primary btn-sm" onclick="showPage('storeBuilder')">Edit Store</button><button class="btn btn-secondary btn-sm" onclick="viewMyStore()">View Store</button>`;
+                const storeUrl = `${window.location.origin}/#/business/${myBiz.slug || myBiz._id}`;
+                c.innerHTML = `<h2 style="margin-bottom:16px;">Overview</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div><div class="stat-card"><div class="stat-value">${ordersResult.success ? ordersResult.count : 0}</div><div class="stat-label">Orders</div></div><div class="stat-card"><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div></div><div style="margin-bottom:16px;"><p style="font-size:12px;color:var(--vic-gray);margin-bottom:4px;">Your Store URL:</p><div style="display:flex;gap:8px;align-items:center;"><input class="form-input" value="${storeUrl}" readonly style="font-size:11px;"><button class="btn btn-sm btn-secondary" onclick="copyStoreUrlFromDashboard('${storeUrl}')"><i class="fas fa-copy"></i> Copy</button></div></div><button class="btn btn-primary btn-sm" onclick="showPage('storeBuilder')">Edit Store</button><button class="btn btn-secondary btn-sm" onclick="viewMyStore()">View Store</button>`;
             } else if (tab === 'products') {
                 const result = await apiCall(`/products?business=${myBiz._id}`);
                 c.innerHTML = `<h2>Products</h2>${result.success && result.products.length ? `<div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${result.products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table></div>` : '<p style="color:var(--vic-gray);font-size:12px;">No products yet.</p>'}`;
@@ -875,6 +942,10 @@
             } else if (tab === 'settings') {
                 c.innerHTML = `<h2>Settings</h2><div class="form-group"><label class="form-label">Business Name</label><input class="form-input" id="setName" value="${myBiz.name}"></div><div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="setDesc">${myBiz.description}</textarea></div><div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="setWa" value="${myBiz.whatsapp}"></div><button class="btn btn-primary btn-sm" onclick="saveSettings('${myBiz._id}')">Save</button>`;
             }
+        }
+        
+        function copyStoreUrlFromDashboard(url) {
+            navigator.clipboard.writeText(url).then(() => toast('Store link copied!', 'success'));
         }
         
         async function saveSettings(id) {
