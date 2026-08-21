@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VicPrime Market - One Marketplace. Every Business.</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --vic-black: #0A0E1A;
@@ -33,11 +34,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--vic-black); color: var(--vic-white); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
-        
         .bg-grid { position: fixed; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px); background-size:50px 50px; pointer-events:none; z-index:0; }
         .bg-glow { position: fixed; top:-50%; left:-50%; width:200%; height:200%; background: radial-gradient(circle at center, rgba(30,64,175,0.1) 0%, transparent 50%); pointer-events:none; z-index:0; animation:glowPulse 8s ease-in-out infinite; }
         @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:1} }
-        
         .header { position:sticky; top:0; z-index:1000; background:rgba(10,14,26,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(192,192,192,0.1); transition:all .3s; }
         .header.scrolled { box-shadow:0 10px 40px rgba(0,0,0,0.5); }
         .header-container { max-width:1400px; margin:0 auto; padding:0 24px; height:70px; display:flex; align-items:center; justify-content:space-between; }
@@ -51,10 +50,9 @@
         .nav-actions { display:flex; align-items:center; gap:8px; }
         .nav-link { color:var(--vic-silver); text-decoration:none; font-size:13px; padding:8px 14px; border-radius:50px; cursor:pointer; transition:all .3s; }
         .nav-link:hover { color:white; background:rgba(192,192,192,0.1); }
-        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
+        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
         .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }
         .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:11px; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
-        
         .btn { display:inline-block; padding:14px 28px; border-radius:50px; font-weight:600; text-decoration:none; transition:all .3s; cursor:pointer; border:none; font-size:15px; }
         .btn-primary { background:var(--blue-gradient); color:white; box-shadow:var(--shadow-blue-glow); }
         .btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(37,99,235,0.6); }
@@ -64,7 +62,6 @@
         .btn-danger { background:var(--vic-red); color:white; }
         .btn-sm { padding:8px 16px; font-size:13px; }
         .btn-xs { padding:6px 12px; font-size:11px; }
-        
         .hero { position:relative; padding:100px 24px; text-align:center; background:var(--premium-dark); overflow:hidden; }
         .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(30,64,175,0.3) 0%, transparent 50%); }
         .hero-content { position:relative; z-index:1; max-width:900px; margin:0 auto; }
@@ -74,49 +71,40 @@
         .blue-text { background:var(--blue-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 30px rgba(37,99,235,0.5)); }
         .hero p { font-size:20px; color:var(--vic-gray); margin-bottom:40px; }
         .hero-buttons { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
-        .hero-stats { display:flex; justify-content:center; gap:40px; margin-top:48px; flex-wrap:wrap; }
-        .stat-item { text-align:center; }
-        .stat-number { font-size:32px; font-weight:800; background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .stat-label { font-size:13px; color:var(--vic-gray); }
-        
         .section { padding:64px 24px; position:relative; z-index:1; }
         .section-header { max-width:1400px; margin:0 auto 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
         .section-title { font-size:36px; font-weight:800; letter-spacing:-1px; }
         .section-subtitle { font-size:15px; color:var(--vic-gray); margin-top:6px; }
         .grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:28px; }
         .grid-products { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; }
-        
         .card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:20px; overflow:hidden; cursor:pointer; transition:all .3s; position:relative; }
         .card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-8px); }
-        .card-cover { height:180px; display:flex; align-items:center; justify-content:center; font-size:72px; background:var(--premium-dark); position:relative; overflow:hidden; }
+        .card-cover { height:180px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); position:relative; overflow:hidden; }
         .card-cover img { width:100%; height:100%; object-fit:cover; }
-        .card-cover::before { content:''; position:absolute; inset:0; background:var(--blue-gradient); opacity:0.1; }
+        .card-cover .icon-large { font-size:72px; color:var(--vic-silver); position:relative; z-index:1; }
         .card-body { padding:28px; }
         .card-title { font-size:18px; font-weight:700; margin-bottom:4px; }
         .card-subtitle { font-size:13px; color:var(--vic-blue-glow); margin-bottom:8px; }
         .card-desc { font-size:13px; color:var(--vic-gray); line-height:1.6; }
         .verified-badge { position:absolute; top:14px; left:14px; background:var(--blue-gradient); color:white; padding:4px 12px; border-radius:50px; font-size:11px; z-index:2; }
         .rating-badge { position:absolute; top:14px; right:14px; background:rgba(0,0,0,0.8); border-radius:50px; padding:4px 12px; font-size:13px; z-index:2; }
-        
         .product-card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:16px; overflow:hidden; transition:all .3s; }
         .product-card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }
         .product-image { height:180px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); overflow:hidden; }
         .product-image img { width:100%; height:100%; object-fit:cover; }
+        .product-image .icon-large { font-size:60px; color:var(--vic-silver); }
         .product-body { padding:20px; }
         .product-name { font-size:16px; font-weight:700; margin-bottom:6px; }
         .product-desc { font-size:12px; color:var(--vic-gray); margin-bottom:10px; line-height:1.4; }
         .product-price { font-size:22px; font-weight:800; margin-bottom:12px; }
         .product-actions { display:flex; gap:6px; flex-wrap:wrap; }
         .product-actions .btn { flex:1; min-width:60px; text-align:center; padding:8px 6px; font-size:10px; }
-        
         .payment-disclaimer { background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:14px; padding:20px; margin:20px 0; }
         .payment-disclaimer-title { color:var(--vic-whatsapp); font-weight:700; font-size:14px; margin-bottom:8px; }
         .payment-disclaimer-text { color:var(--vic-gray); font-size:13px; line-height:1.5; }
-        
-        .whatsapp-float { position:fixed; bottom:24px; right:24px; z-index:999; width:56px; height:56px; background:var(--whatsapp-gradient); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--shadow-whatsapp); animation:pulse 2s infinite; }
-        .whatsapp-float svg { width:28px; height:28px; fill:white; }
+        .whatsapp-float { position:fixed; bottom:24px; right:24px; z-index:999; width:56px; height:56px; background:var(--whatsapp-gradient); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--shadow-whatsapp); animation:pulse 2s infinite; text-decoration:none; }
+        .whatsapp-float i { font-size:28px; color:white; }
         @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0.4)} 50%{box-shadow:0 0 0 20px rgba(37,211,102,0)} }
-        
         .dashboard-container { max-width:1400px; margin:0 auto; padding:40px 24px; }
         .dashboard-layout { display:grid; grid-template-columns:240px 1fr; gap:28px; }
         .dashboard-sidebar { background:var(--vic-navy-light); border-radius:20px; padding:24px; position:sticky; top:90px; height:fit-content; }
@@ -127,16 +115,14 @@
         .dashboard-content { background:var(--vic-navy-light); border-radius:20px; padding:32px; }
         .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
         .stat-card { background:rgba(15,21,37,0.8); border:1px solid rgba(192,192,192,0.1); border-radius:14px; padding:20px; }
-        .stat-card-icon { font-size:28px; margin-bottom:8px; }
+        .stat-card-icon { font-size:28px; margin-bottom:8px; color:var(--vic-blue-glow); }
         .stat-value { font-size:24px; font-weight:800; }
         .stat-label { font-size:12px; color:var(--vic-gray); }
-        
         .wizard-steps { display:flex; gap:8px; margin-bottom:32px; flex-wrap:wrap; justify-content:center; }
         .wizard-step { display:flex; align-items:center; gap:6px; padding:10px 16px; border-radius:50px; background:var(--vic-navy-light); border:2px solid rgba(192,192,192,0.1); color:var(--vic-gray); font-size:12px; cursor:pointer; transition:all .3s; }
         .wizard-step.active { background:var(--blue-gradient); color:white; border-color:var(--vic-blue-light); box-shadow:var(--shadow-blue-glow); }
         .wizard-step.completed { background:rgba(16,185,129,0.1); border-color:var(--vic-green); color:var(--vic-green); }
         .wizard-step-number { width:24px; height:24px; border-radius:50%; background:rgba(192,192,192,0.1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
-        
         .form-group { margin-bottom:16px; }
         .form-label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--vic-silver); }
         .form-input { width:100%; background:rgba(10,14,26,0.8); border:2px solid rgba(192,192,192,0.2); border-radius:10px; padding:12px 14px; color:white; font-size:14px; transition:all .3s; }
@@ -146,22 +132,18 @@
         .image-upload { border:2px dashed rgba(192,192,192,0.3); border-radius:12px; padding:30px; text-align:center; cursor:pointer; transition:all .3s; }
         .image-upload:hover { border-color:var(--vic-blue-light); background:rgba(37,99,235,0.05); }
         .image-upload img { max-width:100%; max-height:150px; border-radius:8px; margin-top:12px; }
-        
         .toast-container { position:fixed; top:90px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; }
         .toast { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.2); border-radius:10px; padding:14px 18px; min-width:280px; display:flex; align-items:center; gap:10px; animation:slideIn .3s; }
         .toast.success { border-left:4px solid var(--vic-green); }
         .toast.error { border-left:4px solid var(--vic-red); }
         .toast.info { border-left:4px solid var(--vic-blue-light); }
         @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
-        
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; z-index:9998; }
         .modal { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.2); border-radius:20px; padding:28px; max-width:500px; width:90%; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-premium); }
-        
         .cta-section { padding:80px 24px; text-align:center; background:var(--premium-dark); }
-        .cta-icon { font-size:72px; margin-bottom:24px; }
+        .cta-icon { font-size:72px; margin-bottom:24px; color:var(--vic-blue-glow); }
         .cta-content h2 { font-size:40px; font-weight:900; margin-bottom:20px; }
         .cta-content p { font-size:17px; color:var(--vic-gray); margin-bottom:32px; }
-        
         .footer { background:var(--vic-navy); border-top:1px solid rgba(192,192,192,0.1); padding:56px 24px 28px; margin-top:auto; }
         .footer-grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:40px; }
         .footer-links h4 { font-size:16px; margin-bottom:16px; }
@@ -170,21 +152,26 @@
         .footer-links a { color:var(--vic-gray); font-size:13px; cursor:pointer; }
         .footer-links a:hover { color:white; }
         .footer-bottom { max-width:1400px; margin:0 auto; text-align:center; padding-top:24px; border-top:1px solid rgba(192,192,192,0.1); color:var(--vic-gray); font-size:13px; }
-        
         .review-section { margin-top:20px; border-top:1px solid rgba(192,192,192,0.1); padding-top:16px; }
         .review-item { background:rgba(15,21,37,0.5); border-radius:10px; padding:14px; margin-bottom:10px; }
         .review-author { font-weight:600; font-size:13px; }
         .review-comment { color:var(--vic-gray); font-size:13px; margin-top:4px; }
         .review-stars { color:#FFD700; font-size:12px; }
         .review-date { color:var(--vic-gray); font-size:11px; margin-top:4px; }
-        
+        .loading-skeleton { background: linear-gradient(90deg, #1a1f2e 25%, #2a2f3e 50%, #1a1f2e 75%); background-size:200% 100%; animation:skeleton 1.5s infinite; border-radius:8px; }
+        @keyframes skeleton { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .empty-state { text-align:center; padding:60px 20px; color:var(--vic-gray); }
+        .empty-state i { font-size:60px; margin-bottom:20px; color:var(--vic-blue-glow); }
         @media (max-width:768px) {
             .hero h1 { font-size:36px; }
             .section-title { font-size:26px; }
             .grid { grid-template-columns:1fr; }
+            .grid-products { grid-template-columns:1fr; }
             .footer-grid { grid-template-columns:1fr; }
             .dashboard-layout { grid-template-columns:1fr; }
             .dashboard-sidebar { position:static; }
+            .nav-actions { gap:4px; }
+            .nav-link { padding:6px 10px; font-size:11px; }
         }
     </style>
 </head>
@@ -193,8 +180,9 @@
     <div class="bg-glow"></div>
     <div class="toast-container" id="toastContainer"></div>
     
-    <a href="https://wa.me/1234567890" target="_blank" class="whatsapp-float">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <!-- Floating WhatsApp Support (placeholder number; replace with real support) -->
+    <a href="https://wa.me/1234567890" target="_blank" class="whatsapp-float" title="Talk to Customer Service">
+        <i class="fab fa-whatsapp"></i>
     </a>
     
     <header class="header" id="header">
@@ -204,17 +192,19 @@
                 <div><span class="logo-text">VicPrime</span><span class="logo-badge">MARKET</span></div>
             </div>
             <div class="nav-actions">
-                <a class="nav-link" onclick="showPage('marketplace')">Browse</a>
-                <a class="nav-link" onclick="showPage('storeBuilder')">🏪 Build Store</a>
-                <a class="nav-link" onclick="showPage('orders')">Orders</a>
-                <a class="nav-link" id="dashLink" style="display:none;" onclick="showPage('dashboard')">Dashboard</a>
-                <button class="icon-btn" onclick="showPage('cart')">🛒<span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
-                <button class="icon-btn" id="userBtn" onclick="handleUserClick()">👤</button>
+                <a class="nav-link" onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse</a>
+                <a class="nav-link" onclick="showPage('products')"><i class="fas fa-box"></i> Products</a>
+                <a class="nav-link" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Store</a>
+                <a class="nav-link" onclick="showPage('orders')"><i class="fas fa-receipt"></i> Orders</a>
+                <a class="nav-link" id="dashLink" style="display:none;" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <button class="icon-btn" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
+                <button class="icon-btn" id="userBtn" onclick="handleUserClick()"><i class="fas fa-user"></i></button>
             </div>
         </div>
     </header>
     
     <main style="flex:1;">
+        <!-- HOME -->
         <div id="page-home">
             <section class="hero">
                 <div class="hero-content">
@@ -222,60 +212,113 @@
                     <h1><span class="metallic-text">One Marketplace.</span><br><span class="blue-text">Every Business.</span></h1>
                     <p>Discover thousands of businesses, shop unique products, and support entrepreneurs worldwide.</p>
                     <div class="hero-buttons">
-                        <button class="btn btn-primary" onclick="showPage('marketplace')">Browse Marketplace</button>
-                        <button class="btn btn-secondary" onclick="showPage('storeBuilder')">🏪 Build Your Store</button>
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat-item"><div class="stat-number">10K+</div><div class="stat-label">Businesses</div></div>
-                        <div class="stat-item"><div class="stat-number">50K+</div><div class="stat-label">Products</div></div>
-                        <div class="stat-item"><div class="stat-number">100K+</div><div class="stat-label">Customers</div></div>
-                        <div class="stat-item"><div class="stat-number">150+</div><div class="stat-label">Countries</div></div>
+                        <button class="btn btn-primary" onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Marketplace</button>
+                        <button class="btn btn-secondary" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Your Store</button>
                     </div>
                 </div>
             </section>
             
             <section class="section">
-                <div class="section-header"><div><h2 class="section-title">Browse by Category</h2><p class="section-subtitle">Find exactly what you're looking for</p></div></div>
+                <div class="section-header">
+                    <div><h2 class="section-title">Browse by Category</h2><p class="section-subtitle">Find exactly what you're looking for</p></div>
+                </div>
                 <div class="grid" id="categoriesGrid"></div>
             </section>
             
             <section class="section" style="background:rgba(15,21,37,0.3);">
-                <div class="section-header"><div><h2 class="section-title">Featured Businesses</h2><p class="section-subtitle">Top-rated sellers on VicPrime</p></div></div>
-                <div class="grid" id="featuredBusinesses"><p style="color:var(--vic-gray);text-align:center;grid-column:1/-1;">Loading...</p></div>
+                <div class="section-header">
+                    <div><h2 class="section-title">Featured Businesses</h2><p class="section-subtitle">Top-rated sellers on VicPrime</p></div>
+                </div>
+                <div id="featuredBusinesses" class="grid">
+                    <!-- Loading skeleton -->
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                </div>
             </section>
             
             <section class="cta-section">
                 <div class="cta-content">
-                    <div class="cta-icon">🏪</div>
+                    <div class="cta-icon"><i class="fas fa-store-alt"></i></div>
                     <h2>Ready to Grow Your Business?</h2>
                     <p>Join thousands of businesses already selling on VicPrime Market.</p>
-                    <button class="btn btn-primary" onclick="showPage('storeBuilder')">🏪 Build Your Store</button>
+                    <button class="btn btn-primary" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Your Store</button>
                 </div>
             </section>
         </div>
         
+        <!-- MARKETPLACE (BUSINESSES) -->
         <div id="page-marketplace" style="display:none;">
             <section class="section">
-                <div class="section-header"><h1 class="section-title">Marketplace</h1><p class="section-subtitle" id="marketCount"></p></div>
-                <div class="grid" id="allBusinesses"></div>
+                <div class="section-header">
+                    <div><h1 class="section-title">Marketplace</h1><p class="section-subtitle" id="marketCount"></p></div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <input type="text" class="form-input" style="width:200px;" placeholder="Search businesses..." id="businessSearch" onkeyup="renderMarketplace()">
+                        <select class="form-select" style="width:auto;" id="businessCategory" onchange="renderMarketplace()">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="allBusinesses" class="grid">
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                </div>
             </section>
         </div>
         
+        <!-- PRODUCTS PAGE -->
+        <div id="page-products" style="display:none;">
+            <section class="section">
+                <div class="section-header">
+                    <div><h1 class="section-title">Products</h1><p class="section-subtitle" id="productCount"></p></div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <input type="text" class="form-input" style="width:200px;" placeholder="Search products..." id="productSearch" onkeyup="renderProducts()">
+                        <select class="form-select" style="width:auto;" id="productCategory" onchange="renderProducts()">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="allProducts" class="grid-products">
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                    <div class="loading-skeleton" style="height:200px;"></div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- BUSINESS DETAIL -->
         <div id="page-businessDetail" style="display:none;">
             <section class="section" id="businessDetailContent"></section>
         </div>
         
+        <!-- PRODUCT DETAIL -->
+        <div id="page-productDetail" style="display:none;">
+            <section class="section" id="productDetailContent"></section>
+        </div>
+        
+        <!-- CART -->
         <div id="page-cart" style="display:none;">
-            <section class="section"><div class="section-header"><h1 class="section-title">Shopping Cart</h1></div><div id="cartContent" style="max-width:1000px;margin:0 auto;"></div></section>
+            <section class="section">
+                <div class="section-header"><h1 class="section-title">Shopping Cart</h1></div>
+                <div id="cartContent" style="max-width:1000px;margin:0 auto;"></div>
+            </section>
         </div>
         
+        <!-- ORDERS -->
         <div id="page-orders" style="display:none;">
-            <section class="section"><div class="section-header"><h1 class="section-title">My Orders</h1></div><div id="ordersContent" style="max-width:900px;margin:0 auto;"></div></section>
+            <section class="section">
+                <div class="section-header"><h1 class="section-title">My Orders</h1></div>
+                <div id="ordersContent" style="max-width:900px;margin:0 auto;"></div>
+            </section>
         </div>
         
+        <!-- STORE BUILDER -->
         <div id="page-storeBuilder" style="display:none;">
             <section class="section">
-                <div class="section-header" style="justify-content:center;text-align:center;"><div><h1 class="section-title">🏪 Build Your Store</h1><p class="section-subtitle">Set up your professional store in minutes</p></div></div>
+                <div class="section-header" style="justify-content:center;text-align:center;">
+                    <div><h1 class="section-title"><i class="fas fa-hammer"></i> Build Your Store</h1><p class="section-subtitle">Set up your professional store in minutes</p></div>
+                </div>
                 <div class="wizard-steps" id="wizardSteps">
                     <div class="wizard-step active" data-step="1" onclick="goToStep(1)"><span class="wizard-step-number">1</span> Info</div>
                     <div class="wizard-step" data-step="2" onclick="goToStep(2)"><span class="wizard-step-number">2</span> Design</div>
@@ -287,16 +330,21 @@
             </section>
         </div>
         
+        <!-- DASHBOARD -->
         <div id="page-dashboard" style="display:none;">
             <div class="dashboard-container">
                 <div class="dashboard-layout">
                     <div class="dashboard-sidebar">
-                        <div style="text-align:center;margin-bottom:20px;"><h3 style="font-size:16px;">Dashboard</h3></div>
+                        <div style="text-align:center;margin-bottom:20px;">
+                            <div class="logo-icon" style="width:50px;height:50px;margin:0 auto 8px;"><span>VP</span></div>
+                            <h3 style="font-size:16px;">Dashboard</h3>
+                            <p style="color:var(--vic-gray);font-size:12px;" id="dashBizName"></p>
+                        </div>
                         <div class="dashboard-nav">
-                            <div class="dashboard-nav-item active" data-tab="overview" onclick="switchTab('overview')">📊 Overview</div>
-                            <div class="dashboard-nav-item" data-tab="products" onclick="switchTab('products')">📦 Products</div>
-                            <div class="dashboard-nav-item" data-tab="orders" onclick="switchTab('orders')">🛒 Orders</div>
-                            <div class="dashboard-nav-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Settings</div>
+                            <div class="dashboard-nav-item active" data-tab="overview" onclick="switchTab('overview')"><i class="fas fa-chart-pie"></i> Overview</div>
+                            <div class="dashboard-nav-item" data-tab="products" onclick="switchTab('products')"><i class="fas fa-box"></i> Products</div>
+                            <div class="dashboard-nav-item" data-tab="orders" onclick="switchTab('orders')"><i class="fas fa-receipt"></i> Orders</div>
+                            <div class="dashboard-nav-item" data-tab="settings" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Settings</div>
                         </div>
                     </div>
                     <div class="dashboard-content" id="dashContent"></div>
@@ -304,35 +352,56 @@
             </div>
         </div>
         
+        <!-- LOGIN -->
         <div id="page-login" style="display:none;">
             <section class="section" style="max-width:400px;margin:0 auto;padding-top:80px;">
                 <div style="background:var(--vic-navy-light);border-radius:20px;padding:40px;box-shadow:var(--shadow-premium);">
-                    <div style="text-align:center;margin-bottom:24px;"><div class="logo-icon" style="width:56px;height:56px;margin:0 auto 12px;"><span>VP</span></div><h2>Welcome Back</h2><p style="color:var(--vic-gray);font-size:13px;margin-top:6px;">Sign in to your account</p></div>
+                    <div style="text-align:center;margin-bottom:24px;">
+                        <div class="logo-icon" style="width:56px;height:56px;margin:0 auto 12px;"><span>VP</span></div>
+                        <h2>Welcome Back</h2>
+                        <p style="color:var(--vic-gray);font-size:13px;margin-top:6px;">Sign in to your account</p>
+                    </div>
                     <form onsubmit="doLogin(event)">
                         <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" required></div>
-                        <div class="form-group"><input type="password" class="form-input" id="loginPass" placeholder="Password" required></div>
-                        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+                        <div class="form-group" style="position:relative;">
+                            <input type="password" class="form-input" id="loginPass" placeholder="Password" required>
+                            <button type="button" class="btn btn-secondary btn-xs" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="togglePassword('loginPass')"><i class="fas fa-eye"></i></button>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-sign-in-alt"></i> Sign In</button>
                     </form>
                     <p style="text-align:center;margin-top:16px;color:var(--vic-gray);font-size:13px;">No account? <a onclick="showPage('register')" style="color:var(--vic-blue-glow);cursor:pointer;">Register</a></p>
                 </div>
             </section>
         </div>
         
+        <!-- REGISTER -->
         <div id="page-register" style="display:none;">
             <section class="section" style="max-width:450px;margin:0 auto;padding-top:60px;">
                 <div style="background:var(--vic-navy-light);border-radius:20px;padding:40px;box-shadow:var(--shadow-premium);">
-                    <div style="text-align:center;margin-bottom:24px;"><div class="logo-icon" style="width:56px;height:56px;margin:0 auto 12px;"><span>VP</span></div><h2>Create Account</h2><p style="color:var(--vic-gray);font-size:13px;margin-top:6px;">Join VicPrime Market</p></div>
+                    <div style="text-align:center;margin-bottom:24px;">
+                        <div class="logo-icon" style="width:56px;height:56px;margin:0 auto 12px;"><span>VP</span></div>
+                        <h2>Create Account</h2>
+                        <p style="color:var(--vic-gray);font-size:13px;margin-top:6px;">Join VicPrime Market</p>
+                    </div>
                     <form onsubmit="doRegister(event)">
-                        <div class="form-group"><select class="form-select" id="regRole" onchange="toggleBizFields()"><option value="customer">Customer</option><option value="business">Business Owner</option></select></div>
+                        <div class="form-group">
+                            <select class="form-select" id="regRole" onchange="toggleBizFields()">
+                                <option value="customer">Customer</option>
+                                <option value="business">Business Owner</option>
+                            </select>
+                        </div>
                         <div class="form-group"><input type="text" class="form-input" id="regName" placeholder="Full Name" required></div>
                         <div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email" required></div>
-                        <div class="form-group"><input type="password" class="form-input" id="regPass" placeholder="Password" required></div>
+                        <div class="form-group" style="position:relative;">
+                            <input type="password" class="form-input" id="regPass" placeholder="Password" required minlength="6">
+                            <button type="button" class="btn btn-secondary btn-xs" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);" onclick="togglePassword('regPass')"><i class="fas fa-eye"></i></button>
+                        </div>
                         <div id="bizFields" style="display:none;">
                             <div class="form-group"><input type="text" class="form-input" id="regBizName" placeholder="Business Name"></div>
-                            <div class="form-group"><input type="tel" class="form-input" id="regWhatsApp" placeholder="WhatsApp Number"></div>
+                            <div class="form-group"><input type="tel" class="form-input" id="regWhatsApp" placeholder="WhatsApp Number (with country code)"></div>
                         </div>
-                        <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">VicPrime is not responsible for monetary transactions.</div></div>
-                        <button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button>
+                        <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">VicPrime is not responsible for monetary transactions. All payments are direct between buyers and sellers.</div></div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-user-plus"></i> Create Account</button>
                     </form>
                     <p style="text-align:center;margin-top:16px;color:var(--vic-gray);font-size:13px;">Have account? <a onclick="showPage('login')" style="color:var(--vic-blue-glow);cursor:pointer;">Sign In</a></p>
                 </div>
@@ -342,16 +411,38 @@
     
     <footer class="footer">
         <div class="footer-grid">
-            <div><div class="logo"><div class="logo-icon" style="width:36px;height:36px;font-size:16px;"><span>VP</span></div><span class="logo-text" style="font-size:18px;">VicPrime</span></div><p style="color:var(--vic-gray);font-size:12px;margin-top:12px;"><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p></div>
-            <div class="footer-links"><h4>Marketplace</h4><ul><li><a onclick="showPage('marketplace')">Browse</a></li><li><a onclick="showPage('home')">Categories</a></li></ul></div>
-            <div class="footer-links"><h4>Business</h4><ul><li><a onclick="showPage('storeBuilder')">Build Store</a></li><li><a onclick="showPage('dashboard')">Dashboard</a></li></ul></div>
-            <div class="footer-links"><h4>Support</h4><ul><li><a>Help</a></li><li><a>Contact</a></li></ul></div>
+            <div>
+                <div class="logo"><div class="logo-icon" style="width:36px;height:36px;font-size:16px;"><span>VP</span></div><span class="logo-text" style="font-size:18px;">VicPrime</span></div>
+                <p style="color:var(--vic-gray);font-size:12px;margin-top:12px;"><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p>
+            </div>
+            <div class="footer-links">
+                <h4>Marketplace</h4>
+                <ul>
+                    <li><a onclick="showPage('marketplace')">Browse Businesses</a></li>
+                    <li><a onclick="showPage('products')">Browse Products</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Business</h4>
+                <ul>
+                    <li><a onclick="showPage('storeBuilder')">Build Store</a></li>
+                    <li><a onclick="showPage('dashboard')">Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="https://wa.me/1234567890" target="_blank"><i class="fab fa-whatsapp"></i> Talk to Customer Service</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="footer-bottom">© 2024 VicPrime Market. All rights reserved.</div>
+        <div class="footer-bottom">© <span id="currentYear"></span> VicPrime Market. All rights reserved.</div>
     </footer>
     
     <script>
+        // ==================== API CONFIGURATION ====================
         const API_URL = 'https://backend-4-io0g.onrender.com/api';
+        const WHATSAPP_SUPPORT_NUMBER = '1234567890'; // TODO: Replace with real support number
         
         async function apiCall(endpoint, method = 'GET', body = null, token = null) {
             const headers = { 'Content-Type': 'application/json' };
@@ -364,13 +455,14 @@
                 return data;
             } catch (error) {
                 console.error('API Error:', error);
-                return { success: false, message: 'Network error' };
+                return { success: false, message: 'Network error - cannot connect to backend' };
             }
         }
         
         function getToken() { return localStorage.getItem('vp_token'); }
         function getCurrentUser() { return JSON.parse(localStorage.getItem('vp_user') || 'null'); }
         
+        // ==================== LOCAL DATA (fallback) ====================
         let DB = {
             businesses: [],
             products: [],
@@ -385,18 +477,28 @@
         };
         
         const categories = ['Electronics','Fashion','Food & Beverage','Services','Home & Garden','Beauty & Health','Automotive','Education'];
-        const catIcons = {'Electronics':'📱','Fashion':'👗','Food & Beverage':'🍽️','Services':'💼','Home & Garden':'🏠','Beauty & Health':'💄','Automotive':'🚗','Education':'📚'};
+        const catIcons = {
+            'Electronics':'fa-mobile-alt',
+            'Fashion':'fa-tshirt',
+            'Food & Beverage':'fa-utensils',
+            'Services':'fa-briefcase',
+            'Home & Garden':'fa-home',
+            'Beauty & Health':'fa-spa',
+            'Automotive':'fa-car',
+            'Education':'fa-graduation-cap'
+        };
         
         function toast(msg, type = 'info') {
             const c = document.getElementById('toastContainer');
             const t = document.createElement('div');
             t.className = `toast ${type}`;
-            t.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><span>${msg}</span>`;
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            t.innerHTML = `<i class="fas ${icon}"></i><span>${msg}</span>`;
             c.appendChild(t);
             setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 3000);
         }
         
-        const pageIds = ['home','marketplace','businessDetail','cart','orders','storeBuilder','dashboard','login','register'];
+        const pageIds = ['home','marketplace','products','businessDetail','productDetail','cart','orders','storeBuilder','dashboard','login','register'];
         function showPage(page) {
             pageIds.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.style.display = 'none'; });
             const el = document.getElementById('page-' + page);
@@ -404,13 +506,14 @@
             window.scrollTo({ top: 0 });
             if (page === 'home') renderHome();
             if (page === 'marketplace') renderMarketplace();
+            if (page === 'products') renderProducts();
             if (page === 'cart') renderCart();
             if (page === 'orders') renderOrders();
             if (page === 'dashboard') switchTab('overview');
             if (page === 'storeBuilder') goToStep(1);
         }
         
-        // ==================== USER ACCOUNT HANDLER ====================
+        // ==================== USER ACCOUNT ====================
         function handleUserClick() {
             const user = getCurrentUser();
             if (user) {
@@ -426,149 +529,292 @@
             }
         }
         
-        async function renderHome() {
-            document.getElementById('categoriesGrid').innerHTML = categories.map(c => `
-                <div class="card" onclick="showPage('marketplace')">
-                    <div class="card-cover"><span style="position:relative;z-index:1;">${catIcons[c] || '🏪'}</span></div>
-                    <div class="card-body"><div class="card-title">${c}</div><div class="card-subtitle">Explore</div></div>
-                </div>`).join('');
-            
-            const result = await apiCall('/businesses');
-            if (result.success && result.businesses && result.businesses.length > 0) {
-                document.getElementById('featuredBusinesses').innerHTML = result.businesses.slice(0, 3).map(businessCardHTML).join('');
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                document.getElementById('featuredBusinesses').innerHTML = '<p style="color:var(--vic-gray);text-align:center;grid-column:1/-1;">No businesses yet. <a onclick="showPage(\'storeBuilder\')" style="color:var(--vic-blue-glow);cursor:pointer;">Create the first store!</a></p>';
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        // ==================== HOME ====================
+        async function renderHome() {
+            renderCategories();
+            loadFeaturedBusinesses();
+        }
+        
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = categories.map(c => `
+                <div class="card" onclick="filterByCategory('${c}')">
+                    <div class="card-cover"><i class="fas ${catIcons[c] || 'fa-store'} icon-large"></i></div>
+                    <div class="card-body">
+                        <div class="card-title">${c}</div>
+                        <div class="card-subtitle">Explore</div>
+                    </div>
+                </div>`).join('');
+        }
+        
+        async function loadFeaturedBusinesses() {
+            const container = document.getElementById('featuredBusinesses');
+            container.innerHTML = `
+                <div class="loading-skeleton" style="height:200px;"></div>
+                <div class="loading-skeleton" style="height:200px;"></div>
+                <div class="loading-skeleton" style="height:200px;"></div>`;
+            try {
+                const result = await apiCall('/businesses');
+                if (result.success && result.businesses && result.businesses.length > 0) {
+                    container.innerHTML = result.businesses.slice(0, 3).map(businessCardHTML).join('');
+                } else {
+                    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+                        <i class="fas fa-store-alt"></i>
+                        <h3>No businesses yet</h3>
+                        <p>Be the first to create a store!</p>
+                        <button class="btn btn-primary" onclick="showPage('storeBuilder')">Build Store</button>
+                    </div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Failed to load businesses</h3>
+                    <button class="btn btn-primary" onclick="loadFeaturedBusinesses()">Retry</button>
+                </div>`;
             }
         }
         
         function businessCardHTML(b) {
             return `<div class="card" onclick="showBusinessDetail('${b._id || b.id}')">
                 <div class="card-cover">
-                    ${b.logo && b.logo !== 'default-logo.png' ? `<img src="${b.logo}" alt="${b.name}">` : `<span style="position:relative;z-index:1;">${catIcons[b.category] || '🏪'}</span>`}
-                    ${b.verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
-                    <span class="rating-badge">⭐ ${b.rating || 0}</span>
+                    ${b.logo && b.logo !== 'default-logo.png' ? `<img src="${b.logo}" alt="${b.name}">` : `<i class="fas ${catIcons[b.category] || 'fa-store'} icon-large"></i>`}
+                    ${b.verified ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                    <span class="rating-badge"><i class="fas fa-star"></i> ${b.rating || 0}</span>
                 </div>
                 <div class="card-body">
                     <div class="card-title">${b.name}</div>
                     <div class="card-subtitle">${b.category}</div>
                     <p class="card-desc">${b.description}</p>
-                    <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;">📍 ${b.location} | ${b.reviewCount || 0} reviews</p>
+                    <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;"><i class="fas fa-map-marker-alt"></i> ${b.location} | ${b.reviewCount || 0} reviews</p>
                 </div>
             </div>`;
         }
         
-        async function renderMarketplace() {
-            const result = await apiCall('/businesses');
-            document.getElementById('marketCount').textContent = result.success ? `${result.count} businesses found` : 'Cannot connect';
-            document.getElementById('allBusinesses').innerHTML = result.success && result.businesses ? 
-                result.businesses.map(businessCardHTML).join('') : 
-                '<p style="color:var(--vic-gray);text-align:center;padding:48px;grid-column:1/-1;">Cannot connect to backend.</p>';
+        function filterByCategory(category) {
+            localStorage.setItem('vp_category_filter', category);
+            showPage('products');
         }
         
+        // ==================== MARKETPLACE ====================
+        async function renderMarketplace() {
+            const container = document.getElementById('allBusinesses');
+            container.innerHTML = `
+                <div class="loading-skeleton" style="height:200px;"></div>
+                <div class="loading-skeleton" style="height:200px;"></div>
+                <div class="loading-skeleton" style="height:200px;"></div>`;
+            const search = document.getElementById('businessSearch')?.value || '';
+            const category = document.getElementById('businessCategory')?.value || '';
+            let url = '/businesses';
+            if (search || category) {
+                url += '?';
+                if (search) url += `search=${encodeURIComponent(search)}&`;
+                if (category) url += `category=${encodeURIComponent(category)}`;
+            }
+            try {
+                const result = await apiCall(url);
+                document.getElementById('marketCount').textContent = result.success ? `${result.count} businesses found` : '';
+                if (result.success && result.businesses) {
+                    container.innerHTML = result.businesses.map(businessCardHTML).join('') || 
+                        `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-store"></i><h3>No businesses found</h3></div>`;
+                } else {
+                    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><button class="btn btn-primary" onclick="renderMarketplace()">Retry</button></div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Network error</h3><button class="btn btn-primary" onclick="renderMarketplace()">Retry</button></div>`;
+            }
+        }
+        
+        // ==================== PRODUCTS ====================
+        async function renderProducts() {
+            const container = document.getElementById('allProducts');
+            container.innerHTML = `
+                <div class="loading-skeleton" style="height:200px;"></div>
+                <div class="loading-skeleton" style="height:200px;"></div>
+                <div class="loading-skeleton" style="height:200px;"></div>`;
+            const search = document.getElementById('productSearch')?.value || '';
+            const category = localStorage.getItem('vp_category_filter') || document.getElementById('productCategory')?.value || '';
+            let url = '/products';
+            if (search || category) {
+                url += '?';
+                if (search) url += `search=${encodeURIComponent(search)}&`;
+                if (category) url += `category=${encodeURIComponent(category)}`;
+            }
+            try {
+                const result = await apiCall(url);
+                document.getElementById('productCount').textContent = result.success ? `${result.count} products found` : '';
+                if (result.success && result.products) {
+                    container.innerHTML = result.products.map(p => productCardHTML(p, null)).join('') || 
+                        `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-box-open"></i><h3>No products found</h3></div>`;
+                } else {
+                    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><button class="btn btn-primary" onclick="renderProducts()">Retry</button></div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><h3>Network error</h3><button class="btn btn-primary" onclick="renderProducts()">Retry</button></div>`;
+            }
+        }
+        
+        function productCardHTML(p, b) {
+            // p may have business populated if from /products endpoint
+            const business = b || p.business;
+            const sellerName = business ? business.name : (p.businessName || 'Unknown');
+            const sellerWhatsApp = business ? business.whatsapp : (p.whatsapp || '');
+            const sellerId = business ? (business._id || business.id) : (p.businessId || '');
+            return `<div class="product-card">
+                <div class="product-image" onclick="showProductDetail('${p._id || p.id}')">
+                    ${p.images && p.images[0] ? `<img src="${p.images[0]}" alt="${p.name}">` : `<i class="fas fa-box-open icon-large"></i>`}
+                </div>
+                <div class="product-body">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-desc">${p.description}</div>
+                    <div class="product-price metallic-text">$${p.price}</div>
+                    <p style="font-size:12px;color:var(--vic-gray);margin-bottom:8px;">Seller: ${sellerName}</p>
+                    ${p.rating ? `<p style="font-size:12px;color:#FFD700;"><i class="fas fa-star"></i> ${p.rating}</p>` : ''}
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id || p.id}', '${p.name}', ${p.price}, '${sellerName}', '${sellerWhatsApp}')"><i class="fas fa-cart-plus"></i> Add</button>
+                        <button class="btn btn-secondary btn-xs" onclick="showProductDetail('${p._id || p.id}')"><i class="fas fa-eye"></i> View</button>
+                        ${sellerWhatsApp ? `<a href="https://wa.me/${sellerWhatsApp}?text=Hello, I'm interested in ${encodeURIComponent(p.name)} ($${p.price})" target="_blank" class="btn btn-whatsapp btn-xs" style="text-align:center;"><i class="fab fa-whatsapp"></i> Chat</a>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }
+        
+        // ==================== BUSINESS DETAIL ====================
         async function showBusinessDetail(id) {
             const result = await apiCall(`/businesses/${id}`);
             if (!result.success) { toast('Business not found', 'error'); return; }
             const b = result.business;
-            
             const productsResult = await apiCall(`/products?business=${id}`);
             const products = productsResult.success ? productsResult.products : [];
-            
             const reviews = DB.reviews.filter(r => r.businessId === id);
             
             document.getElementById('businessDetailContent').innerHTML = `
-                <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')" style="margin-bottom:20px;">← Back</button>
+                <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')" style="margin-bottom:20px;"><i class="fas fa-arrow-left"></i> Back</button>
                 <div class="card" style="padding:40px;margin-bottom:28px;cursor:default;">
                     <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;">
                         <div style="width:90px;height:90px;background:var(--metallic-gradient);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden;">
-                            ${b.logo && b.logo !== 'default-logo.png' ? `<img src="${b.logo}" style="width:100%;height:100%;object-fit:cover;">` : catIcons[b.category]}
+                            ${b.logo && b.logo !== 'default-logo.png' ? `<img src="${b.logo}" style="width:100%;height:100%;object-fit:cover;">` : `<i class="fas ${catIcons[b.category] || 'fa-store'}"></i>`}
                         </div>
                         <div style="flex:1;">
-                            <h2 style="font-size:32px;">${b.name} ${b.verified ? '✓' : ''}</h2>
+                            <h2 style="font-size:32px;">${b.name} ${b.verified ? '<i class="fas fa-check-circle" style="color:var(--vic-blue-glow);"></i>' : ''}</h2>
                             <p style="color:var(--vic-blue-glow);font-size:16px;">${b.category}</p>
-                            <p style="color:var(--vic-gray);">⭐ ${b.rating} | 📍 ${b.location}</p>
+                            <p style="color:var(--vic-gray);"><i class="fas fa-star" style="color:#FFD700;"></i> ${b.rating} | <i class="fas fa-map-marker-alt"></i> ${b.location}</p>
                         </div>
-                        <a href="https://wa.me/${b.whatsapp}" target="_blank" class="btn btn-whatsapp">💬 WhatsApp</a>
+                        <a href="https://wa.me/${b.whatsapp}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                     </div>
                     <p style="color:var(--vic-gray);margin-top:20px;">${b.description}</p>
-                    <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">All payments direct with ${b.name}. VicPrime is not responsible.</div></div>
+                    <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">All payments are made directly between you and ${b.name}. VicPrime is not responsible for monetary transactions.</div></div>
                 </div>
                 <h3 style="font-size:28px;margin-bottom:20px;">Products (${products.length})</h3>
-                <div class="grid-products">${products.map(p => productCardHTML(p, b, id)).join('') || '<p style="color:var(--vic-gray);">No products yet.</p>'}</div>
+                <div class="grid-products">${products.map(p => productCardHTML(p, b)).join('') || '<p style="color:var(--vic-gray);">No products yet.</p>'}</div>
                 
                 <h3 style="font-size:24px;margin:32px 0 16px;">Reviews (${reviews.length})</h3>
                 <div id="reviewsList">
                     ${reviews.length ? reviews.map(r => `
                         <div class="review-item">
-                            <div class="review-author">${r.author}</div>
+                            <div class="review-author"><i class="fas fa-user"></i> ${r.author}</div>
                             <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
                             <div class="review-comment">${r.comment}</div>
                             <div class="review-date">${new Date(r.date).toLocaleDateString()}</div>
-                        </div>`).join('') : '<p style="color:var(--vic-gray);">No reviews yet. Be the first to review!</p>'}
+                        </div>`).join('') : '<p style="color:var(--vic-gray);">No reviews yet.</p>'}
                 </div>
                 
+                ${canReviewBusiness(id) ? `
                 <div style="margin-top:16px;background:var(--vic-navy-light);border-radius:14px;padding:20px;">
                     <h4 style="margin-bottom:12px;">Leave a Review</h4>
                     <div class="form-group"><input class="form-input" id="reviewAuthor" placeholder="Your name"></div>
                     <div class="form-group"><select class="form-select" id="reviewRating"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select></div>
                     <div class="form-group"><textarea class="form-textarea" id="reviewComment" placeholder="Your review..."></textarea></div>
-                    <button class="btn btn-primary btn-sm" onclick="addReview('${id}')">Submit Review</button>
-                </div>`;
+                    <button class="btn btn-primary btn-sm" onclick="addBusinessReview('${id}')"><i class="fas fa-paper-plane"></i> Submit Review</button>
+                </div>` : ''}
+            `;
             showPage('businessDetail');
         }
         
-        function addReview(businessId) {
+        function canReviewBusiness(businessId) {
+            // Simple check: only if user is logged in and has ordered from this business
+            const user = getCurrentUser();
+            if (!user) return false;
+            return DB.orders.some(o => o.items.some(i => i.businessId === businessId));
+        }
+        
+        function addBusinessReview(businessId) {
             const author = document.getElementById('reviewAuthor').value || 'Anonymous';
             const rating = parseInt(document.getElementById('reviewRating').value);
             const comment = document.getElementById('reviewComment').value;
             if (!comment) { toast('Please write a review', 'error'); return; }
-            
             DB.reviews.push({ businessId, author, rating, comment, date: new Date().toISOString() });
             DB.save();
             toast('Review added!', 'success');
             showBusinessDetail(businessId);
         }
         
-        function productCardHTML(p, b, businessId) {
-            const productReviews = DB.reviews.filter(r => r.productId === p._id);
-            return `<div class="product-card">
-                <div class="product-image">
-                    ${p.images && p.images[0] ? `<img src="${p.images[0]}" alt="${p.name}">` : '<span style="font-size:60px;">📦</span>'}
-                </div>
-                <div class="product-body">
-                    <div class="product-name">${p.name}</div>
-                    <p class="product-desc">${p.description}</p>
-                    <p class="product-price metallic-text">$${p.price}</p>
-                    <div class="product-actions">
-                        <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id}', '${p.name}', ${p.price}, '${b.name}', '${b.whatsapp}')">🛒 Add</button>
-                        <button class="btn btn-secondary btn-xs" onclick="showPage('cart')">Cart</button>
-                        <a href="https://wa.me/${b.whatsapp}?text=Hello, I'm interested in ${p.name} ($${p.price})" target="_blank" class="btn btn-whatsapp btn-xs" style="text-align:center;">💬 WhatsApp</a>
+        // ==================== PRODUCT DETAIL ====================
+        async function showProductDetail(id) {
+            const result = await apiCall(`/products/${id}`);
+            if (!result.success) { toast('Product not found', 'error'); return; }
+            const p = result.product;
+            const business = p.business || {};
+            const productReviews = DB.reviews.filter(r => r.productId === id);
+            
+            document.getElementById('productDetailContent').innerHTML = `
+                <button class="btn btn-secondary btn-sm" onclick="showPage('products')" style="margin-bottom:20px;"><i class="fas fa-arrow-left"></i> Back</button>
+                <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:40px;cursor:default;">
+                    <div style="background:var(--premium-dark);border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:300px;">
+                        ${p.images && p.images[0] ? `<img src="${p.images[0]}" style="max-width:100%;max-height:100%;border-radius:8px;">` : '<i class="fas fa-box-open" style="font-size:80px;color:var(--vic-silver);"></i>'}
                     </div>
-                    <div class="review-section">
-                        <p style="font-size:12px;font-weight:600;margin-bottom:8px;">Reviews (${productReviews.length})</p>
-                        ${productReviews.length ? productReviews.slice(0, 3).map(r => `
-                            <div class="review-item" style="padding:10px;margin-bottom:6px;">
-                                <div class="review-author">${r.author}</div>
-                                <div class="review-stars">${'★'.repeat(r.rating)}</div>
-                                <div class="review-comment">${r.comment}</div>
-                            </div>`).join('') : '<p style="color:var(--vic-gray);font-size:12px;">No reviews yet.</p>'}
-                        <button class="btn btn-secondary btn-xs" onclick="showProductReview('${p._id}', '${p.name}')">Write Review</button>
+                    <div>
+                        <h2 style="font-size:28px;margin-bottom:12px;">${p.name}</h2>
+                        <p class="product-price metallic-text" style="font-size:32px;margin-bottom:12px;">$${p.price}</p>
+                        ${p.rating ? `<p style="color:#FFD700;margin-bottom:8px;"><i class="fas fa-star"></i> ${p.rating} (${p.reviewCount || 0} reviews)</p>` : ''}
+                        <p style="color:var(--vic-gray);margin-bottom:16px;">${p.description}</p>
+                        <p style="font-size:14px;color:var(--vic-gray);margin-bottom:16px;">Seller: ${business.name || 'Unknown'}</p>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+                            <button class="btn btn-primary" onclick="addToCart('${p._id}', '${p.name}', ${p.price}, '${business.name || ''}', '${business.whatsapp || ''}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                            ${business.whatsapp ? `<a href="https://wa.me/${business.whatsapp}?text=Hello, I'm interested in ${encodeURIComponent(p.name)} ($${p.price})" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>` : ''}
+                        </div>
+                        <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">All payments are made directly between you and the seller. VicPrime is not responsible for monetary transactions.</div></div>
                     </div>
                 </div>
-            </div>`;
+                <h3 style="font-size:24px;margin:32px 0 16px;">Reviews (${productReviews.length})</h3>
+                <div id="productReviewsList">
+                    ${productReviews.length ? productReviews.map(r => `
+                        <div class="review-item">
+                            <div class="review-author"><i class="fas fa-user"></i> ${r.author}</div>
+                            <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                            <div class="review-comment">${r.comment}</div>
+                            <div class="review-date">${new Date(r.date).toLocaleDateString()}</div>
+                        </div>`).join('') : '<p style="color:var(--vic-gray);">No reviews yet.</p>'}
+                </div>
+                ${canReviewProduct(id) ? `
+                <div style="margin-top:16px;background:var(--vic-navy-light);border-radius:14px;padding:20px;">
+                    <h4 style="margin-bottom:12px;">Leave a Review</h4>
+                    <div class="form-group"><input class="form-input" id="prAuthor" placeholder="Your name"></div>
+                    <div class="form-group"><select class="form-select" id="prRating"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select></div>
+                    <div class="form-group"><textarea class="form-textarea" id="prComment" placeholder="Your review..."></textarea></div>
+                    <button class="btn btn-primary btn-sm" onclick="submitProductReview('${p._id}')"><i class="fas fa-paper-plane"></i> Submit</button>
+                </div>` : '<p style="color:var(--vic-gray);margin-top:16px;">You can only review after purchasing this product.</p>'}
+            `;
+            showPage('productDetail');
         }
         
-        function showProductReview(productId, productName) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal">
-                <h3>Review: ${productName}</h3>
-                <div class="form-group"><input class="form-input" id="prAuthor" placeholder="Your name"></div>
-                <div class="form-group"><select class="form-select" id="prRating"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select></div>
-                <div class="form-group"><textarea class="form-textarea" id="prComment" placeholder="Your review..."></textarea></div>
-                <button class="btn btn-primary" onclick="submitProductReview('${productId}')">Submit</button>
-                <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-            </div>`;
-            document.body.appendChild(modal);
+        function canReviewProduct(productId) {
+            const user = getCurrentUser();
+            if (!user) return false;
+            return DB.orders.some(o => o.items.some(i => i.productId === productId));
         }
         
         function submitProductReview(productId) {
@@ -576,13 +822,13 @@
             const rating = parseInt(document.getElementById('prRating').value);
             const comment = document.getElementById('prComment').value;
             if (!comment) { toast('Write a review', 'error'); return; }
-            
             DB.reviews.push({ productId, author, rating, comment, date: new Date().toISOString() });
             DB.save();
-            document.querySelector('.modal-overlay').remove();
             toast('Review added!', 'success');
+            showProductDetail(productId);
         }
         
+        // ==================== CART ====================
         function addToCart(productId, name, price, businessName, whatsapp) {
             const existing = DB.cart.find(c => c.productId === productId);
             if (existing) existing.quantity++;
@@ -602,58 +848,106 @@
         function renderCart() {
             const c = document.getElementById('cartContent');
             if (DB.cart.length === 0) {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;">🛒</div><h2>Cart is empty</h2><button class="btn btn-primary" onclick="showPage(\'marketplace\')">Shop Now</button></div>';
+                c.innerHTML = `<div class="empty-state"><i class="fas fa-shopping-cart"></i><h3>Your cart is empty</h3><p>Browse our marketplace to find something you love.</p><button class="btn btn-primary" onclick="showPage('products')">Shop Now</button></div>`;
                 return;
             }
-            const total = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const subtotal = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
             c.innerHTML = DB.cart.map((item, i) => `
                 <div class="card" style="padding:20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;cursor:default;">
-                    <div><strong>${item.name}</strong><br><span style="color:var(--vic-gray);font-size:12px;">${item.businessName}</span><br><span class="metallic-text" style="font-size:22px;font-weight:800;">$${(item.price * item.quantity).toFixed(2)}</span></div>
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <span style="color:var(--vic-gray);font-size:12px;">${item.businessName}</span><br>
+                        <span class="metallic-text" style="font-size:22px;font-weight:800;">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <button class="btn btn-secondary btn-sm" onclick="updateQty('${item.productId}', ${item.quantity - 1})">−</button>
+                        <button class="btn btn-secondary btn-sm" onclick="updateQty('${item.productId}', ${item.quantity - 1})"><i class="fas fa-minus"></i></button>
                         <span>${item.quantity}</span>
-                        <button class="btn btn-secondary btn-sm" onclick="updateQty('${item.productId}', ${item.quantity + 1})">+</button>
-                        <a href="https://wa.me/${item.whatsapp}?text=Hello, I want to order ${item.name}" target="_blank" class="btn btn-whatsapp btn-sm">💬 Pay</a>
-                        <button class="btn btn-danger btn-sm" onclick="removeItem('${item.productId}')">🗑️</button>
+                        <button class="btn btn-secondary btn-sm" onclick="updateQty('${item.productId}', ${item.quantity + 1})"><i class="fas fa-plus"></i></button>
+                        <a href="https://wa.me/${item.whatsapp}?text=Hello, I want to order ${encodeURIComponent(item.name)}" target="_blank" class="btn btn-whatsapp btn-sm"><i class="fab fa-whatsapp"></i> Pay</a>
+                        <button class="btn btn-danger btn-sm" onclick="removeItem('${item.productId}')"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`).join('') + `
-                <div class="payment-disclaimer"><div class="payment-disclaimer-title">💬 Payment Notice</div><div class="payment-disclaimer-text">All payments direct with sellers. VicPrime not responsible.</div></div>
+                <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">All payments are made directly between you and the seller. VicPrime is not responsible for monetary transactions.</div></div>
                 <div class="card" style="padding:28px;display:flex;justify-content:space-between;align-items:center;cursor:default;">
-                    <span>Total: <span class="metallic-text" style="font-size:28px;">$${total.toFixed(2)}</span></span>
-                    <button class="btn btn-primary" onclick="checkout()">Checkout</button>
+                    <div>
+                        <p>Subtotal: <span class="metallic-text">$${subtotal.toFixed(2)}</span></p>
+                        <p>Total: <span class="metallic-text" style="font-size:24px;font-weight:800;">$${subtotal.toFixed(2)}</span></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="checkout()"><i class="fas fa-credit-card"></i> Checkout</button>
                 </div>`;
         }
         
         function updateQty(pid, qty) {
             const item = DB.cart.find(c => c.productId === pid);
-            if (item) { item.quantity = qty; if (qty <= 0) DB.cart = DB.cart.filter(c => c.productId !== pid); DB.save(); updateCartBadge(); renderCart(); }
+            if (item) {
+                if (qty <= 0) {
+                    DB.cart = DB.cart.filter(c => c.productId !== pid);
+                } else {
+                    item.quantity = qty;
+                }
+                DB.save();
+                updateCartBadge();
+                renderCart();
+            }
         }
         function removeItem(pid) { DB.cart = DB.cart.filter(c => c.productId !== pid); DB.save(); updateCartBadge(); renderCart(); }
         
         function checkout() {
-            showPage('cart');
-            const total = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
-            const name = prompt('Your full name:');
+            // Simple checkout: prompt for contact info
+            const user = getCurrentUser();
+            const name = user ? user.name : prompt('Your full name:');
             const phone = prompt('Your phone number:');
             if (!name || !phone) { toast('Please provide name and phone', 'error'); return; }
-            DB.orders.push({ id: 'ORD-' + Date.now(), items: [...DB.cart], total, customer: { name, phone }, status: 'pending_payment', date: new Date().toISOString() });
-            DB.cart = []; DB.save(); updateCartBadge();
+            DB.orders.push({
+                id: 'ORD-' + Date.now(),
+                items: [...DB.cart],
+                total: DB.cart.reduce((s,i) => s + i.price*i.quantity, 0),
+                customer: { name, phone, email: user ? user.email : '' },
+                status: 'pending_payment',
+                date: new Date().toISOString()
+            });
+            DB.cart = [];
+            DB.save();
+            updateCartBadge();
             toast('Order placed! Contact seller via WhatsApp.', 'success');
             showPage('orders');
         }
         
-        function renderOrders() {
+        // ==================== ORDERS ====================
+        async function renderOrders() {
             const c = document.getElementById('ordersContent');
-            if (DB.orders.length === 0) {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><div style="font-size:80px;">📦</div><h2>No orders</h2><button class="btn btn-primary" onclick="showPage(\'marketplace\')">Shop</button></div>';
+            const user = getCurrentUser();
+            if (!user) {
+                c.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Please login to view orders</h3><button class="btn btn-primary" onclick="showPage('login')">Login</button></div>`;
                 return;
             }
-            c.innerHTML = DB.orders.map(o => `
-                <div class="card" style="padding:20px;margin-bottom:12px;cursor:default;">
-                    <div style="display:flex;justify-content:space-between;"><strong>${o.id}</strong><span style="color:var(--vic-yellow);">${o.status}</span></div>
-                    ${o.items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
-                    <div style="display:flex;justify-content:space-between;margin-top:12px;"><strong>Total</strong><span class="metallic-text">$${o.total.toFixed(2)}</span></div>
-                </div>`).join('');
+            // Fetch orders from backend if possible, otherwise use local
+            const result = await apiCall('/orders', 'GET', null, getToken());
+            if (result.success && result.orders && result.orders.length > 0) {
+                c.innerHTML = result.orders.map(o => orderCardHTML(o)).join('');
+            } else {
+                // Fallback to local orders for current user
+                const localOrders = DB.orders;
+                if (localOrders.length === 0) {
+                    c.innerHTML = `<div class="empty-state"><i class="fas fa-receipt"></i><h3>No orders yet</h3><p>Start shopping to see your orders here.</p><button class="btn btn-primary" onclick="showPage('products')">Shop Now</button></div>`;
+                } else {
+                    c.innerHTML = localOrders.map(o => orderCardHTML(o)).join('');
+                }
+            }
+        }
+        
+        function orderCardHTML(o) {
+            return `<div class="card" style="padding:20px;margin-bottom:12px;cursor:default;">
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                    <strong>${o.orderNumber || o.id}</strong>
+                    <span style="color:var(--vic-yellow);"><i class="fas fa-clock"></i> ${o.status}</span>
+                </div>
+                <p style="color:var(--vic-gray);font-size:12px;">${new Date(o.createdAt || o.date).toLocaleString()}</p>
+                ${o.items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+                <div style="display:flex;justify-content:space-between;margin-top:12px;border-top:1px solid rgba(192,192,192,0.1);padding-top:12px;">
+                    <strong>Total</strong><span class="metallic-text">$${o.totalAmount || o.total}</span>
+                </div>
+            </div>`;
         }
         
         // ==================== STORE BUILDER ====================
@@ -667,18 +961,21 @@
             });
             const c = document.getElementById('wizardContent');
             if (step === 1) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2 style="margin-bottom:20px;">Business Information</h2>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
+                    <h2 style="margin-bottom:20px;"><i class="fas fa-info-circle"></i> Business Information</h2>
                     <div class="form-group"><label class="form-label">Business Name *</label><input class="form-input" id="sbName" value="${storeData.info.name || ''}" placeholder="e.g. TechHub Electronics"></div>
                     <div class="form-group"><label class="form-label">Category *</label><select class="form-select" id="sbCat">${categories.map(x => `<option value="${x}" ${storeData.info.category === x ? 'selected' : ''}>${x}</option>`).join('')}</select></div>
                     <div class="form-group"><label class="form-label">Description *</label><textarea class="form-textarea" id="sbDesc">${storeData.info.description || ''}</textarea></div>
                     <div class="form-group"><label class="form-label">Location *</label><input class="form-input" id="sbLoc" value="${storeData.info.location || ''}" placeholder="City, Country"></div>
-                    <button class="btn btn-primary" onclick="saveStep1()">Next →</button></div>`;
+                    <button class="btn btn-primary" onclick="saveStep1()"><i class="fas fa-arrow-right"></i> Next</button>
+                </div>`;
             } else if (step === 2) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2 style="margin-bottom:20px;">Store Design</h2>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
+                    <h2 style="margin-bottom:20px;"><i class="fas fa-palette"></i> Store Design</h2>
                     <div class="form-group"><label class="form-label">Store URL</label><input class="form-input" id="sbSlug" value="${storeData.design.slug || ''}" placeholder="your-store-name"></div>
                     <div class="form-group"><label class="form-label">Store Logo</label>
                         <div class="image-upload" onclick="document.getElementById('logoUpload').click()">
-                            <span style="font-size:32px;">📷</span>
+                            <i class="fas fa-camera" style="font-size:32px;color:var(--vic-gray);"></i>
                             <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;">Click to upload logo</p>
                             <input type="file" id="logoUpload" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)">
                             <div id="logoPreview"></div>
@@ -686,29 +983,37 @@
                     </div>
                     <div class="form-group"><label class="form-label">Cover Image</label>
                         <div class="image-upload" onclick="document.getElementById('coverUpload').click()">
-                            <span style="font-size:32px;">🖼️</span>
+                            <i class="fas fa-image" style="font-size:32px;color:var(--vic-gray);"></i>
                             <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;">Click to upload cover</p>
                             <input type="file" id="coverUpload" accept="image/*" style="display:none;" onchange="handleCoverUpload(event)">
                             <div id="coverPreview"></div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="goToStep(3)">Next →</button></div>`;
+                    <button class="btn btn-primary" onclick="goToStep(3)"><i class="fas fa-arrow-right"></i> Next</button>
+                </div>`;
             } else if (step === 3) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2 style="margin-bottom:20px;">Contact & Payment</h2>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
+                    <h2 style="margin-bottom:20px;"><i class="fas fa-phone"></i> Contact & Payment</h2>
                     <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="sbEmail" value="${storeData.contact.email || ''}" type="email"></div>
                     <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="sbPhone" value="${storeData.contact.phone || ''}" type="tel"></div>
-                    <div class="form-group"><label class="form-label">WhatsApp *</label><input class="form-input" id="sbWhatsApp" value="${storeData.contact.whatsapp || ''}" type="tel" placeholder="+1234567890"></div>
-                    <div class="payment-disclaimer"><div class="payment-disclaimer-text">Customers pay you directly via WhatsApp. VicPrime not responsible.</div></div>
-                    <button class="btn btn-primary" onclick="saveStep3()">Next →</button></div>`;
+                    <div class="form-group"><label class="form-label">WhatsApp (for payments) *</label><input class="form-input" id="sbWhatsApp" value="${storeData.contact.whatsapp || ''}" type="tel" placeholder="+1234567890"></div>
+                    <div class="payment-disclaimer"><div class="payment-disclaimer-title"><i class="fab fa-whatsapp"></i> Payment Notice</div><div class="payment-disclaimer-text">Customers will pay you directly via WhatsApp. VicPrime is not responsible for monetary transactions.</div></div>
+                    <button class="btn btn-primary" onclick="saveStep3()"><i class="fas fa-arrow-right"></i> Next</button>
+                </div>`;
             } else if (step === 4) {
                 c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h2>Products</h2><button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Add Product</button></div>
-                    <div id="sbProducts">${storeData.products.length ? storeData.products.map((p, i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(15,21,37,0.5);border-radius:10px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:12px;">${p.image ? `<img src="${p.image}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;">` : '<span style="font-size:24px;">📦</span>'}<div><strong>${p.name}</strong><br><span style="color:var(--vic-gray);font-size:12px;">$${p.price} | Stock: ${p.stock}</span></div></div><button class="btn btn-danger btn-sm" onclick="removeSBProduct(${i})">Remove</button></div>`).join('') : '<p style="color:var(--vic-gray);text-align:center;padding:20px;">No products yet.</p>'}</div>
-                    <button class="btn btn-primary" onclick="goToStep(5)">Next →</button></div>`;
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h2><i class="fas fa-box"></i> Products</h2>
+                        <button class="btn btn-primary btn-sm" onclick="showAddProduct()"><i class="fas fa-plus"></i> Add Product</button>
+                    </div>
+                    <div id="sbProducts">${storeData.products.length ? storeData.products.map((p, i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(15,21,37,0.5);border-radius:10px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:12px;">${p.image ? `<img src="${p.image}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;">` : '<i class="fas fa-box" style="font-size:24px;"></i>'}<div><strong>${p.name}</strong><br><span style="color:var(--vic-gray);font-size:12px;">$${p.price} | Stock: ${p.stock}</span></div></div><button class="btn btn-danger btn-sm" onclick="removeSBProduct(${i})"><i class="fas fa-trash"></i></button></div>`).join('') : '<p style="color:var(--vic-gray);text-align:center;padding:20px;">No products yet. Add your first product!</p>'}</div>
+                    <button class="btn btn-primary" onclick="goToStep(5)"><i class="fas fa-arrow-right"></i> Next</button>
+                </div>`;
             } else if (step === 5) {
-                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;"><h2 style="margin-bottom:20px;">Preview & Publish</h2>
+                c.innerHTML = `<div class="card" style="padding:40px;cursor:default;">
+                    <h2 style="margin-bottom:20px;"><i class="fas fa-eye"></i> Preview & Publish</h2>
                     <div style="background:rgba(15,21,37,0.5);border-radius:14px;padding:28px;margin-bottom:20px;text-align:center;">
-                        ${storeData.design.logo ? `<img src="${storeData.design.logo}" style="width:80px;height:80px;border-radius:20px;object-fit:cover;margin-bottom:12px;">` : '<div style="font-size:48px;margin-bottom:12px;">🏪</div>'}
+                        ${storeData.design.logo ? `<img src="${storeData.design.logo}" style="width:80px;height:80px;border-radius:20px;object-fit:cover;margin-bottom:12px;">` : '<i class="fas fa-store" style="font-size:48px;margin-bottom:12px;"></i>'}
                         <h3 style="font-size:24px;">${storeData.info.name || 'Your Store'}</h3>
                         <p style="color:var(--vic-blue-glow);">${storeData.info.category}</p>
                         <p style="color:var(--vic-gray);">📍 ${storeData.info.location}</p>
@@ -716,7 +1021,8 @@
                         <p style="margin-top:8px;">💬 WhatsApp: ${storeData.contact.whatsapp}</p>
                         <p style="margin-top:8px;">📦 Products: ${storeData.products.length}</p>
                     </div>
-                    <button class="btn btn-primary" onclick="publishStore()">🚀 Publish Store</button></div>`;
+                    <button class="btn btn-primary" onclick="publishStore()"><i class="fas fa-rocket"></i> Publish Store</button>
+                </div>`;
             }
         }
         
@@ -747,32 +1053,62 @@
         }
         
         function saveStep1() {
-            storeData.info = { name: document.getElementById('sbName').value, category: document.getElementById('sbCat').value, description: document.getElementById('sbDesc').value, location: document.getElementById('sbLoc').value };
-            if (!storeData.info.name || !storeData.info.category) { toast('Fill required fields', 'error'); return; }
+            storeData.info = {
+                name: document.getElementById('sbName').value.trim(),
+                category: document.getElementById('sbCat').value,
+                description: document.getElementById('sbDesc').value.trim(),
+                location: document.getElementById('sbLoc').value.trim()
+            };
+            if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) {
+                toast('Please fill all required fields', 'error');
+                return;
+            }
             goToStep(2);
         }
+        
         function saveStep3() {
-            storeData.contact = { email: document.getElementById('sbEmail').value, phone: document.getElementById('sbPhone').value, whatsapp: document.getElementById('sbWhatsApp').value };
-            if (!storeData.contact.email || !storeData.contact.whatsapp) { toast('Email and WhatsApp required', 'error'); return; }
+            storeData.contact = {
+                email: document.getElementById('sbEmail').value.trim(),
+                phone: document.getElementById('sbPhone').value.trim(),
+                whatsapp: document.getElementById('sbWhatsApp').value.trim()
+            };
+            if (!storeData.contact.email || !storeData.contact.whatsapp) {
+                toast('Email and WhatsApp are required', 'error');
+                return;
+            }
+            if (!/^\S+@\S+\.\S+$/.test(storeData.contact.email)) {
+                toast('Invalid email', 'error');
+                return;
+            }
+            if (!/^\+?[\d\s-]{8,}$/.test(storeData.contact.whatsapp)) {
+                toast('Invalid WhatsApp number', 'error');
+                return;
+            }
             goToStep(4);
         }
+        
         function showAddProduct() {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal"><h3 style="margin-bottom:16px;">Add Product</h3>
+            modal.innerHTML = `<div class="modal">
+                <h3 style="margin-bottom:16px;"><i class="fas fa-plus"></i> Add Product</h3>
                 <div class="form-group"><label class="form-label">Product Image</label>
                     <div class="image-upload" onclick="document.getElementById('apImage').click()">
-                        <span style="font-size:32px;">📷</span>
+                        <i class="fas fa-camera" style="font-size:32px;color:var(--vic-gray);"></i>
                         <p style="color:var(--vic-gray);font-size:12px;margin-top:8px;">Click to upload product image</p>
                         <input type="file" id="apImage" accept="image/*" style="display:none;" onchange="handleProductImage(event)">
                         <div id="apImagePreview"></div>
                     </div>
                 </div>
-                <div class="form-group"><input class="form-input" id="apName" placeholder="Product Name"></div>
-                <div class="form-group"><input class="form-input" id="apPrice" placeholder="Price ($)" type="number"></div>
-                <div class="form-group"><input class="form-input" id="apStock" placeholder="Stock" type="number"></div>
+                <div class="form-group"><input class="form-input" id="apName" placeholder="Product Name" required></div>
+                <div class="form-group"><input class="form-input" id="apPrice" placeholder="Price ($)" type="number" min="0" step="0.01" required></div>
+                <div class="form-group"><input class="form-input" id="apStock" placeholder="Stock" type="number" min="0" required></div>
                 <div class="form-group"><textarea class="form-textarea" id="apDesc" placeholder="Description"></textarea></div>
-                <div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button><button class="btn btn-primary" onclick="confirmAddSBProduct()">Add Product</button></div></div>`;
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                    <button class="btn btn-primary" onclick="confirmAddSBProduct()">Add Product</button>
+                </div>
+            </div>`;
             document.body.appendChild(modal);
         }
         
@@ -789,19 +1125,44 @@
         }
         
         function confirmAddSBProduct() {
-            const p = { name: document.getElementById('apName').value, price: parseFloat(document.getElementById('apPrice').value), stock: parseInt(document.getElementById('apStock').value), description: document.getElementById('apDesc').value, image: window._productImage || null };
-            if (!p.name || !p.price) { toast('Name and price required', 'error'); return; }
+            const p = {
+                name: document.getElementById('apName').value.trim(),
+                price: parseFloat(document.getElementById('apPrice').value),
+                stock: parseInt(document.getElementById('apStock').value),
+                description: document.getElementById('apDesc').value.trim(),
+                image: window._productImage || null
+            };
+            if (!p.name || isNaN(p.price) || isNaN(p.stock)) {
+                toast('Name, price and stock are required', 'error');
+                return;
+            }
             storeData.products.push(p);
             window._productImage = null;
             document.querySelector('.modal-overlay').remove();
             goToStep(4);
             toast('Product added!', 'success');
         }
+        
         function removeSBProduct(i) { storeData.products.splice(i, 1); goToStep(4); }
         
         async function publishStore() {
             const user = getCurrentUser();
             if (!user) { toast('Please login first', 'error'); showPage('login'); return; }
+            if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) {
+                toast('Store information incomplete', 'error');
+                goToStep(1);
+                return;
+            }
+            if (!storeData.contact.email || !storeData.contact.whatsapp) {
+                toast('Contact information incomplete', 'error');
+                goToStep(3);
+                return;
+            }
+            if (storeData.products.length === 0) {
+                toast('Add at least one product', 'error');
+                goToStep(4);
+                return;
+            }
             
             const businessData = {
                 name: storeData.info.name,
@@ -811,24 +1172,27 @@
                 email: storeData.contact.email,
                 phone: storeData.contact.phone,
                 whatsapp: storeData.contact.whatsapp,
-                logo: storeData.design.logo || 'default-logo.png',
-                coverImage: storeData.design.cover || 'default-cover.png'
+                logo: storeData.design.logo || '',
+                coverImage: storeData.design.cover || ''
             };
             
             const result = await apiCall('/businesses', 'POST', businessData, getToken());
-            
             if (result.success) {
+                // Create products
                 for (const p of storeData.products) {
                     await apiCall('/products', 'POST', {
-                        name: p.name, price: p.price, stock: p.stock,
-                        description: p.description, category: storeData.info.category,
+                        name: p.name,
+                        price: p.price,
+                        stock: p.stock,
+                        description: p.description,
+                        category: storeData.info.category,
                         images: p.image ? [p.image] : []
                     }, getToken());
                 }
-                toast('🎉 Store published!', 'success');
+                toast('🎉 Store published successfully!', 'success');
                 showPage('dashboard');
             } else {
-                toast(result.message || 'Failed to publish', 'error');
+                toast(result.message || 'Failed to publish store', 'error');
             }
         }
         
@@ -837,40 +1201,63 @@
             document.querySelectorAll('.dashboard-nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
             const c = document.getElementById('dashContent');
             const user = getCurrentUser();
-            
             if (!user || user.role !== 'business') {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><h2>Business Login Required</h2><p style="color:var(--vic-gray);margin:16px 0;">Register as business owner.</p><button class="btn btn-primary" onclick="showPage(\'register\')">Register</button></div>';
+                c.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Business login required</h3><p>Register as a business owner to access the dashboard.</p><button class="btn btn-primary" onclick="showPage('register')">Register</button></div>`;
                 return;
             }
             
-            c.innerHTML = '<p style="color:var(--vic-gray);">Loading...</p>';
+            c.innerHTML = '<div class="loading-skeleton" style="height:200px;margin-bottom:20px;"></div>';
             
-            const bizResult = await apiCall('/businesses');
-            const myBiz = bizResult.success ? bizResult.businesses.find(b => b.owner === user.id) : null;
-            
-            if (!myBiz) {
-                c.innerHTML = '<div style="text-align:center;padding:80px;"><h2>No Business Found</h2><button class="btn btn-primary" onclick="showPage(\'storeBuilder\')">🏪 Build Store</button></div>';
-                return;
-            }
-            
-            if (tab === 'overview') {
-                const productsResult = await apiCall(`/products?business=${myBiz._id}`);
-                c.innerHTML = `<h2 style="margin-bottom:20px;">Overview</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-card-icon">📦</div><div class="stat-value">${productsResult.success ? productsResult.count : 0}</div><div class="stat-label">Products</div></div>
-                        <div class="stat-card"><div class="stat-card-icon">⭐</div><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div>
-                        <div class="stat-card"><div class="stat-card-icon">💬</div><div class="stat-value">${myBiz.whatsapp}</div><div class="stat-label">WhatsApp</div></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="showPage('storeBuilder')">🏪 Edit Store</button>`;
-            } else if (tab === 'products') {
-                const result = await apiCall(`/products?business=${myBiz._id}`);
-                c.innerHTML = `<h2 style="margin-bottom:20px;">Products</h2>${result.success && result.products.length ? `<div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${result.products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table></div>` : '<p style="color:var(--vic-gray);">No products yet.</p>'}`;
-            } else if (tab === 'settings') {
-                c.innerHTML = `<h2 style="margin-bottom:20px;">Settings</h2>
-                    <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" id="setName" value="${myBiz.name}"></div>
-                    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="setDesc">${myBiz.description}</textarea></div>
-                    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="setWa" value="${myBiz.whatsapp}"></div>
-                    <button class="btn btn-primary" onclick="saveSettings('${myBiz._id}')">Save</button>`;
+            try {
+                const bizResult = await apiCall('/businesses');
+                const myBiz = bizResult.success ? bizResult.businesses.find(b => b.owner === user.id) : null;
+                if (!myBiz) {
+                    c.innerHTML = `<div class="empty-state"><i class="fas fa-store"></i><h3>No business found</h3><p>Create your store now.</p><button class="btn btn-primary" onclick="showPage('storeBuilder')">Build Store</button></div>`;
+                    return;
+                }
+                document.getElementById('dashBizName').textContent = myBiz.name;
+                
+                if (tab === 'overview') {
+                    const productsResult = await apiCall(`/products?business=${myBiz._id}`);
+                    const ordersResult = await apiCall('/orders', 'GET', null, getToken());
+                    const totalProducts = productsResult.success ? productsResult.count : 0;
+                    const totalOrders = ordersResult.success ? ordersResult.count : 0;
+                    // Calculate revenue from orders (if backend provides)
+                    c.innerHTML = `
+                        <h2 style="margin-bottom:20px;"><i class="fas fa-chart-pie"></i> Overview</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-box"></i></div><div class="stat-value">${totalProducts}</div><div class="stat-label">Products</div></div>
+                            <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-receipt"></i></div><div class="stat-value">${totalOrders}</div><div class="stat-label">Orders</div></div>
+                            <div class="stat-card"><div class="stat-card-icon"><i class="fas fa-star"></i></div><div class="stat-value">${myBiz.rating || 0}</div><div class="stat-label">Rating</div></div>
+                            <div class="stat-card"><div class="stat-card-icon"><i class="fab fa-whatsapp"></i></div><div class="stat-value">${myBiz.whatsapp}</div><div class="stat-label">WhatsApp</div></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showPage('storeBuilder')"><i class="fas fa-edit"></i> Edit Store</button>
+                    `;
+                } else if (tab === 'products') {
+                    const result = await apiCall(`/products?business=${myBiz._id}`);
+                    c.innerHTML = `<h2 style="margin-bottom:20px;"><i class="fas fa-box"></i> Products</h2>`;
+                    if (result.success && result.products.length) {
+                        c.innerHTML += `<div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead><tbody>${result.products.map(p => `<tr><td>${p.name}</td><td>$${p.price}</td><td>${p.stock}</td></tr>`).join('')}</tbody></table></div>`;
+                    } else {
+                        c.innerHTML += '<p style="color:var(--vic-gray);">No products yet.</p>';
+                    }
+                } else if (tab === 'orders') {
+                    const result = await apiCall('/orders', 'GET', null, getToken());
+                    c.innerHTML = `<h2 style="margin-bottom:20px;"><i class="fas fa-receipt"></i> Orders</h2>`;
+                    if (result.success && result.orders.length) {
+                        c.innerHTML += result.orders.map(o => `<div class="card" style="padding:16px;margin-bottom:8px;cursor:default;"><strong>${o.orderNumber}</strong> - ${o.status}<br><span style="color:var(--vic-gray);font-size:12px;">Total: $${o.totalAmount}</span></div>`).join('');
+                    } else {
+                        c.innerHTML += '<p style="color:var(--vic-gray);">No orders yet.</p>';
+                    }
+                } else if (tab === 'settings') {
+                    c.innerHTML = `<h2 style="margin-bottom:20px;"><i class="fas fa-cog"></i> Settings</h2>
+                        <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" id="setName" value="${myBiz.name}"></div>
+                        <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="setDesc">${myBiz.description}</textarea></div>
+                        <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="setWa" value="${myBiz.whatsapp}"></div>
+                        <button class="btn btn-primary" onclick="saveSettings('${myBiz._id}')">Save</button>`;
+                }
+            } catch (e) {
+                c.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load dashboard</h3><button class="btn btn-primary" onclick="switchTab('${tab}')">Retry</button></div>`;
             }
         }
         
@@ -885,12 +1272,15 @@
         }
         
         // ==================== AUTH ====================
-        function toggleBizFields() { document.getElementById('bizFields').style.display = document.getElementById('regRole').value === 'business' ? 'block' : 'none'; }
+        function toggleBizFields() {
+            document.getElementById('bizFields').style.display = document.getElementById('regRole').value === 'business' ? 'block' : 'none';
+        }
         
         async function doLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPass').value;
+            if (!email || !password) { toast('Please fill all fields', 'error'); return; }
             const result = await apiCall('/auth/login', 'POST', { email, password });
             if (result.success) {
                 localStorage.setItem('vp_token', result.token);
@@ -899,20 +1289,30 @@
                 toast('Logged in!', 'success');
                 showPage('home');
             } else {
-                toast(result.message || 'Login failed', 'error');
+                toast(result.message || 'Invalid email or password', 'error');
             }
         }
         
         async function doRegister(e) {
             e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPass').value;
             const role = document.getElementById('regRole').value;
-            const whatsapp = document.getElementById('regWhatsApp')?.value || '';
+            const bizName = document.getElementById('regBizName')?.value.trim() || '';
+            const whatsapp = document.getElementById('regWhatsApp')?.value.trim() || '';
             
-            const result = await apiCall('/auth/register', 'POST', { name, email, password, role, whatsapp });
+            // Validation
+            if (!name || !email || !password) { toast('Please fill all required fields', 'error'); return; }
+            if (!/^\S+@\S+\.\S+$/.test(email)) { toast('Invalid email', 'error'); return; }
+            if (password.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+            if (role === 'business') {
+                if (!bizName) { toast('Business name is required', 'error'); return; }
+                if (!whatsapp || !/^\+?[\d\s-]{8,}$/.test(whatsapp)) { toast('Valid WhatsApp number required', 'error'); return; }
+            }
             
+            const payload = { name, email, password, role, whatsapp: role === 'business' ? whatsapp : '' };
+            const result = await apiCall('/auth/register', 'POST', payload);
             if (result.success) {
                 localStorage.setItem('vp_token', result.token);
                 localStorage.setItem('vp_user', JSON.stringify(result.user));
@@ -930,17 +1330,18 @@
             const ub = document.getElementById('userBtn');
             const user = getCurrentUser();
             if (user) {
-                ub.textContent = user.name ? user.name[0].toUpperCase() : '👤';
+                ub.innerHTML = '<i class="fas fa-user"></i>';
                 if (user.role === 'business') dl.style.display = 'block';
                 else dl.style.display = 'none';
             } else {
                 dl.style.display = 'none';
-                ub.textContent = '👤';
+                ub.innerHTML = '<i class="fas fa-user"></i>';
             }
         }
         
         // ==================== INIT ====================
         window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50));
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
         updateCartBadge();
         updateUserUI();
         renderHome();
