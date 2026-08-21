@@ -47,6 +47,9 @@
         .logo-text { font-size:20px; font-weight:800; background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .logo-badge { background:var(--blue-gradient); color:white; font-size:8px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; }
         .nav-actions { display:flex; align-items:center; gap:8px; }
+        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
+        .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }
+        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
         .btn { display:inline-block; padding:12px 22px; border-radius:50px; font-weight:600; text-decoration:none; transition:all .3s; cursor:pointer; border:none; font-size:13px; }
         .btn-primary { background:var(--blue-gradient); color:white; box-shadow:var(--shadow-blue-glow); }
         .btn-primary:hover { transform:translateY(-2px); }
@@ -55,9 +58,6 @@
         .btn-danger { background:var(--vic-red); color:white; }
         .btn-sm { padding:6px 12px; font-size:11px; }
         .btn-xs { padding:4px 8px; font-size:10px; }
-        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; transition:all .3s; }
-        .icon-btn:hover { border-color:var(--vic-blue-light); color:white; box-shadow:0 0 20px rgba(37,99,235,0.3); }
-        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
         .hero { position:relative; padding:80px 16px; text-align:center; background:var(--premium-dark); overflow:hidden; }
         .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(30,64,175,0.3) 0%, transparent 50%); }
         .hero-content { position:relative; z-index:1; max-width:900px; margin:0 auto; }
@@ -147,8 +147,7 @@
         .empty-state i { font-size:40px; margin-bottom:12px; color:var(--vic-blue-glow); }
         .empty-state h3 { font-size:18px; margin-bottom:8px; }
         .empty-state p { font-size:13px; margin-bottom:16px; }
-        /* Account menu */
-        #accountMenu { display:none; position:absolute; right:0; top:46px; background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; min-width:180px; box-shadow:var(--shadow-premium); z-index:1001; }
+        #accountMenu { display:none; position:absolute; right:0; top:46px; background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; min-width:200px; box-shadow:var(--shadow-premium); z-index:1001; }
         #accountMenu a { display:block; padding:8px 14px; color:var(--vic-silver); font-size:12px; text-decoration:none; cursor:pointer; }
         #accountMenu a:hover { background:rgba(37,99,235,0.1); color:white; }
         @media (max-width:768px) {
@@ -264,6 +263,16 @@
                 <div id="wizardContent" style="max-width:700px;margin:0 auto;"></div>
             </section>
         </div>
+        <div id="page-becomeSeller" style="display:none;">
+            <section class="section" style="max-width:500px;margin:0 auto;padding-top:60px;">
+                <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;box-shadow:var(--shadow-premium);text-align:center;">
+                    <i class="fas fa-store" style="font-size:60px;color:var(--vic-blue-glow);margin-bottom:16px;"></i>
+                    <h2 style="margin-bottom:12px;">Become a Business Owner</h2>
+                    <p style="color:var(--vic-gray);margin-bottom:20px;">Set up your own store and start selling on VicPrime Market.</p>
+                    <button class="btn btn-primary" onclick="upgradeToBusiness()"><i class="fas fa-arrow-up"></i> Upgrade My Account</button>
+                </div>
+            </section>
+        </div>
         <div id="page-dashboard" style="display:none;">
             <div class="dashboard-container">
                 <div class="dashboard-layout">
@@ -318,7 +327,7 @@
         <div class="footer-grid">
             <div><div class="logo"><div class="logo-icon" style="width:32px;height:32px;font-size:14px;"><span>VP</span></div><span class="logo-text" style="font-size:16px;">VicPrime</span></div><p style="font-size:11px;margin-top:8px;color:var(--vic-gray);"><strong style="color:var(--vic-whatsapp);">⚠️ Not responsible for monetary transactions.</strong></p></div>
             <div class="footer-links"><h4>Marketplace</h4><ul><li><a onclick="showPage('marketplace')">Browse</a></li><li><a onclick="showPage('products')">Products</a></li></ul></div>
-            <div class="footer-links"><h4>Business</h4><ul><li><a onclick="showPage('storeBuilder')">Build Store</a></li><li><a onclick="showPage('dashboard')">Dashboard</a></li></ul></div>
+            <div class="footer-links"><h4>Business</h4><ul><li><a onclick="showPage('storeBuilder')">Build Store</a></li><li><a onclick="showPage('becomeSeller')">Become a Seller</a></li></ul></div>
             <div class="footer-links"><h4>Support</h4><ul><li><a href="https://wa.me/237675903626" target="_blank"><i class="fab fa-whatsapp"></i> Talk to Customer Service</a></li></ul></div>
         </div>
         <div class="footer-bottom">© <span id="currentYear"></span> VicPrime Market. All rights reserved.</div>
@@ -388,7 +397,7 @@
             setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 3000);
         }
         
-        const pageIds = ['home','marketplace','products','businessDetail','productDetail','cart','orders','storeBuilder','dashboard','login','register'];
+        const pageIds = ['home','marketplace','products','businessDetail','productDetail','cart','orders','storeBuilder','becomeSeller','dashboard','login','register'];
         function showPage(page) {
             pageIds.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.style.display = 'none'; });
             const el = document.getElementById('page-' + page);
@@ -418,10 +427,10 @@
                 html += `<a onclick="showPage('orders')"><i class="fas fa-receipt"></i> My Orders</a>`;
                 if (user.role === 'business') {
                     html += `<a onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>`;
-                    html += `<a onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Edit Store</a>`;
                     html += `<a onclick="viewMyStore()"><i class="fas fa-eye"></i> View My Store</a>`;
+                } else {
+                    html += `<a onclick="showPage('becomeSeller')"><i class="fas fa-arrow-up"></i> Become a Business Owner</a>`;
                 }
-                html += `<a onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Store</a>`;
                 html += `<a href="https://wa.me/${WHATSAPP_SUPPORT_NUMBER}" target="_blank"><i class="fab fa-whatsapp"></i> Customer Service</a>`;
                 html += `<a onclick="logout()" style="color:var(--vic-red);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>`;
             } else {
@@ -443,9 +452,19 @@
                 if (result.success && result.businesses) {
                     const myBiz = result.businesses.find(b => b.owner === user.id);
                     if (myBiz) showBusinessDetail(myBiz._id || myBiz.id);
-                    else toast('No store found', 'error');
+                    else toast('No store found. Build your store first.', 'info');
                 }
             });
+        }
+        
+        function upgradeToBusiness() {
+            const user = getCurrentUser();
+            if (!user) { showPage('login'); return; }
+            // Simple upgrade: update local user role and redirect to store builder
+            user.role = 'business';
+            localStorage.setItem('vp_user', JSON.stringify(user));
+            toast('You are now a Business Owner! Build your store.', 'success');
+            showPage('storeBuilder');
         }
         
         function logout() {
@@ -816,6 +835,7 @@
         async function publishStore() {
             const user = getCurrentUser();
             if (!user) { toast('Please login first', 'error'); showPage('login'); return; }
+            if (user.role !== 'business') { toast('You need to be a Business Owner. Use "Become a Business Owner" in the menu.', 'error'); return; }
             if (!storeData.info.name || !storeData.info.category || !storeData.info.description || !storeData.info.location) { toast('Store info incomplete', 'error'); return; }
             if (!storeData.contact.email || !storeData.contact.whatsapp) { toast('Contact info incomplete', 'error'); return; }
             if (storeData.products.length === 0) { toast('Add at least one product', 'error'); return; }
@@ -823,18 +843,9 @@
             const result = await apiCall('/businesses', 'POST', businessData, getToken());
             if (result.success) {
                 for (const p of storeData.products) { await apiCall('/products', 'POST', { name: p.name, price: p.price, stock: p.stock, description: p.description, category: storeData.info.category, images: p.images || [] }, getToken()); }
-                // Congratulations popup
                 const modal = document.createElement('div');
                 modal.className = 'modal-overlay';
-                modal.innerHTML = `<div class="modal" style="text-align:center;">
-                    <i class="fas fa-check-circle" style="font-size:60px;color:var(--vic-green);margin-bottom:16px;"></i>
-                    <h2 style="margin-bottom:12px;">🎉 Congratulations!</h2>
-                    <p style="color:var(--vic-gray);margin-bottom:20px;">Your store has been published successfully!</p>
-                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-                        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove();viewMyStore()"><i class="fas fa-eye"></i> View My Store</button>
-                        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove();showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
-                    </div>
-                </div>`;
+                modal.innerHTML = `<div class="modal" style="text-align:center;"><i class="fas fa-check-circle" style="font-size:60px;color:var(--vic-green);margin-bottom:16px;"></i><h2 style="margin-bottom:12px;">🎉 Congratulations!</h2><p style="color:var(--vic-gray);margin-bottom:20px;">Your store has been published successfully!</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove();viewMyStore()"><i class="fas fa-eye"></i> View My Store</button><button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove();showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button></div></div>`;
                 document.body.appendChild(modal);
                 showPage('dashboard');
             } else { toast(result.message || 'Failed to publish', 'error'); }
@@ -845,7 +856,7 @@
             document.querySelectorAll('.dashboard-nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
             const c = document.getElementById('dashContent');
             const user = getCurrentUser();
-            if (!user || user.role !== 'business') { c.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Business login required</h3><button class="btn btn-primary" onclick="showPage('register')">Register</button></div>`; return; }
+            if (!user || user.role !== 'business') { c.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><h3>Business login required</h3><button class="btn btn-primary" onclick="showPage('becomeSeller')">Become a Seller</button></div>`; return; }
             c.innerHTML = '<div class="loading-skeleton" style="height:150px;margin-bottom:16px;"></div>';
             const bizResult = await apiCall('/businesses');
             const myBiz = bizResult.success ? bizResult.businesses.find(b => b.owner === user.id) : null;
@@ -903,8 +914,7 @@
         function updateUserUI() {
             const user = getCurrentUser();
             const btn = document.getElementById('userBtn');
-            if (user) { btn.innerHTML = '<i class="fas fa-user"></i>'; }
-            else { btn.innerHTML = '<i class="fas fa-user"></i>'; }
+            btn.innerHTML = '<i class="fas fa-user"></i>';
         }
         
         window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50));
