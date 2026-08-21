@@ -3,648 +3,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VicPrime Market - One Marketplace. Every Business.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>VicPrime Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --vic-black: #0A0E1A;
-            --vic-navy: #0F1525;
-            --vic-navy-light: #1A1F2E;
-            --vic-blue: #1E40AF;
-            --vic-blue-light: #2563EB;
-            --vic-blue-glow: #3B82F6;
-            --vic-silver: #C0C0C0;
-            --vic-silver-light: #E8E8E8;
-            --vic-gray: #A0AEC0;
-            --vic-white: #FFFFFF;
-            --vic-green: #10B981;
-            --vic-red: #EF4444;
-            --vic-yellow: #F59E0B;
-            --vic-whatsapp: #25D366;
-            --metallic-gradient: linear-gradient(135deg, #8B8B8B 0%, #C0C0C0 25%, #E8E8E8 50%, #C0C0C0 75%, #8B8B8B 100%);
-            --premium-dark: linear-gradient(135deg, #0F1525 0%, #0A0E1A 50%, #1A1F2E 100%);
-            --blue-gradient: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
-            --whatsapp-gradient: linear-gradient(135deg, #128C7E 0%, #25D366 50%, #128C7E 100%);
-            --shadow-premium: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(30,64,175,0.3);
-            --shadow-blue-glow: 0 0 30px rgba(37,99,235,0.4);
-            --shadow-metallic: 0 10px 40px rgba(192,192,192,0.2);
-            --shadow-whatsapp: 0 0 30px rgba(37,211,102,0.4);
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--vic-black); color: var(--vic-white); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-        h1,h2,h3,h4,h5,h6 { font-family: 'Poppins', sans-serif; }
-        .bg-grid { position: fixed; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px); background-size:50px 50px; pointer-events:none; z-index:0; }
-        .header { position:sticky; top:0; z-index:1000; background:rgba(10,14,26,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(192,192,192,0.1); }
-        .header-container { max-width:1400px; margin:0 auto; padding:0 16px; height:60px; display:flex; align-items:center; justify-content:space-between; }
-        .logo { display:flex; align-items:center; gap:8px; cursor:pointer; }
-        .logo-icon { width:40px; height:40px; background:var(--metallic-gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--vic-black); font-size:18px; }
-        .logo-text { font-size:20px; font-weight:800; background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .logo-badge { background:var(--blue-gradient); color:white; font-size:8px; padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; }
-        .nav-actions { display:flex; align-items:center; gap:8px; }
-        .icon-btn { background:none; border:2px solid rgba(192,192,192,0.2); color:var(--vic-silver); width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; position:relative; }
-        .cart-badge { position:absolute; top:-4px; right:-4px; background:var(--blue-gradient); color:white; font-size:10px; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
-        .btn { display:inline-block; padding:12px 22px; border-radius:50px; font-weight:600; text-decoration:none; transition:all .3s; cursor:pointer; border:none; font-size:13px; }
-        .btn-primary { background:var(--blue-gradient); color:white; box-shadow:var(--shadow-blue-glow); }
-        .btn-secondary { background:transparent; color:var(--vic-silver); border:2px solid rgba(192,192,192,0.3); }
-        .btn-whatsapp { background:var(--whatsapp-gradient); color:white; }
-        .btn-chat { background:var(--blue-gradient); color:white; }
-        .btn-danger { background:var(--vic-red); color:white; }
-        .btn-sm { padding:6px 12px; font-size:11px; }
-        .btn-xs { padding:4px 8px; font-size:10px; }
-        .share-earn-btn { background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%); color:white; box-shadow:0 0 20px rgba(245,158,11,0.4); }
-        .hero { position:relative; padding:80px 16px; text-align:center; background:var(--premium-dark); overflow:hidden; }
-        .hero h1 { font-size:36px; font-weight:900; margin-bottom:16px; }
-        .metallic-text { background:var(--metallic-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .blue-text { background:var(--blue-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .hero p { font-size:16px; color:var(--vic-gray); margin-bottom:24px; }
-        .hero-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-        .section { padding:40px 16px; position:relative; z-index:1; }
-        .section-header { max-width:1400px; margin:0 auto 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-        .section-title { font-size:28px; font-weight:800; }
-        .section-subtitle { font-size:13px; color:var(--vic-gray); margin-top:4px; }
-        .grid { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; }
-        .grid-products { max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:16px; }
-        .card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:16px; overflow:hidden; cursor:pointer; transition:all .3s; }
-        .card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }
-        .card-cover { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); position:relative; overflow:hidden; }
-        .card-cover img { width:100%; height:100%; object-fit:cover; transition:opacity .3s; }
-        .card-cover img[loading] { opacity:0; }
-        .card-cover img.loaded { opacity:1; }
-        .card-cover .icon-large { font-size:48px; color:var(--vic-silver); position:relative; z-index:1; }
-        .card-body { padding:20px; }
-        .card-title { font-size:16px; font-weight:700; }
-        .card-subtitle { font-size:12px; color:var(--vic-blue-glow); }
-        .card-desc { font-size:12px; color:var(--vic-gray); line-height:1.5; }
-        .verified-badge { position:absolute; top:10px; left:10px; background:var(--blue-gradient); color:white; padding:3px 10px; border-radius:50px; font-size:10px; z-index:2; }
-        .rating-badge { position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.8); border-radius:50px; padding:3px 10px; font-size:11px; z-index:2; }
-        .product-card { background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:14px; overflow:hidden; transition:all .3s; }
-        .product-card:hover { border-color:rgba(37,99,235,0.4); box-shadow:var(--shadow-premium); transform:translateY(-4px); }
-        .product-image { height:160px; display:flex; align-items:center; justify-content:center; background:var(--premium-dark); overflow:hidden; position:relative; }
-        .product-image img { width:100%; height:100%; object-fit:cover; }
-        .product-body { padding:16px; }
-        .product-name { font-size:14px; font-weight:700; margin-bottom:4px; }
-        .product-desc { font-size:11px; color:var(--vic-gray); margin-bottom:8px; }
-        .product-price { font-size:18px; font-weight:800; margin-bottom:8px; }
-        .product-actions { display:flex; gap:4px; flex-wrap:wrap; }
-        .product-actions .btn { flex:1; min-width:50px; text-align:center; padding:6px 4px; font-size:9px; }
-        .comment-section { margin-top:20px; }
-        .comment-item { background:rgba(15,21,37,0.5); border-radius:12px; padding:14px; margin-bottom:12px; }
-        .comment-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-        .comment-author { font-weight:700; font-size:13px; color:var(--vic-blue-glow); }
-        .comment-date { font-size:10px; color:var(--vic-gray); }
-        .comment-text { font-size:14px; color:var(--vic-white); line-height:1.5; margin-bottom:8px; }
-        .comment-actions { display:flex; gap:12px; align-items:center; }
-        .like-btn { font-size:14px; cursor:pointer; color:var(--vic-gray); display:flex; align-items:center; gap:4px; background:none; border:none; }
-        .like-btn.liked { color:var(--vic-red); }
-        .payment-disclaimer { background:rgba(37,211,102,0.05); border:1px solid rgba(37,211,102,0.2); border-radius:12px; padding:16px; margin:16px 0; }
-        .whatsapp-float { position:fixed; bottom:20px; right:20px; z-index:999; width:50px; height:50px; background:var(--whatsapp-gradient); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; text-decoration:none; }
-        .whatsapp-float i { font-size:24px; color:white; }
-        #accountMenu { display:none; position:absolute; right:0; top:46px; background:var(--vic-navy-light); border:1px solid rgba(192,192,192,0.1); border-radius:12px; min-width:200px; box-shadow:var(--shadow-premium); z-index:1001; }
-        #accountMenu a { display:block; padding:8px 14px; color:var(--vic-silver); font-size:12px; text-decoration:none; cursor:pointer; }
-        #accountMenu a:hover { background:rgba(37,99,235,0.1); color:white; }
-        .empty-state { text-align:center; padding:40px 16px; color:var(--vic-gray); }
-        .empty-state i { font-size:40px; margin-bottom:12px; color:var(--vic-blue-glow); }
-        .loading-skeleton { background: linear-gradient(90deg, #1a1f2e 25%, #2a2f3e 50%, #1a1f2e 75%); background-size:200% 100%; animation:skeleton 1.5s infinite; border-radius:8px; }
-        @keyframes skeleton { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        @media (max-width: 412px) {
-            .hero h1 { font-size:28px; }
-            .section-title { font-size:22px; }
-            .grid, .grid-products { grid-template-columns:1fr; }
-            .card-cover, .product-image { height:140px; }
-            .product-body, .card-body { padding:16px; }
-            .product-name { font-size:13px; }
-            .product-price { font-size:16px; }
-            .btn { padding:10px 16px; font-size:12px; }
+        :root {
+            --black: #0A0E1A;
+            --navy: #1A1F2E;
+            --blue: #2563EB;
+            --silver: #C0C0C0;
+            --gray: #A0AEC0;
+            --white: #FFFFFF;
+            --green: #10B981;
+            --red: #EF4444;
+            --whatsapp: #25D366;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--white); min-height: 100vh; }
+        h1,h2,h3 { font-family: 'Poppins', sans-serif; }
+        
+        .header { background: rgba(10,14,26,0.95); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(192,192,192,0.1); }
+        .logo { font-size: 22px; font-weight: 800; cursor: pointer; }
+        .logo span { color: var(--silver); }
+        .nav-btns { display: flex; gap: 10px; }
+        
+        .btn { padding: 10px 20px; border-radius: 50px; border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s; }
+        .btn-primary { background: var(--blue); color: white; }
+        .btn-secondary { background: transparent; color: var(--silver); border: 2px solid rgba(192,192,192,0.3); }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; }
+        .hero h1 { font-size: 48px; margin-bottom: 16px; }
+        .hero p { color: var(--gray); margin-bottom: 24px; font-size: 18px; }
+        
+        .section-title { font-size: 28px; margin-bottom: 20px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--navy); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s; border: 1px solid rgba(192,192,192,0.1); }
+        .card:hover { border-color: var(--blue); transform: translateY(-4px); }
+        .card-img { height: 160px; background: #0F1525; display: flex; align-items: center; justify-content: center; font-size: 50px; }
+        .card-body { padding: 16px; }
+        .card-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+        .card-desc { font-size: 13px; color: var(--gray); }
+        .card-price { font-size: 20px; font-weight: 800; margin: 8px 0; }
+        
+        .product-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .product-actions .btn { flex: 1; min-width: 60px; text-align: center; font-size: 11px; padding: 8px 6px; }
+        
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid rgba(192,192,192,0.2); background: #0F1525; color: white; font-size: 14px; margin-bottom: 12px; }
+        .form-input:focus { border-color: var(--blue); outline: none; }
+        
+        .toast { position: fixed; top: 80px; right: 20px; background: var(--navy); padding: 14px 20px; border-radius: 10px; z-index: 9999; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        .empty { text-align: center; padding: 40px; color: var(--gray); }
+        .empty i { font-size: 50px; margin-bottom: 16px; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--gray); }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(192,192,192,0.1); border-top-color: var(--blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 32px; }
+            .grid { grid-template-columns: 1fr; }
+            .btn { padding: 8px 14px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="toast-container" id="toastContainer"></div>
+
+<!-- Header -->
+<header class="header">
+    <div class="logo" onclick="showPage('home')">Vic<span>Prime</span></div>
+    <div class="nav-btns">
+        <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('products')"><i class="fas fa-box"></i> Products</button>
+        <button class="btn btn-secondary btn-sm" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCount" style="background:var(--blue);border-radius:50%;padding:2px 8px;">0</span></button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('login')"><i class="fas fa-user"></i></button>
+    </div>
+</header>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+    <div class="hero">
+        <h1>One Marketplace.<br><span style="color:var(--blue);">Every Business.</span></h1>
+        <p>Discover businesses and shop products on VicPrime.</p>
+        <button class="btn btn-primary" onclick="showPage('marketplace')">Browse Marketplace</button>
+    </div>
+    <div class="container">
+        <h2 class="section-title">Categories</h2>
+        <div class="grid" id="categoriesGrid"></div>
+        <h2 class="section-title" style="margin-top:40px;">Featured Businesses</h2>
+        <div class="grid" id="featuredBusinesses"></div>
+    </div>
+</div>
+
+<!-- MARKETPLACE -->
+<div class="page" id="page-marketplace">
+    <div class="container">
+        <h1 class="section-title">Discover Businesses</h1>
+        <input type="text" class="form-input" id="businessSearch" placeholder="Search businesses..." onkeyup="searchBusinesses()">
+        <div class="grid" id="allBusinesses"></div>
+    </div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="page" id="page-products">
+    <div class="container">
+        <h1 class="section-title">Browse Products</h1>
+        <input type="text" class="form-input" id="productSearch" placeholder="Search products..." onkeyup="searchProducts()">
+        <div class="grid" id="allProducts"></div>
+    </div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div class="page" id="page-productDetail">
+    <div class="container" id="productDetailContent"></div>
+</div>
+
+<!-- BUSINESS DETAIL -->
+<div class="page" id="page-businessDetail">
+    <div class="container" id="businessDetailContent"></div>
+</div>
+
+<!-- CART -->
+<div class="page" id="page-cart">
+    <div class="container" id="cartContent"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="page" id="page-login">
+    <div class="container" style="max-width:400px;padding-top:60px;">
+        <h2 style="text-align:center;margin-bottom:20px;">Sign In</h2>
+        <input type="email" class="form-input" id="loginEmail" placeholder="Email">
+        <input type="password" class="form-input" id="loginPass" placeholder="Password">
+        <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Sign In</button>
+        <p style="text-align:center;margin-top:12px;color:var(--gray);">No account? <a href="#" onclick="showPage('register')" style="color:var(--blue);">Register</a></p>
+    </div>
+</div>
+
+<!-- REGISTER -->
+<div class="page" id="page-register">
+    <div class="container" style="max-width:400px;padding-top:40px;">
+        <h2 style="text-align:center;margin-bottom:20px;">Create Account</h2>
+        <input type="text" class="form-input" id="regName" placeholder="Full Name">
+        <input type="email" class="form-input" id="regEmail" placeholder="Email">
+        <input type="password" class="form-input" id="regPass" placeholder="Password">
+        <button class="btn btn-primary" style="width:100%;" onclick="doRegister()">Create Account</button>
+    </div>
+</div>
+
+<script>
+// API Configuration
+const API_URL = 'https://backend-4-io0g.onrender.com/api';
+
+// Simple data store
+let cart = JSON.parse(localStorage.getItem('vic_cart') || '[]');
+let currentUser = JSON.parse(localStorage.getItem('vic_user') || 'null');
+
+const categories = [
+    { name: 'Electronics', icon: '📱' },
+    { name: 'Fashion', icon: '👗' },
+    { name: 'Food & Beverage', icon: '🍽️' },
+    { name: 'Services', icon: '💼' },
+    { name: 'Home & Garden', icon: '🏠' },
+    { name: 'Beauty & Health', icon: '💄' },
+    { name: 'Automotive', icon: '🚗' },
+    { name: 'Education', icon: '📚' }
+];
+
+// API Call
+async function api(url) {
+    try {
+        const res = await fetch(API_URL + url);
+        return await res.json();
+    } catch(e) {
+        return { success: false, message: 'Cannot connect to server' };
+    }
+}
+
+// Show page
+function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
     
-    <a href="https://wa.me/237675903626" target="_blank" class="whatsapp-float" title="Talk to Customer Service">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    if (page === 'home') loadHome();
+    if (page === 'marketplace') loadBusinesses();
+    if (page === 'products') loadProducts();
+    if (page === 'cart') renderCart();
+}
+
+// Toast
+function toast(msg, type = 'success') {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    t.style.borderLeft = `4px solid ${type === 'success' ? '#10B981' : '#EF4444'}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+// Load Home
+async function loadHome() {
+    // Categories
+    document.getElementById('categoriesGrid').innerHTML = categories.map(c => `
+        <div class="card" onclick="filterCategory('${c.name}')">
+            <div class="card-img">${c.icon}</div>
+            <div class="card-body"><div class="card-title">${c.name}</div></div>
+        </div>`).join('');
     
-    <header class="header">
-        <div class="header-container">
-            <div class="logo" onclick="showPage('home')">
-                <div class="logo-icon"><span>VP</span></div>
-                <div><span class="logo-text">VicPrime</span><span class="logo-badge">MARKET</span></div>
-            </div>
-            <div class="nav-actions">
-                <button class="icon-btn" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
-                <div style="position:relative;">
-                    <button class="icon-btn" id="userBtn" onclick="toggleAccountMenu()"><i class="fas fa-user"></i></button>
-                    <div id="accountMenu"></div>
+    // Featured Businesses
+    const fb = document.getElementById('featuredBusinesses');
+    fb.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    const result = await api('/businesses?limit=3');
+    if (result.success && result.businesses) {
+        fb.innerHTML = result.businesses.map(b => `
+            <div class="card" onclick="showBusinessDetail('${b._id}')">
+                <div class="card-img">🏪</div>
+                <div class="card-body">
+                    <div class="card-title">${b.name}</div>
+                    <div class="card-desc">${b.category}</div>
+                    <div class="card-desc">📍 ${b.location}</div>
                 </div>
-            </div>
-        </div>
-    </header>
-    
-    <main style="flex:1;">
-        <!-- HOME -->
-        <div id="page-home">
-            <section class="hero">
-                <h1><span class="metallic-text">One Marketplace.</span><br><span class="blue-text">Every Business.</span></h1>
-                <p>Discover thousands of businesses and shop unique products.</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse Marketplace</button>
-                    <button class="btn btn-secondary" onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Build Your Store</button>
+            </div>`).join('');
+    } else {
+        fb.innerHTML = '<div class="empty"><i class="fas fa-store"></i><p>No businesses yet</p></div>';
+    }
+}
+
+// Load Businesses
+async function loadBusinesses() {
+    const grid = document.getElementById('allBusinesses');
+    grid.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    const result = await api('/businesses?limit=50');
+    if (result.success && result.businesses) {
+        grid.innerHTML = result.businesses.map(b => `
+            <div class="card" onclick="showBusinessDetail('${b._id}')">
+                <div class="card-img">🏪</div>
+                <div class="card-body">
+                    <div class="card-title">${b.name}</div>
+                    <div class="card-desc">${b.category}</div>
+                    <div class="card-desc">📍 ${b.location}</div>
+                    <button class="btn btn-primary btn-sm" style="margin-top:8px;">View Store</button>
                 </div>
-            </section>
-            <section class="section">
-                <div class="section-header"><h2 class="section-title">Browse by Category</h2></div>
-                <div class="grid" id="categoriesGrid"></div>
-            </section>
-            <section class="section" style="background:rgba(15,21,37,0.3);">
-                <div class="section-header"><h2 class="section-title">Featured Businesses</h2></div>
-                <div id="featuredBusinesses" class="grid"></div>
-            </section>
-        </div>
-        
-        <!-- MARKETPLACE -->
-        <div id="page-marketplace" style="display:none;">
-            <section class="section">
-                <div class="section-header"><h1 class="section-title">Discover Businesses</h1></div>
-                <div style="max-width:1400px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;">
-                    <input type="text" class="form-input" style="flex:1;min-width:150px;" placeholder="Search businesses..." id="businessSearch" onkeyup="debouncedSearchBusinesses()">
-                </div>
-                <div id="allBusinesses" class="grid"></div>
-            </section>
-        </div>
-        
-        <!-- PRODUCTS -->
-        <div id="page-products" style="display:none;">
-            <section class="section">
-                <div class="section-header"><h1 class="section-title">Browse Products</h1></div>
-                <div style="max-width:1400px;margin:0 auto 20px;display:flex;gap:10px;flex-wrap:wrap;">
-                    <input type="text" class="form-input" style="flex:1;min-width:150px;" placeholder="Search products..." id="productSearch" onkeyup="debouncedSearchProducts()">
-                </div>
-                <div id="allProducts" class="grid-products"></div>
-            </section>
-        </div>
-        
-        <!-- PRODUCT DETAIL -->
-        <div id="page-productDetail" style="display:none;">
-            <section class="section" id="productDetailContent"></section>
-        </div>
-        
-        <!-- BUSINESS DETAIL -->
-        <div id="page-businessDetail" style="display:none;">
-            <section class="section" id="businessDetailContent"></section>
-        </div>
-        
-        <!-- CART -->
-        <div id="page-cart" style="display:none;">
-            <section class="section"><div class="section-header"><h1 class="section-title">Shopping Cart</h1></div><div id="cartContent" style="max-width:800px;margin:0 auto;"></div></section>
-        </div>
-        
-        <!-- ORDERS -->
-        <div id="page-orders" style="display:none;">
-            <section class="section"><div class="section-header"><h1 class="section-title">My Orders</h1></div><div id="ordersContent" style="max-width:800px;margin:0 auto;"></div></section>
-        </div>
-        
-        <!-- CHAT -->
-        <div id="page-chat" style="display:none;">
-            <section class="section"><div class="section-header"><h1 class="section-title">VicPrime Chat</h1></div><div id="chatContent" style="max-width:800px;margin:0 auto;"></div></section>
-        </div>
-        
-        <!-- REWARDS -->
-        <div id="page-rewards" style="display:none;">
-            <section class="section"><div class="section-header"><h1 class="section-title">My VicCoins</h1></div><div id="rewardsContent" style="max-width:600px;margin:0 auto;"></div></section>
-        </div>
-        
-        <!-- STORE BUILDER -->
-        <div id="page-storeBuilder" style="display:none;">
-            <section class="section">
-                <div class="section-header" style="justify-content:center;text-align:center;"><h1 class="section-title">Build Your Store</h1></div>
-                <div class="wizard-steps" id="wizardSteps">
-                    <div class="wizard-step active" data-step="1" onclick="goToStep(1)">1. Info</div>
-                    <div class="wizard-step" data-step="2" onclick="goToStep(2)">2. Design</div>
-                    <div class="wizard-step" data-step="3" onclick="goToStep(3)">3. Contact</div>
-                    <div class="wizard-step" data-step="4" onclick="goToStep(4)">4. Products</div>
-                    <div class="wizard-step" data-step="5" onclick="goToStep(5)">5. Publish</div>
-                </div>
-                <div id="wizardContent" style="max-width:700px;margin:0 auto;"></div>
-            </section>
-        </div>
-        
-        <!-- DASHBOARD -->
-        <div id="page-dashboard" style="display:none;">
-            <div class="dashboard-container">
-                <div class="dashboard-layout">
-                    <div class="dashboard-sidebar">
-                        <div class="dashboard-nav">
-                            <div class="dashboard-nav-item active" data-tab="overview" onclick="switchTab('overview')">Overview</div>
-                            <div class="dashboard-nav-item" data-tab="products" onclick="switchTab('products')">Products</div>
-                            <div class="dashboard-nav-item" data-tab="orders" onclick="switchTab('orders')">Orders</div>
-                            <div class="dashboard-nav-item" data-tab="campaign" onclick="switchTab('campaign')">Campaign</div>
-                            <div class="dashboard-nav-item" data-tab="settings" onclick="switchTab('settings')">Settings</div>
-                        </div>
-                    </div>
-                    <div class="dashboard-content" id="dashContent"></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- LOGIN -->
-        <div id="page-login" style="display:none;">
-            <section class="section" style="max-width:400px;margin:0 auto;padding-top:60px;">
-                <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;">
-                    <h2 style="text-align:center;margin-bottom:20px;">Welcome Back</h2>
-                    <form onsubmit="doLogin(event)">
-                        <div class="form-group"><input type="email" class="form-input" id="loginEmail" placeholder="Email" required></div>
-                        <div class="form-group"><input type="password" class="form-input" id="loginPass" placeholder="Password" required></div>
-                        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
-                    </form>
-                </div>
-            </section>
-        </div>
-        
-        <!-- REGISTER -->
-        <div id="page-register" style="display:none;">
-            <section class="section" style="max-width:450px;margin:0 auto;padding-top:40px;">
-                <div style="background:var(--vic-navy-light);border-radius:16px;padding:30px;">
-                    <h2 style="text-align:center;margin-bottom:20px;">Create Account</h2>
-                    <form onsubmit="doRegister(event)">
-                        <div class="form-group"><input type="text" class="form-input" id="regName" placeholder="Full Name" required></div>
-                        <div class="form-group"><input type="email" class="form-input" id="regEmail" placeholder="Email" required></div>
-                        <div class="form-group"><input type="password" class="form-input" id="regPass" placeholder="Password" required minlength="6"></div>
-                        <button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button>
-                    </form>
-                </div>
-            </section>
-        </div>
-    </main>
-    
-    <script>
-        const API_URL = 'https://backend-4-io0g.onrender.com/api';
-        const WHATSAPP_SUPPORT = '237675903626';
-        const CACHE_TTL = 15 * 60 * 1000;
-        const apiCache = new Map();
-        
-        async function apiCall(endpoint, method = 'GET', body = null, token = null, useCache = true) {
-            const key = endpoint;
-            if (method === 'GET' && useCache && apiCache.has(key)) {
-                const cached = apiCache.get(key);
-                if (Date.now() - cached.t < CACHE_TTL) return cached.data;
-                apiCache.delete(key);
-            }
-            const headers = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-            const opts = { method, headers };
-            if (body) opts.body = JSON.stringify(body);
-            try {
-                const res = await fetch(`${API_URL}${endpoint}`, opts);
-                const data = await res.json();
-                if (method === 'GET' && useCache) apiCache.set(key, { data, t: Date.now() });
-                return data;
-            } catch(e) { return { success: false, message: 'Network error' }; }
-        }
-        
-        function getToken() { return localStorage.getItem('vp_token'); }
-        function getCurrentUser() { return JSON.parse(localStorage.getItem('vp_user') || 'null'); }
-        
-        const categories = ['Electronics','Fashion','Food & Beverage','Services','Home & Garden','Beauty & Health','Automotive','Education'];
-        const catIcons = {'Electronics':'fa-mobile-alt','Fashion':'fa-tshirt','Food & Beverage':'fa-utensils','Services':'fa-briefcase','Home & Garden':'fa-home','Beauty & Health':'fa-spa','Automotive':'fa-car','Education':'fa-graduation-cap'};
-        const catImages = {
-            'Electronics':'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&h=200&fit=crop&auto=format&q=40',
-            'Fashion':'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=200&fit=crop&auto=format&q=40',
-            'Food & Beverage':'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&h=200&fit=crop&auto=format&q=40',
-            'Services':'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=300&h=200&fit=crop&auto=format&q=40',
-            'Home & Garden':'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop&auto=format&q=40',
-            'Beauty & Health':'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=300&h=200&fit=crop&auto=format&q=40',
-            'Automotive':'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=300&h=200&fit=crop&auto=format&q=40',
-            'Education':'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=200&fit=crop&auto=format&q=40'
-        };
-        
-        let DB = {
-            cart: JSON.parse(localStorage.getItem('vp_cart') || '[]'),
-            orders: JSON.parse(localStorage.getItem('vp_orders') || '[]'),
-            comments: JSON.parse(localStorage.getItem('vp_comments') || '[]'),
-            likes: JSON.parse(localStorage.getItem('vp_likes') || '[]'),
-            save() {
-                localStorage.setItem('vp_cart', JSON.stringify(this.cart));
-                localStorage.setItem('vp_orders', JSON.stringify(this.orders));
-                localStorage.setItem('vp_comments', JSON.stringify(this.comments));
-                localStorage.setItem('vp_likes', JSON.stringify(this.likes));
-            }
-        };
-        
-        function toast(msg, type = 'info') {
-            const c = document.getElementById('toastContainer');
-            const t = document.createElement('div');
-            t.className = `toast ${type}`;
-            t.innerHTML = `<span>${msg}</span>`;
-            c.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
-        }
-        
-        function debounce(fn, delay = 400) { let timer; return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); }; }
-        const debouncedSearchBusinesses = debouncedSearchBusinesses || debounce(() => renderMarketplace(), 400);
-        const debouncedSearchProducts = debouncedSearchProducts || debounce(() => renderProducts(), 400);
-        
-        const pages = ['home','marketplace','products','productDetail','businessDetail','cart','orders','chat','rewards','storeBuilder','dashboard','login','register'];
-        function showPage(page) {
-            pages.forEach(p => { const el = document.getElementById('page-' + p); if (el) el.style.display = 'none'; });
-            const el = document.getElementById('page-' + page);
-            if (el) el.style.display = 'block';
-            window.scrollTo({top:0});
-            if (page === 'home') renderHome();
-            if (page === 'marketplace') renderMarketplace();
-            if (page === 'products') renderProducts();
-            if (page === 'cart') renderCart();
-            if (page === 'orders') renderOrders();
-            if (page === 'chat') renderChat();
-            if (page === 'rewards') renderRewards();
-            if (page === 'dashboard') switchTab('overview');
-            if (page === 'storeBuilder') goToStep(1);
-            closeAccountMenu();
-        }
-        
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            const user = getCurrentUser();
-            if (menu.style.display === 'block') { menu.style.display = 'none'; return; }
-            let html = '';
-            if (user) {
-                html += `<div style="padding:12px;"><strong>${user.name}</strong></div>`;
-                html += `<a onclick="showPage('marketplace')"><i class="fas fa-store"></i> Browse</a>`;
-                html += `<a onclick="showPage('products')"><i class="fas fa-box"></i> Products</a>`;
-                html += `<a onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i> Cart</a>`;
-                html += `<a onclick="showPage('orders')"><i class="fas fa-receipt"></i> Orders</a>`;
-                html += `<a onclick="showPage('chat')"><i class="fas fa-comments"></i> My Chats</a>`;
-                html += `<a onclick="showPage('rewards')"><i class="fas fa-coins"></i> My VicCoins</a>`;
-                if (user.role === 'business') {
-                    html += `<a onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>`;
-                } else {
-                    html += `<a onclick="showPage('storeBuilder')"><i class="fas fa-hammer"></i> Become a Seller</a>`;
-                }
-                html += `<a href="https://wa.me/${WHATSAPP_SUPPORT}" target="_blank"><i class="fab fa-whatsapp"></i> Support</a>`;
-                html += `<a onclick="logout()" style="color:var(--vic-red);"><i class="fas fa-sign-out-alt"></i> Sign Out</a>`;
-            } else {
-                html += `<a onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> Sign In</a>`;
-                html += `<a onclick="showPage('register')"><i class="fas fa-user-plus"></i> Register</a>`;
-            }
-            menu.innerHTML = html;
-            menu.style.display = 'block';
-        }
-        function closeAccountMenu() { document.getElementById('accountMenu').style.display = 'none'; }
-        
-        async function renderHome() {
-            document.getElementById('categoriesGrid').innerHTML = categories.map(c => `
-                <div class="card" onclick="showPage('products')">
-                    <div class="card-cover"><img src="${catImages[c]}" alt="${c}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><i class="fas ${catIcons[c]} icon-large" style="display:none;"></i></div>
-                    <div class="card-body"><div class="card-title">${c}</div></div>
-                </div>`).join('');
-            
-            const fb = document.getElementById('featuredBusinesses');
-            fb.innerHTML = '<div class="loading-skeleton" style="height:160px;"></div><div class="loading-skeleton" style="height:160px;"></div><div class="loading-skeleton" style="height:160px;"></div>';
-            const result = await apiCall('/businesses?page=1&limit=3');
-            if (result.success && result.businesses) {
-                fb.innerHTML = result.businesses.map(b => businessCardHTML(b)).join('');
-            }
-        }
-        
-        function businessCardHTML(b) {
-            const img = b.logo && b.logo !== 'default-logo.png' ? b.logo : catImages[b.category] || '';
-            return `<div class="card" onclick="showBusinessDetail('${b._id || b.id}')">
-                <div class="card-cover"><img src="${img}" alt="${b.name}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><i class="fas ${catIcons[b.category]} icon-large" style="display:none;"></i>
-                    ${b.verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
-                    <span class="rating-badge">★ ${b.rating || 0}</span>
-                </div>
-                <div class="card-body"><div class="card-title">${b.name}</div><div class="card-subtitle">${b.category}</div><p class="card-desc">${b.description}</p>
-                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showBusinessDetail('${b._id}')">View Store</button></div>
-            </div>`;
-        }
-        
-        async function renderMarketplace() {
-            const container = document.getElementById('allBusinesses');
-            container.innerHTML = '<div class="loading-skeleton" style="height:160px;"></div>';
-            const search = document.getElementById('businessSearch')?.value || '';
-            const result = await apiCall(`/businesses?page=1&limit=12&search=${encodeURIComponent(search)}`);
-            if (result.success && result.businesses) {
-                container.innerHTML = result.businesses.map(b => businessCardHTML(b)).join('');
-            }
-        }
-        
-        async function renderProducts() {
-            const container = document.getElementById('allProducts');
-            container.innerHTML = '<div class="loading-skeleton" style="height:160px;"></div>';
-            const search = document.getElementById('productSearch')?.value || '';
-            const result = await apiCall(`/products?page=1&limit=12&search=${encodeURIComponent(search)}`);
-            if (result.success && result.products) {
-                container.innerHTML = result.products.map(p => productCardHTML(p)).join('');
-            }
-        }
-        
-        function productCardHTML(p) {
-            const b = p.business || {};
-            const sellerName = b.name || 'Unknown';
-            const mainImg = p.images && p.images[0] ? p.images[0] : '';
-            const comments = DB.comments.filter(c => c.productId === (p._id || p.id));
-            const likes = DB.likes.filter(l => l.productId === (p._id || p.id));
-            const hasCampaign = p.hasCampaign || false;
-            return `<div class="product-card">
-                <div class="product-image" onclick="showProductDetail('${p._id || p.id}')"><img src="${mainImg}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><i class="fas fa-box-open icon-large" style="display:none;"></i></div>
-                <div class="product-body">
-                    <div class="product-name">${p.name}</div>
-                    <div class="product-price metallic-text">$${p.price}</div>
-                    <p style="font-size:11px;color:var(--vic-gray);">Seller: ${sellerName}</p>
-                    <p style="font-size:12px;color:var(--vic-gray);"><i class="far fa-heart"></i> ${likes.length} | <i class="far fa-comment"></i> ${comments.length}</p>
+            </div>`).join('');
+    } else {
+        grid.innerHTML = '<div class="empty"><i class="fas fa-store"></i><p>No businesses found</p></div>';
+    }
+}
+
+// Search Businesses
+function searchBusinesses() {
+    const q = document.getElementById('businessSearch').value;
+    loadBusinesses(q);
+}
+
+// Load Products
+async function loadProducts() {
+    const grid = document.getElementById('allProducts');
+    grid.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    const result = await api('/products?limit=50');
+    if (result.success && result.products) {
+        grid.innerHTML = result.products.map(p => `
+            <div class="card">
+                <div class="card-img">📦</div>
+                <div class="card-body">
+                    <div class="card-title">${p.name}</div>
+                    <div class="card-desc">${p.business?.name || 'Seller'}</div>
+                    <div class="card-price">$${p.price}</div>
                     <div class="product-actions">
-                        <button class="btn btn-primary btn-xs" onclick="addToCart('${p._id || p.id}','${p.name}',${p.price},'${sellerName}')">Add</button>
-                        <button class="btn btn-chat btn-xs" onclick="openChat('${p.business?._id || p.businessId}', '${p._id || p.id}')"><i class="fas fa-comments"></i> Chat</button>
-                        ${hasCampaign ? `<button class="btn share-earn-btn btn-xs" onclick="showSharePanel('${p._id || p.id}')"><i class="fas fa-share-alt"></i> Share & Earn</button>` : ''}
+                        <button class="btn btn-primary" onclick="addToCart('${p._id}','${p.name}',${p.price},'${p.business?.name || ''}')">Add to Cart</button>
+                        <button class="btn btn-secondary" onclick="showProductDetail('${p._id}')">View</button>
+                    </div>
+                </div>
+            </div>`).join('');
+    } else {
+        grid.innerHTML = '<div class="empty"><i class="fas fa-box"></i><p>No products found</p></div>';
+    }
+}
+
+// Search Products
+function searchProducts() {
+    loadProducts();
+}
+
+// Filter by Category
+function filterCategory(cat) {
+    showPage('products');
+    // Filter products by category
+}
+
+// Show Product Detail
+async function showProductDetail(id) {
+    const container = document.getElementById('productDetailContent');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    showPage('productDetail');
+    const result = await api('/products/' + id);
+    if (result.success && result.product) {
+        const p = result.product;
+        container.innerHTML = `
+            <button class="btn btn-secondary btn-sm" onclick="showPage('products')">← Back</button>
+            <div class="card" style="padding:20px;margin-top:16px;">
+                <div class="card-img" style="height:250px;">📦</div>
+                <div class="card-body">
+                    <h2>${p.name}</h2>
+                    <div class="card-price" style="font-size:28px;">$${p.price}</div>
+                    <p>${p.description}</p>
+                    <p style="color:var(--gray);">Seller: ${p.business?.name || 'Unknown'}</p>
+                    <div style="display:flex;gap:10px;margin-top:16px;">
+                        <button class="btn btn-primary" onclick="addToCart('${p._id}','${p.name}',${p.price},'${p.business?.name || ''}')">Add to Cart</button>
+                        <a href="https://wa.me/${p.business?.whatsapp || ''}" target="_blank" class="btn btn-whatsapp">WhatsApp</a>
                     </div>
                 </div>
             </div>`;
-        }
-        
-        async function showProductDetail(id) {
-            const result = await apiCall(`/products/${id}`);
-            if (!result.success) return;
-            const p = result.product;
-            const b = p.business || {};
-            const comments = DB.comments.filter(c => c.productId === id);
-            const likes = DB.likes.filter(l => l.productId === id);
-            const hasCampaign = p.hasCampaign || false;
-            document.getElementById('productDetailContent').innerHTML = `
-                <button class="btn btn-secondary btn-sm" onclick="showPage('products')">← Back</button>
-                <div class="card" style="padding:20px;margin:16px 0;cursor:default;">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                        <div><img src="${p.images?.[0] || ''}" style="width:100%;border-radius:12px;" alt="${p.name}"></div>
-                        <div>
-                            <h2>${p.name}</h2>
-                            <p class="metallic-text" style="font-size:28px;">$${p.price}</p>
-                            <p style="color:var(--vic-gray);">Seller: ${b.name || 'Unknown'}</p>
-                            <p style="font-size:12px;"><i class="far fa-heart"></i> ${likes.length} likes | <i class="far fa-comment"></i> ${comments.length} comments</p>
-                            <button class="btn btn-primary btn-sm" onclick="addToCart('${p._id}','${p.name}',${p.price},'${b.name}')">Add to Cart</button>
-                            <button class="btn btn-chat btn-sm" onclick="openChat('${b._id}', '${p._id}')"><i class="fas fa-comments"></i> Chat with Seller</button>
-                            ${hasCampaign ? `<button class="btn share-earn-btn btn-sm" onclick="showSharePanel('${p._id}')"><i class="fas fa-share-alt"></i> Share & Earn</button>` : ''}
-                        </div>
-                    </div>
+    }
+}
+
+// Show Business Detail
+async function showBusinessDetail(id) {
+    const container = document.getElementById('businessDetailContent');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    showPage('businessDetail');
+    const result = await api('/businesses/' + id);
+    if (result.success && result.business) {
+        const b = result.business;
+        container.innerHTML = `
+            <button class="btn btn-secondary btn-sm" onclick="showPage('marketplace')">← Back</button>
+            <div class="card" style="padding:20px;margin-top:16px;">
+                <div class="card-img" style="height:150px;">🏪</div>
+                <div class="card-body">
+                    <h2>${b.name}</h2>
+                    <p style="color:var(--blue);">${b.category}</p>
+                    <p>${b.description}</p>
+                    <p>📍 ${b.location}</p>
+                    <a href="https://wa.me/${b.whatsapp || ''}" target="_blank" class="btn btn-whatsapp btn-sm">WhatsApp</a>
                 </div>
-                
-                <!-- Comments Section - Larger and better -->
-                <h3 style="font-size:22px;margin:24px 0 16px;">Comments (${comments.length})</h3>
-                <div id="commentsList">
-                    ${comments.length ? comments.map(c => `
-                        <div class="comment-item">
-                            <div class="comment-header"><span class="comment-author"><i class="fas fa-user-circle"></i> ${c.author}</span><span class="comment-date">${new Date(c.date).toLocaleDateString()}</span></div>
-                            <div class="comment-text">${c.text}</div>
-                            <div class="comment-actions">
-                                <button class="like-btn ${likes.some(l => l.userId === c.userId) ? 'liked' : ''}" onclick="toggleLike('${p._id}', '${c.userId}')"><i class="far fa-heart"></i> ${likes.length} Likes</button>
-                            </div>
-                        </div>`).join('') : '<p style="color:var(--vic-gray);">No comments yet. Be first to comment!</p>'}
-                </div>
-                
-                <div style="margin-top:20px;background:var(--vic-navy-light);border-radius:12px;padding:20px;">
-                    <h4 style="margin-bottom:12px;font-size:16px;">Leave a Comment</h4>
-                    <textarea class="form-textarea" id="commentText" placeholder="Write your comment..." style="min-height:80px;"></textarea>
-                    <button class="btn btn-primary" onclick="addComment('${p._id}')">Post Comment</button>
-                </div>`;
-            showPage('productDetail');
-        }
-        
-        function toggleLike(productId, userId) {
-            const user = getCurrentUser();
-            if (!user) { showPage('login'); return; }
-            const existing = DB.likes.find(l => l.productId === productId && l.userId === user.id);
-            if (existing) DB.likes = DB.likes.filter(l => !(l.productId === productId && l.userId === user.id));
-            else DB.likes.push({ productId, userId: user.id });
-            DB.save();
-            showProductDetail(productId);
-        }
-        
-        function addComment(productId) {
-            const user = getCurrentUser();
-            if (!user) { showPage('login'); return; }
-            const text = document.getElementById('commentText').value.trim();
-            if (!text) { toast('Write a comment', 'error'); return; }
-            DB.comments.push({ productId, author: user.name, userId: user.id, text, date: new Date().toISOString() });
-            DB.save();
-            toast('Comment posted!', 'success');
-            showProductDetail(productId);
-        }
-        
-        function openChat(businessId, productId) {
-            const user = getCurrentUser();
-            if (!user) { showPage('login'); toast('Join VicPrime to chat', 'info'); return; }
-            showPage('chat');
-            renderChat(businessId, productId);
-        }
-        
-        function renderChat(businessId, productId) {
-            const c = document.getElementById('chatContent');
-            c.innerHTML = `<div style="background:var(--vic-navy-light);border-radius:12px;padding:20px;">
-                <h3>Chat with Seller</h3>
-                <div class="chat-messages" id="chatMessages"><div class="chat-message received">Hello! How can I help you?</div></div>
-                <div style="display:flex;gap:8px;margin-top:12px;"><input type="text" id="chatInput" class="form-input" placeholder="Type message..."><button class="btn btn-primary" onclick="sendChatMessage()">Send</button></div>
             </div>`;
-        }
-        
-        function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
-            document.getElementById('chatMessages').innerHTML += `<div class="chat-message sent">${text}</div>`;
-            input.value = '';
-        }
-        
-        function renderRewards() {
-            const c = document.getElementById('rewardsContent');
-            const user = getCurrentUser();
-            if (!user) { c.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><h3>Login to view rewards</h3></div>'; return; }
-            c.innerHTML = `
-                <div style="background:var(--vic-navy-light);border-radius:16px;padding:24px;text-align:center;">
-                    <i class="fas fa-coins" style="font-size:60px;color:#F59E0B;"></i>
-                    <h2 style="font-size:32px;margin:16px 0;">0 VicCoins</h2>
-                    <p style="color:var(--vic-gray);">Available balance</p>
-                    <button class="btn btn-primary" style="margin-top:20px;" onclick="showBuyCoins()"><i class="fas fa-plus"></i> Buy More Coins</button>
+    }
+}
+
+// Cart Functions
+function addToCart(id, name, price, businessName) {
+    const existing = cart.find(c => c.id === id);
+    if (existing) existing.qty++;
+    else cart.push({ id, name, price, businessName, qty: 1 });
+    localStorage.setItem('vic_cart', JSON.stringify(cart));
+    updateCartCount();
+    toast(`${name} added to cart!`);
+}
+
+function updateCartCount() {
+    document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
+}
+
+function renderCart() {
+    const c = document.getElementById('cartContent');
+    if (!cart.length) {
+        c.innerHTML = '<div class="empty"><i class="fas fa-shopping-cart"></i><p>Your cart is empty</p></div>';
+        return;
+    }
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    c.innerHTML = `
+        <h1 class="section-title">Shopping Cart</h1>
+        ${cart.map((item, i) => `
+            <div class="card" style="padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;">
+                <div>
+                    <strong>${item.name}</strong><br>
+                    <span style="font-size:12px;color:var(--gray);">${item.businessName}</span><br>
+                    <strong>$${(item.price * item.qty).toFixed(2)}</strong>
                 </div>
-                <h3 style="margin:24px 0 12px;">Reward History</h3>
-                <p style="color:var(--vic-gray);">No rewards yet.</p>`;
-        }
-        
-        function showBuyCoins() {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal">
-                <h3>Buy VicCoins</h3>
-                <p style="font-size:12px;color:var(--vic-gray);margin-bottom:12px;">1 VicCoin = 5 FCFA</p>
-                <div class="form-group"><label class="form-label">Quantity (min 50)</label><input type="number" class="form-input" id="coinQty" value="50" min="50"></div>
-                <p style="margin-bottom:12px;">Total: <span id="coinTotal">250</span> FCFA</p>
-                <div class="form-group"><label class="form-label">Payment Method</label><select class="form-select" id="payMethod"><option value="mtn_momo">MTN MoMo</option><option value="orange_money">Orange Money</option><option value="bank">Bank</option></select></div>
-                <div class="form-group"><label class="form-label">Reference Number</label><input type="text" class="form-input" id="refNumber" placeholder="Payment reference"></div>
-                <button class="btn btn-primary" onclick="submitCoinPurchase()">Submit Request</button>
-            </div>`;
-            document.body.appendChild(modal);
-        }
-        
-        function submitCoinPurchase() {
-            toast('Purchase request submitted. Pending verification.', 'success');
-            document.querySelector('.modal-overlay').remove();
-        }
-        
-        function addToCart(productId, name, price, businessName) {
-            const existing = DB.cart.find(c => c.productId === productId);
-            if (existing) existing.quantity++;
-            else DB.cart.push({ productId, name, price, businessName, quantity: 1 });
-            DB.save();
-            updateCartBadge();
-            toast(`${name} added!`, 'success');
-        }
-        
-        function updateCartBadge() {
-            const badge = document.getElementById('cartBadge');
-            const count = DB.cart.reduce((s, i) => s + i.quantity, 0);
-            badge.style.display = count > 0 ? 'flex' : 'none';
-            badge.textContent = count;
-        }
-        
-        function renderCart() {
-            const c = document.getElementById('cartContent');
-            if (!DB.cart.length) { c.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-cart"></i><h3>Cart is empty</h3></div>'; return; }
-            const total = DB.cart.reduce((s, i) => s + i.price * i.quantity, 0);
-            c.innerHTML = DB.cart.map((item, i) => `
-                <div class="card" style="padding:16px;margin-bottom:10px;display:flex;justify-content:space-between;">
-                    <div><strong>${item.name}</strong><br><span style="font-size:12px;">${item.businessName}</span><br><span class="metallic-text">$${(item.price * item.quantity).toFixed(2)}</span></div>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                        <button class="btn btn-secondary btn-xs" onclick="updateQty('${item.productId}', ${item.quantity - 1})">−</button>
-                        <span>${item.quantity}</span>
-                        <button class="btn btn-secondary btn-xs" onclick="updateQty('${item.productId}', ${item.quantity + 1})">+</button>
-                        <button class="btn btn-danger btn-xs" onclick="removeItem('${item.productId}')">🗑</button>
-                    </div>
-                </div>`).join('') + `
-                <div class="card" style="padding:20px;display:flex;justify-content:space-between;">
-                    <span>Total: <span class="metallic-text">$${total.toFixed(2)}</span></span>
-                    <button class="btn btn-primary" onclick="checkout()">Checkout</button>
-                </div>`;
-        }
-        
-        function updateQty(pid, qty) {
-            const item = DB.cart.find(c => c.productId === pid);
-            if (item) { if (qty <= 0) DB.cart = DB.cart.filter(c => c.productId !== pid); else item.quantity = qty; DB.save(); updateCartBadge(); renderCart(); }
-        }
-        function removeItem(pid) { DB.cart = DB.cart.filter(c => c.productId !== pid); DB.save(); updateCartBadge(); renderCart(); }
-        function checkout() { toast('Order placed! Contact seller.', 'success'); DB.cart = []; DB.save(); updateCartBadge(); showPage('orders'); }
-        
-        function renderOrders() {
-            const c = document.getElementById('ordersContent');
-            c.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><h3>No orders yet</h3></div>';
-        }
-        
-        function goToStep(step) {}
-        function switchTab(tab) {}
-        function doLogin(e) { e.preventDefault(); toast('Login successful!', 'success'); showPage('home'); }
-        function doRegister(e) { e.preventDefault(); toast('Account created!', 'success'); showPage('home'); }
-        function logout() { localStorage.removeItem('vp_token'); localStorage.removeItem('vp_user'); showPage('home'); }
-        
-        updateCartBadge();
-        renderHome();
-    </script>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button class="btn btn-secondary btn-sm" onclick="updateQty(${i}, -1)">−</button>
+                    <span>${item.qty}</span>
+                    <button class="btn btn-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
+                    <button class="btn btn-sm" style="background:#EF4444;color:white;" onclick="removeItem(${i})">🗑</button>
+                </div>
+            </div>`).join('')}
+        <div class="card" style="padding:20px;display:flex;justify-content:space-between;">
+            <strong>Total: $${total.toFixed(2)}</strong>
+            <button class="btn btn-primary" onclick="checkout()">Checkout</button>
+        </div>`;
+}
+
+function updateQty(index, delta) {
+    cart[index].qty += delta;
+    if (cart[index].qty <= 0) cart.splice(index, 1);
+    localStorage.setItem('vic_cart', JSON.stringify(cart));
+    updateCartCount();
+    renderCart();
+}
+
+function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('vic_cart', JSON.stringify(cart));
+    updateCartCount();
+    renderCart();
+}
+
+function checkout() {
+    toast('Order placed! Contact seller via WhatsApp.');
+    cart = [];
+    localStorage.setItem('vic_cart', JSON.stringify(cart));
+    updateCartCount();
+    renderCart();
+}
+
+// Auth
+function doLogin() {
+    const email = document.getElementById('loginEmail').value;
+    if (!email) { toast('Enter email', 'error'); return; }
+    currentUser = { name: email.split('@')[0], email };
+    localStorage.setItem('vic_user', JSON.stringify(currentUser));
+    toast('Logged in!');
+    showPage('home');
+}
+
+function doRegister() {
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    if (!name || !email) { toast('Fill all fields', 'error'); return; }
+    currentUser = { name, email };
+    localStorage.setItem('vic_user', JSON.stringify(currentUser));
+    toast('Account created!');
+    showPage('home');
+}
+
+// Init
+updateCartCount();
+loadHome();
+</script>
 </body>
 </html>
